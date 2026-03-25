@@ -34,6 +34,21 @@
       "key": "customerId",
       "value": "",
       "type": "string"
+    },
+    {
+      "key": "menuId",
+      "value": "",
+      "type": "string"
+    },
+    {
+      "key": "menuCategoryId",
+      "value": "",
+      "type": "string"
+    },
+    {
+      "key": "eventOfferId",
+      "value": "",
+      "type": "string"
     }
   ],
   "item": [
@@ -756,6 +771,486 @@
               "path": ["admin", "{{adminId}}"]
             },
             "description": "Delete an Admin. Requires SUPER_ADMIN. Cannot delete a Super Admin."
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Menu Category",
+      "item": [
+        {
+          "name": "Create Menu Category",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" },
+              { "key": "Authorization", "value": "Bearer {{accessToken}}" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Hot Drinks\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/menu-category/create",
+              "host": ["{{baseUrl}}"],
+              "path": ["menu-category", "create"]
+            },
+            "description": "Create a new menu category. Requires SHOP_OWNER."
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "var jsonData = pm.response.json();",
+                  "if (jsonData.data && jsonData.data._id) {",
+                  "    pm.collectionVariables.set('menuCategoryId', jsonData.data._id);",
+                  "}"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "response": []
+        },
+        {
+          "name": "Get Categories by Shop Owner",
+          "request": {
+            "method": "GET",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{accessToken}}" }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/menu-category/shop",
+              "host": ["{{baseUrl}}"],
+              "path": ["menu-category", "shop"]
+            },
+            "description": "Get all menu categories for the logged-in shop owner. Requires SHOP_OWNER."
+          },
+          "response": []
+        },
+        {
+          "name": "Update Menu Category",
+          "request": {
+            "method": "PUT",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" },
+              { "key": "Authorization", "value": "Bearer {{accessToken}}" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Cold Drinks\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/menu-category/{{menuCategoryId}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["menu-category", "{{menuCategoryId}}"]
+            },
+            "description": "Update a menu category. Only the owning shop owner can update. Requires SHOP_OWNER."
+          },
+          "response": []
+        },
+        {
+          "name": "Delete Menu Category",
+          "request": {
+            "method": "DELETE",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{accessToken}}" }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/menu-category/{{menuCategoryId}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["menu-category", "{{menuCategoryId}}"]
+            },
+            "description": "Delete a menu category. Only the owning shop owner can delete. Requires SHOP_OWNER."
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Menu - Shop Owner",
+      "item": [
+        {
+          "name": "Create Menu Item",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{accessToken}}" }
+            ],
+            "body": {
+              "mode": "formdata",
+              "formdata": [
+                { "key": "itemName", "value": "Cappuccino", "type": "text" },
+                { "key": "category", "value": "{{menuCategoryId}}", "type": "text" },
+                { "key": "price", "value": "18", "type": "text" },
+                { "key": "description", "value": "Classic Italian cappuccino with steamed milk foam", "type": "text" },
+                { "key": "stamp", "value": "1", "type": "text" },
+                { "key": "isAvailable", "value": "true", "type": "text" },
+                { "key": "additionalItems", "value": "[{\"groupName\":\"Milk Options\",\"type\":\"regular\",\"items\":[{\"name\":\"Oat Milk\",\"price\":3},{\"name\":\"Almond Milk\",\"price\":4}]},{\"groupName\":\"Toppings\",\"type\":\"optional\",\"items\":[{\"name\":\"Whipped Cream\",\"price\":2},{\"name\":\"Caramel Drizzle\",\"price\":2.5}]}]", "type": "text" },
+                { "key": "image", "type": "file", "src": "", "description": "Menu item image (JPEG/PNG/JPG)" }
+              ]
+            },
+            "url": {
+              "raw": "{{baseUrl}}/menu/create",
+              "host": ["{{baseUrl}}"],
+              "path": ["menu", "create"]
+            },
+            "description": "Create a new menu item with image upload. additionalItems is a JSON string with groups. Requires SHOP_OWNER."
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "var jsonData = pm.response.json();",
+                  "if (jsonData.data && jsonData.data._id) {",
+                  "    pm.collectionVariables.set('menuId', jsonData.data._id);",
+                  "}"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "response": []
+        },
+        {
+          "name": "Get All Menu Items (Shop Owner)",
+          "request": {
+            "method": "GET",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{accessToken}}" }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/menu/shop?page=1&limit=10&searchTerm=&category=",
+              "host": ["{{baseUrl}}"],
+              "path": ["menu", "shop"],
+              "query": [
+                { "key": "page", "value": "1", "description": "Page number" },
+                { "key": "limit", "value": "10", "description": "Items per page" },
+                { "key": "searchTerm", "value": "", "description": "Search by item name or description" },
+                { "key": "category", "value": "", "description": "Filter by category ID (optional)" }
+              ]
+            },
+            "description": "Get all menu items for the logged-in shop owner. Supports pagination, search, and category filter. Requires SHOP_OWNER."
+          },
+          "response": []
+        },
+        {
+          "name": "Update Menu Item",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{accessToken}}" }
+            ],
+            "body": {
+              "mode": "formdata",
+              "formdata": [
+                { "key": "itemName", "value": "Cappuccino Deluxe", "type": "text" },
+                { "key": "price", "value": "22", "type": "text" },
+                { "key": "description", "value": "Premium cappuccino with extra foam", "type": "text" },
+                { "key": "stamp", "value": "2", "type": "text" },
+                { "key": "isAvailable", "value": "true", "type": "text" },
+                { "key": "additionalItems", "value": "[{\"groupName\":\"Milk Options\",\"type\":\"regular\",\"items\":[{\"name\":\"Oat Milk\",\"price\":3},{\"name\":\"Almond Milk\",\"price\":4},{\"name\":\"Soy Milk\",\"price\":3.5}]},{\"groupName\":\"Toppings\",\"type\":\"optional\",\"items\":[{\"name\":\"Whipped Cream\",\"price\":2},{\"name\":\"Caramel Drizzle\",\"price\":2.5},{\"name\":\"Chocolate Shavings\",\"price\":3}]}]", "type": "text" },
+                { "key": "image", "type": "file", "src": "", "description": "Updated menu item image (JPEG/PNG/JPG)" }
+              ]
+            },
+            "url": {
+              "raw": "{{baseUrl}}/menu/{{menuId}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["menu", "{{menuId}}"]
+            },
+            "description": "Update an existing menu item. All fields optional. Only the owning shop owner can update. Requires SHOP_OWNER."
+          },
+          "response": []
+        },
+        {
+          "name": "Delete Menu Item",
+          "request": {
+            "method": "DELETE",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{accessToken}}" }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/menu/{{menuId}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["menu", "{{menuId}}"]
+            },
+            "description": "Delete a menu item. Only the owning shop owner can delete. Requires SHOP_OWNER."
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Menu - Public",
+      "item": [
+        {
+          "name": "Get All Menu Items (Public)",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/menu/public?page=1&limit=10&searchTerm=&shopOwnerId=&category=",
+              "host": ["{{baseUrl}}"],
+              "path": ["menu", "public"],
+              "query": [
+                { "key": "page", "value": "1", "description": "Page number" },
+                { "key": "limit", "value": "10", "description": "Items per page" },
+                { "key": "searchTerm", "value": "", "description": "Search by item name or description" },
+                { "key": "shopOwnerId", "value": "", "description": "Filter by shop owner ID (optional)" },
+                { "key": "category", "value": "", "description": "Filter by category ID (optional)" }
+              ]
+            },
+            "description": "Public endpoint. Get all available menu items. Supports filtering by shop owner and category."
+          },
+          "response": []
+        },
+        {
+          "name": "Get Menu Items by Category",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/menu/category/{{menuCategoryId}}?page=1&limit=10&searchTerm=",
+              "host": ["{{baseUrl}}"],
+              "path": ["menu", "category", "{{menuCategoryId}}"],
+              "query": [
+                { "key": "page", "value": "1", "description": "Page number" },
+                { "key": "limit", "value": "10", "description": "Items per page" },
+                { "key": "searchTerm", "value": "", "description": "Search by item name or description" }
+              ]
+            },
+            "description": "Public endpoint. Get available menu items by category ID."
+          },
+          "response": []
+        },
+        {
+          "name": "Get Menu Item by ID",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/menu/{{menuId}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["menu", "{{menuId}}"]
+            },
+            "description": "Public endpoint. Get a single menu item by ID with full details including additional items."
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Event Offer",
+      "item": [
+        {
+          "name": "Shop Owner: Create Event",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" },
+              { "key": "Authorization", "value": "Bearer {{accessToken}}" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"discountName\": \"Ramadan Deal\",\n  \"eventName\": \"Ramadan 2024\",\n  \"startDate\": \"2024-03-10\",\n  \"endDate\": \"2024-04-10\",\n  \"appliedOn\": \"all\",\n  \"discountType\": \"percentage\",\n  \"discountValue\": 15,\n  \"isActive\": true\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/event-offer/create",
+              "host": ["{{baseUrl}}"],
+              "path": ["event-offer", "create"]
+            },
+            "description": "Shop owner creates an event offer. appliedOn 'all' means it applies to all shop items."
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "var jsonData = pm.response.json();",
+                  "if (jsonData.data && jsonData.data._id) {",
+                  "    pm.collectionVariables.set('eventOfferId', jsonData.data._id);",
+                  "}"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "response": []
+        },
+        {
+          "name": "Shop Owner: Get My Events",
+          "request": {
+            "method": "GET",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{accessToken}}" }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/event-offer/shop?searchTerm=&page=1&limit=10",
+              "host": ["{{baseUrl}}"],
+              "path": ["event-offer", "shop"],
+              "query": [
+                { "key": "searchTerm", "value": "" },
+                { "key": "page", "value": "1" },
+                { "key": "limit", "value": "10" }
+              ]
+            },
+            "description": "Shop owner gets their own events + admin-created events."
+          },
+          "response": []
+        },
+        {
+          "name": "Shop Owner: Toggle Active",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" },
+              { "key": "Authorization", "value": "Bearer {{accessToken}}" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"isActive\": true,\n  \"appliedOn\": \"all\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/event-offer/toggle/{{eventOfferId}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["event-offer", "toggle", "{{eventOfferId}}"]
+            },
+            "description": "Shop owner toggles isActive on any event (including admin events) for their shop."
+          },
+          "response": []
+        },
+        {
+          "name": "Shop Owner: Update My Event",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" },
+              { "key": "Authorization", "value": "Bearer {{accessToken}}" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"discountValue\": 18\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/event-offer/shop/{{eventOfferId}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["event-offer", "shop", "{{eventOfferId}}"]
+            },
+            "description": "Shop owner updates their own event offer."
+          },
+          "response": []
+        },
+        {
+          "name": "Shop Owner: Delete My Event",
+          "request": {
+            "method": "DELETE",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{accessToken}}" }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/event-offer/shop/{{eventOfferId}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["event-offer", "shop", "{{eventOfferId}}"]
+            },
+            "description": "Shop owner deletes their own event offer."
+          },
+          "response": []
+        },
+        {
+          "name": "Admin: Create Global Event",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" },
+              { "key": "Authorization", "value": "Bearer {{accessToken}}" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"discountName\": \"National Day\",\n  \"eventName\": \"UAE National Day\",\n  \"startDate\": \"2024-12-01\",\n  \"endDate\": \"2024-12-03\",\n  \"appliedOn\": \"all\",\n  \"discountType\": \"percentage\",\n  \"discountValue\": 20,\n  \"isActive\": true\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/event-offer/admin/create",
+              "host": ["{{baseUrl}}"],
+              "path": ["event-offer", "admin", "create"]
+            },
+            "description": "Admin creates a global event offer available to all shop owners."
+          },
+          "response": []
+        },
+        {
+          "name": "Admin: Get All Events",
+          "request": {
+            "method": "GET",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{accessToken}}" }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/event-offer/admin?searchTerm=&page=1&limit=10",
+              "host": ["{{baseUrl}}"],
+              "path": ["event-offer", "admin"],
+              "query": [
+                { "key": "searchTerm", "value": "" },
+                { "key": "page", "value": "1" },
+                { "key": "limit", "value": "10" }
+              ]
+            },
+            "description": "Admin gets a list of all events (by all shops + admin)."
+          },
+          "response": []
+        },
+        {
+          "name": "Admin: Update Any Event",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" },
+              { "key": "Authorization", "value": "Bearer {{accessToken}}" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"discountValue\": 30\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/event-offer/admin/{{eventOfferId}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["event-offer", "admin", "{{eventOfferId}}"]
+            },
+            "description": "Admin updates any event offer."
+          },
+          "response": []
+        },
+        {
+          "name": "Admin: Delete Any Event",
+          "request": {
+            "method": "DELETE",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{accessToken}}" }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/event-offer/admin/{{eventOfferId}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["event-offer", "admin", "{{eventOfferId}}"]
+            },
+            "description": "Admin deletes any event offer."
+          },
+          "response": []
+        },
+        {
+          "name": "Common: Get Event by ID",
+          "request": {
+            "method": "GET",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{accessToken}}" }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/event-offer/{{eventOfferId}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["event-offer", "{{eventOfferId}}"]
+            },
+            "description": "Get single event details. Accessible by Shop Owner and Admin."
           },
           "response": []
         }

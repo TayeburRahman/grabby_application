@@ -8,6 +8,7 @@ import { errorLogger, logger } from './shared/logger';
 import socket from './socket/socket';
 import { seedSuperAdmin } from './seeds/superAdmin';
 import { seedMenuCategory } from './seeds/menuCategory';
+import { CronJobs } from './app/cron';
 
 process.on('uncaughtException', error => {
   errorLogger.error(error);
@@ -22,6 +23,7 @@ async function main() {
 
     await seedSuperAdmin();
     await seedMenuCategory();
+    CronJobs.initEventCron();
 
     const port =
       typeof config.port === 'number' ? config.port : Number(config.port);
