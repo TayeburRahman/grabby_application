@@ -5,6 +5,7 @@ const additionalItemSchema = new Schema(
   {
     name: { type: String, required: true },
     price: { type: Number, required: true },
+    image: { type: String, default: null },
   },
   { _id: true }
 );

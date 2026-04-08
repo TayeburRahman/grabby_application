@@ -8,6 +8,9 @@ export type ICustomer = Document & {
   phone_number: string;
   profile_image?: string | null;
   status: "active" | "deactivate";
+  addressName?: string;
+  lat?: number;
+  lon?: number;
   createdAt?: Date;
   updatedAt?: Date;
 };

@@ -29,6 +29,18 @@ const CustomerSchema = new Schema<ICustomer>(
       enum: ["active", "deactivate"],
       default: "active",
     },
+    addressName: {
+      type: String,
+      default: null,
+    },
+    lat: {
+      type: Number,
+      default: null,
+    },
+    lon: {
+      type: Number,
+      default: null,
+    },
   },
   {
     timestamps: true,

@@ -6,7 +6,7 @@ import { EventSubscription } from '../event_offer/event_subscription.model';
 const attachActiveEvents = async (items: any[], shopOwnerId?: string) => {
   if (!shopOwnerId) return items;
   const now = new Date();
-  
+
   // 1. Find all active subscriptions for this shop owner
   const activeSubscriptions = await EventSubscription.find({
     shopOwnerId,
@@ -14,7 +14,7 @@ const attachActiveEvents = async (items: any[], shopOwnerId?: string) => {
   }).populate({
     path: 'eventOfferId',
     match: {
-      isActive: true, // Master switch must be ON
+      isActive: true,
       startDate: { $lte: now },
       endDate: { $gte: now },
     }
@@ -27,7 +27,7 @@ const attachActiveEvents = async (items: any[], shopOwnerId?: string) => {
 
   return items.map(item => {
     const itemObj = item.toObject ? item.toObject() : item;
-    
+
     // Find a valid subscription that applies to this item
     const applicableSubscription = validSubscriptions.find((sub: any) => {
       if (sub.appliedOn === 'all') return true;
@@ -65,11 +65,11 @@ const attachActiveEvents = async (items: any[], shopOwnerId?: string) => {
         discountName: tObj.discountName,
         eventName: tObj.eventName,
         endDate: tObj.endDate,
-        discountType: finalDiscountType, 
+        discountType: finalDiscountType,
         discountValue: finalDiscountValue,
       };
     }
-    
+
     return itemObj;
   });
 };
@@ -116,7 +116,7 @@ const getById = async (id: string) => {
   const result = await Menu.findById(id)
     .populate('category', 'name')
     .populate('shopOwnerId', 'name');
-  
+
   if (!result) return null;
 
   const processed = await attachActiveEvents([result], result.shopOwnerId?._id?.toString() || result.shopOwnerId?.toString());

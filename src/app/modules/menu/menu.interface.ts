@@ -3,6 +3,7 @@ import { Model, Types } from 'mongoose';
 export type IAdditionalItem = {
   name: string;
   price: number;
+  image?: string;
 };
 
 export type IAdditionalGroup = {

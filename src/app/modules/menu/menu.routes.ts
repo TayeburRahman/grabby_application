@@ -8,6 +8,13 @@ const router = express.Router();
 
 // ──── Shop Owner Routes ────
 router.post(
+  '/upload-image',
+  auth(ENUM_USER_ROLE.SHOP_OWNER),
+  uploadFile(),
+  MenuController.uploadImage
+);
+
+router.post(
   '/create',
   auth(ENUM_USER_ROLE.SHOP_OWNER),
   uploadFile(),

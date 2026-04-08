@@ -12,6 +12,14 @@ const create = catchAsync(async (req: Request, res: Response) => {
     image = `/images/image/${req.files['image'][0].filename}`;
   }
 
+  if (!image) {
+    return sendResponse(res, {
+      statusCode: 400,
+      success: false,
+      message: 'Image is required',
+    });
+  }
+
   // Parse additionalItems from stringified JSON (multipart form)
   let additionalItems = [];
   if (req.body.additionalItems) {
@@ -179,7 +187,30 @@ const remove = catchAsync(async (req: Request, res: Response) => {
   });
 });
 
+const uploadImage = catchAsync(async (req: Request, res: Response) => {
+  let image = '';
+  if (req.files && 'image' in req.files && req.files['image'][0]) {
+    image = `/images/image/${req.files['image'][0].filename}`;
+  }
+
+  if (!image) {
+    return sendResponse(res, {
+      statusCode: 400,
+      success: false,
+      message: 'No image provided',
+    });
+  }
+
+  sendResponse(res, {
+    statusCode: 200,
+    success: true,
+    message: 'Image uploaded successfully',
+    data: { url: image },
+  });
+});
+
 export const MenuController = {
+  uploadImage,
   create,
   getAll,
   getAllPublic,

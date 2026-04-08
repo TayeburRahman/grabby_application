@@ -3,6 +3,7 @@ import { z } from 'zod';
 const additionalItemSchema = z.object({
   name: z.string({ required_error: 'Additional item name is required' }),
   price: z.number({ required_error: 'Additional item price is required' }),
+  image: z.string().optional(),
 });
 
 const additionalGroupSchema = z.object({
