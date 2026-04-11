@@ -42,12 +42,7 @@ router.delete(
 
 // ──── Public / Customer Routes ────
 router.get(
-  '/public',
-  MenuController.getAllPublic
-);
-
-router.get(
-  '/category/:categoryId',
+  '/category/:branchId',
   MenuController.getByCategory
 );
 

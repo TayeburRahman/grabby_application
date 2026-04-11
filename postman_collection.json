@@ -1352,6 +1352,26 @@
 					"response": []
 				},
 				{
+					"name": "Get All Categories in Branch (Public)",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/menu-category/branch/{{branchId}}",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"menu-category",
+								"branch",
+								"{{branchId}}"
+							]
+						},
+						"description": "Public discovery endpoint for branch categories."
+					},
+					"response": []
+				},
+				{
 					"name": "Shop Owner - Menu Image Upload",
 					"request": {
 						"auth": {
@@ -1618,68 +1638,72 @@
 		{
 			"name": "Menu - Public",
 			"item": [
+
 				{
-					"name": "Get All Menu Items (Public)",
+					"name": "Search Menus (Public)",
 					"request": {
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "{{baseUrl}}/menu/public?page=1&limit=10&searchTerm=&shopOwnerId=&category=",
+							"raw": "{{baseUrl}}/menu/customer?searchTerm=Cappuccino&page=1&limit=10&category={{menuCategoryId}}",
 							"host": [
 								"{{baseUrl}}"
 							],
 							"path": [
 								"menu",
-								"public"
+								"customer"
 							],
 							"query": [
 								{
+									"key": "searchTerm",
+									"value": "Cappuccino",
+									"description": "Search by item name or description"
+								},
+								{
 									"key": "page",
-									"value": "1",
-									"description": "Page number"
+									"value": "1"
 								},
 								{
 									"key": "limit",
-									"value": "10",
-									"description": "Items per page"
+									"value": "10"
 								},
 								{
-									"key": "searchTerm",
-									"value": "",
-									"description": "Search by item name or description"
+									"key": "category",
+									"value": "{{menuCategoryId}}",
+									"description": "Filter by specific category ID"
 								},
 								{
 									"key": "shopOwnerId",
 									"value": "",
-									"description": "Filter by shop owner ID (optional)"
-								},
-								{
-									"key": "category",
-									"value": "",
-									"description": "Filter by category ID (optional)"
+									"description": "Filter by shop owner ID"
 								}
 							]
 						},
-						"description": "Public endpoint. Get all available menu items. Supports filtering by shop owner and category."
+						"description": "Public search API for customers. Returns a flat list with 'categoryName' included."
 					},
 					"response": []
 				},
 				{
-					"name": "Get Menu Items by Category",
+					"name": "Get Menu Items by Branch (Path) & Category (Query)",
 					"request": {
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "{{baseUrl}}/menu/category/{{menuCategoryId}}?page=1&limit=10&searchTerm=",
+							"raw": "{{baseUrl}}/menu/category/{{branchId}}?menuCategoryId={{menuCategoryId}}&page=1&limit=10&searchTerm=",
 							"host": [
 								"{{baseUrl}}"
 							],
 							"path": [
 								"menu",
 								"category",
-								"{{menuCategoryId}}"
+								"{{branchId}}"
 							],
 							"query": [
+								{
+									"key": "menuCategoryId",
+									"value": "{{menuCategoryId}}",
+									"description": "Optional: Filter by category ID"
+								},
 								{
 									"key": "page",
 									"value": "1",
@@ -1697,7 +1721,7 @@
 								}
 							]
 						},
-						"description": "Public endpoint. Get available menu items by category ID."
+						"description": "Path uses branchId. Query uses menuCategoryId. Returns all branch menus if menuCategoryId is missing."
 					},
 					"response": []
 				},
@@ -2178,6 +2202,73 @@
 							]
 						},
 						"description": "Fetch all café branches sorted by distance. If lat/lon query params are missing, uses customer's saved profile location."
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Customer - Stamps",
+			"item": [
+				{
+					"name": "Check Eligibility",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{accessToken}}"
+							}
+						],
+						"url": {
+							"raw": "{{baseUrl}}/customer-stamps/check-eligibility?branchId={{branchId}}&menuId={{menuId}}&stamps=10",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"customer-stamps",
+								"check-eligibility"
+							],
+							"query": [
+								{
+									"key": "branchId",
+									"value": "{{branchId}}"
+								},
+								{
+									"key": "menuId",
+									"value": "{{menuId}}"
+								},
+								{
+									"key": "stamps",
+									"value": "10",
+									"description": "Pass session balance to check if menu is free."
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Current Stamps for Branch",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{accessToken}}"
+							}
+						],
+						"url": {
+							"raw": "{{baseUrl}}/customer-stamps/branch/{{branchId}}",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"customer-stamps",
+								"branch",
+								"{{branchId}}"
+							]
+						}
 					},
 					"response": []
 				}

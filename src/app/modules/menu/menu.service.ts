@@ -2,6 +2,7 @@ import { IMenu } from './menu.interface';
 import { Menu } from './menu.model';
 import QueryBuilder from '../../../builder/QueryBuilder';
 import { EventSubscription } from '../event_offer/event_subscription.model';
+import { Branch } from '../shop_owner/shop_owner.model';
 
 const attachActiveEvents = async (items: any[], shopOwnerId?: string) => {
   if (!shopOwnerId) return items;
@@ -123,8 +124,25 @@ const getById = async (id: string) => {
   return processed[0];
 };
 
-const getByCategory = async (categoryId: string, query: Record<string, unknown>) => {
-  const menuQuery = new QueryBuilder(Menu.find({ category: categoryId, isAvailable: true }), query)
+const getByCategory = async (
+  menuCategoryId: string | undefined,
+  branchId: string | undefined,
+  query: Record<string, unknown>
+) => {
+  const filter: Record<string, any> = { isAvailable: true };
+
+  if (menuCategoryId && menuCategoryId !== 'all') {
+    filter.category = menuCategoryId;
+  }
+
+  if (branchId) {
+    const branch = await Branch.findById(branchId);
+    if (branch) {
+      filter.shopOwnerId = branch.shopOwnerId;
+    }
+  }
+
+  const menuQuery = new QueryBuilder(Menu.find(filter), query)
     .search(['itemName', 'description'])
     .sort()
     .paginate()
@@ -162,4 +180,5 @@ export const MenuService = {
   getByCategory,
   updateById,
   deleteById,
+  attachActiveEvents,
 };

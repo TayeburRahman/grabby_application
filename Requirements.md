@@ -1,10 +1,13 @@
 //STARTS:
 
-check the image 
-screenshot (3).png
+Now when i order the menu, i want to see the stamp in the menu, if i have enough stamp to get a free menu, then i can get a free menu. That system should to like, 
 
+Customar like this:
+Create a api Customar side give brunch id Menue ID the system give the response free or not.
+aslo trar baki total stamp number for this brunch
 
-now i need view brunch data for customar and so they can order
+doro amar kace 8ta staps ache, ami card a 2ta ekta menu add korci, ekta menu r jonno ami staps die free menu nite cacci, r 2nd menu r jonno ami staps nite cacci, akhon fstmenur joono ami alredy 5 staps ditiye free menu nite cacci, and abar vablam 2nd menu r jonno 6ta projon, that api call will be defaret time 
+
 
 //END
 
@@ -13,7 +16,6 @@ now i need view brunch data for customar and so they can order
 
 ## Core Features Short overview
 Project Overview
-
 
 This project is a mobile café ordering platform designed to make ordering food and drinks from cafés faster, easier, and more convenient. The platform connects customers with nearby cafés, allowing them to browse menus, place orders in advance, and make secure in-app payments. Customers can choose their preferred pickup method (car pickup or counter pickup), navigate to the café using integrated maps, and pick up their orders without waiting in line. The system also includes features like order history, loyalty stamps, refund requests, and café suggestions.
 

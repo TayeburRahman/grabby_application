@@ -247,14 +247,23 @@ const loginAccount = async (payload: LoginPayload) => {
   let userDetails: any;
   switch (isAuth.role) {
     case ENUM_USER_ROLE.CUSTOMER:
-      userDetails = await Customer.findOne({ authId: isAuth._id }).populate("authId");
+      userDetails = await Customer.findOne({ authId: isAuth._id }).populate({
+        path: "authId",
+        select: "role"
+      });;
       break;
     case ENUM_USER_ROLE.SHOP_OWNER:
-      userDetails = await ShopOwner.findOne({ authId: isAuth._id }).populate("authId");
+      userDetails = await ShopOwner.findOne({ authId: isAuth._id }).populate({
+        path: "authId",
+        select: "role"
+      });;
       break;
     case ENUM_USER_ROLE.ADMIN:
     case ENUM_USER_ROLE.SUPER_ADMIN:
-      userDetails = await Admin.findOne({ authId: isAuth._id }).populate("authId");
+      userDetails = await Admin.findOne({ authId: isAuth._id }).populate({
+        path: "authId",
+        select: "role"
+      });;
       break;
     default:
       throw new ApiError(400, "Invalid role");
@@ -405,12 +414,21 @@ const myProfile = async (user: { userId: string; role: string }) => {
 
   switch (role) {
     case ENUM_USER_ROLE.CUSTOMER:
-      return await Customer.findById(userId).populate("authId");
+      return await Customer.findById(userId).populate({
+        path: "authId",
+        select: "role"
+      });;
     case ENUM_USER_ROLE.SHOP_OWNER:
-      return await ShopOwner.findById(userId).populate("authId");
+      return await ShopOwner.findById(userId).populate({
+        path: "authId",
+        select: "role"
+      });;
     case ENUM_USER_ROLE.ADMIN:
     case ENUM_USER_ROLE.SUPER_ADMIN:
-      return await Admin.findById(userId).populate("authId");
+      return await Admin.findById(userId).populate({
+        path: "authId",
+        select: "role"
+      });;
     default:
       throw new ApiError(400, "Invalid role");
   }

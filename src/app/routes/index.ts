@@ -6,6 +6,7 @@ import { MenuCategoryRoutes } from '../modules/menu_category/menu_category.route
 import { MenuRoutes } from '../modules/menu/menu.routes';
 import { EventOfferRoutes } from '../modules/event_offer/event_offer.routes';
 import { CustomerRoutes } from '../modules/customers/customers.routes';
+import { CustomerStampRoutes } from '../modules/customer_stamps/customer_stamps.routes';
 
 const router = express.Router();
 
@@ -37,6 +38,10 @@ const moduleRoutes = [
   {
     path: '/customers',
     route: CustomerRoutes,
+  },
+  {
+    path: '/customer-stamps',
+    route: CustomerStampRoutes,
   },
 ];
 moduleRoutes.forEach(route => router.use(route.path, route.route));

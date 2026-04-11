@@ -5,6 +5,8 @@ import Customer from "./customers.model";
 import { Branch } from "../shop_owner/shop_owner.model";
 import { Menu } from "../menu/menu.model";
 import { MenuCategory } from "../menu_category/menu_category.model";
+import { MenuService } from "../menu/menu.service";
+import QueryBuilder from "../../../builder/QueryBuilder";
 
 const updateProfile = async (
   userId: string,
@@ -23,13 +25,21 @@ const updateProfile = async (
   const updatedCustomer = await Customer.findByIdAndUpdate(userId, payload, {
     new: true,
     runValidators: true,
-  }).populate("authId");
+  }).populate({
+    path: "authId",
+    select: "role"
+  });
+
+  await Customer.findByIdAndUpdate(updatedCustomer?.authId, payload)
 
   return updatedCustomer;
 };
 
 const getMyProfile = async (userId: string) => {
-  const customer = await Customer.findById(userId).populate("authId");
+  const customer = await Customer.findById(userId).populate({
+    path: "authId",
+    select: "role"
+  });
   if (!customer) {
     throw new ApiError(httpStatus.NOT_FOUND, "Customer not found");
   }
@@ -136,7 +146,13 @@ const getBranchesForCustomer = async (lat?: number, lon?: number) => {
   return processedBranches;
 };
 
-const getSingleBranch = async (branchId: string, lat?: number, lon?: number) => {
+const getSingleBranch = async (
+  branchId: string,
+  lat?: number,
+  lon?: number,
+  categoryId?: string,
+  query: Record<string, unknown> = {}
+) => {
   const branch = await Branch.findById(branchId).populate("shopOwnerId", "shop_name shop_logo profile_image");
   if (!branch) {
     throw new ApiError(httpStatus.NOT_FOUND, "Branch not found");
@@ -227,25 +243,46 @@ const getSingleBranch = async (branchId: string, lat?: number, lon?: number) => 
   };
 
   const shopOwnerId = (branch.shopOwnerId as any)?._id;
-  
+
+  let meta = null;
+
   if (shopOwnerId) {
-    const categories = await MenuCategory.find({ shopOwnerId });
-    const menus = await Menu.find({ shopOwnerId, isAvailable: true }).populate("category");
+    const categoryFilter: any = { shopOwnerId };
+    if (categoryId) {
+      categoryFilter._id = categoryId;
+    }
+    const categories = await MenuCategory.find(categoryFilter);
+
+    const menuFilter: any = { shopOwnerId, isAvailable: true };
+    if (categoryId) {
+      menuFilter.category = categoryId;
+    }
+
+    const menuQuery = new QueryBuilder(Menu.find(menuFilter).populate("category"), query)
+      .sort()
+      .paginate()
+      .fields();
+
+    const rawMenus = await menuQuery.modelQuery;
+    meta = await menuQuery.countTotal();
+
+    const menus = await MenuService.attachActiveEvents(rawMenus, shopOwnerId.toString());
 
     const categoriesWithMenus = categories.map((cat: any) => {
       return {
         _id: cat._id,
         name: cat.name,
-        items: menus.filter((m: any) => m.category?._id?.toString() === cat._id.toString())
+        menus: menus.filter((m: any) => m.category?._id?.toString() === cat._id.toString())
       };
     });
 
-    formattedBranch.menu_categories = categoriesWithMenus;
+    // Filter out categories that have no menus (especially important when paginating)
+    formattedBranch.menu_categories = categoriesWithMenus.filter(cat => cat.menus.length > 0);
   } else {
     formattedBranch.menu_categories = [];
   }
 
-  return formattedBranch;
+  return { branch: formattedBranch, meta };
 };
 
 const saveLocation = async (

@@ -16,6 +16,8 @@ router.post(
 
 router.get('/shop', auth(ENUM_USER_ROLE.SHOP_OWNER), MenuCategoryController.getByShopOwner);
 
+router.get('/branch/:branchId', MenuCategoryController.getByBranch);
+
 router.put('/:id', auth(ENUM_USER_ROLE.SHOP_OWNER), validateRequest(MenuCategoryValidation.createSchema), MenuCategoryController.update);
 
 router.delete('/:id', auth(ENUM_USER_ROLE.SHOP_OWNER), MenuCategoryController.remove);

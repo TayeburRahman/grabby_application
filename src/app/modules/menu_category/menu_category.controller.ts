@@ -63,9 +63,20 @@ const remove = catchAsync(async (req: Request, res: Response) => {
   });
 });
 
+const getByBranch = catchAsync(async (req: Request, res: Response) => {
+  const result = await MenuCategoryService.findByBranch(req.params.branchId);
+  sendResponse(res, {
+    statusCode: 200,
+    success: true,
+    message: 'Menu categories fetched successfully',
+    data: result,
+  });
+});
+
 export const MenuCategoryController = {
   create,
   getByShopOwner,
+  getByBranch,
   update,
   remove,
 };

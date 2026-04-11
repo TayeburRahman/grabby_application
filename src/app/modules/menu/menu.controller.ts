@@ -64,18 +64,7 @@ const getAll = catchAsync(async (req: Request, res: Response) => {
   });
 });
 
-const getAllPublic = catchAsync(async (req: Request, res: Response) => {
-  const shopOwnerId = req.query.shopOwnerId as string | undefined;
-  const categoryId = req.query.category as string | undefined;
-  const { result, meta } = await MenuService.getAll(req.query, shopOwnerId, categoryId);
-  sendResponse(res, {
-    statusCode: 200,
-    success: true,
-    message: 'Menu items fetched successfully',
-    meta,
-    data: result,
-  });
-});
+
 
 const getById = catchAsync(async (req: Request, res: Response) => {
   const result = await MenuService.getById(req.params.id);
@@ -95,11 +84,14 @@ const getById = catchAsync(async (req: Request, res: Response) => {
 });
 
 const getByCategory = catchAsync(async (req: Request, res: Response) => {
-  const { result, meta } = await MenuService.getByCategory(req.params.categoryId, req.query);
+  const { branchId } = req.params;
+  const menuCategoryId = req.query.menuCategoryId as string | undefined;
+  
+  const { result, meta } = await MenuService.getByCategory(menuCategoryId, branchId, req.query);
   sendResponse(res, {
     statusCode: 200,
     success: true,
-    message: 'Menu items by category fetched successfully',
+    message: 'Menu items fetched successfully',
     meta,
     data: result,
   });
@@ -209,11 +201,12 @@ const uploadImage = catchAsync(async (req: Request, res: Response) => {
   });
 });
 
+
+
 export const MenuController = {
   uploadImage,
   create,
   getAll,
-  getAllPublic,
   getById,
   getByCategory,
   update,

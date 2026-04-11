@@ -1,3 +1,4 @@
+import { Branch } from '../shop_owner/shop_owner.model';
 import { IMenuCategory } from './menu_category.interface';
 import { MenuCategory } from './menu_category.model';
 
@@ -8,6 +9,15 @@ const create = async (payload: IMenuCategory): Promise<IMenuCategory> => {
 
 const findByShopOwner = async (shopOwnerId: string) => {
   const result = await MenuCategory.find({ shopOwnerId });
+  return result;
+};
+
+const findByBranch = async (branchId: string) => {
+  const branch = await Branch.findById(branchId);
+  if (!branch) {
+    return [];
+  }
+  const result = await MenuCategory.find({ shopOwnerId: branch.shopOwnerId });
   return result;
 };
 
@@ -29,6 +39,7 @@ const deleteById = async (id: string) => {
 export const MenuCategoryService = {
   create,
   findByShopOwner,
+  findByBranch,
   findById,
   updateById,
   deleteById,

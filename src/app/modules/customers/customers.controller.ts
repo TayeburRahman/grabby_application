@@ -17,7 +17,8 @@ const getMyProfile = catchAsync(async (req, res) => {
 const updateProfile = catchAsync(async (req, res) => {
   const userId = req.user?.userId as string;
   const payload = req.body;
-  const profileImageFile = req.file;
+  const files = req.files as { [fieldname: string]: Express.Multer.File[] } | undefined;
+  const profileImageFile = files?.profile_image?.[0];
 
   const result = await CustomerService.updateProfile(userId, payload, profileImageFile);
 
@@ -81,14 +82,16 @@ const getSingleBranch = catchAsync(async (req, res) => {
 
   const lat = req.query.lat ? Number(req.query.lat) : (customer.lat || undefined);
   const lon = req.query.lon ? Number(req.query.lon) : (customer.lon || undefined);
+  const categoryId = req.query.categoryId as string | undefined;
 
-  const result = await CustomerService.getSingleBranch(branchId, lat, lon);
+  const result = await CustomerService.getSingleBranch(branchId, lat, lon, categoryId, req.query);
 
   sendResponse(res, {
     statusCode: httpStatus.OK,
     success: true,
     message: "Branch details retrieved successfully",
-    data: result,
+    data: result.branch,
+    meta: result.meta || undefined,
   });
 });
 
