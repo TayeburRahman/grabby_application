@@ -1639,50 +1639,7 @@
 			"name": "Menu - Public",
 			"item": [
 
-				{
-					"name": "Search Menus (Public)",
-					"request": {
-						"method": "GET",
-						"header": [],
-						"url": {
-							"raw": "{{baseUrl}}/menu/customer?searchTerm=Cappuccino&page=1&limit=10&category={{menuCategoryId}}",
-							"host": [
-								"{{baseUrl}}"
-							],
-							"path": [
-								"menu",
-								"customer"
-							],
-							"query": [
-								{
-									"key": "searchTerm",
-									"value": "Cappuccino",
-									"description": "Search by item name or description"
-								},
-								{
-									"key": "page",
-									"value": "1"
-								},
-								{
-									"key": "limit",
-									"value": "10"
-								},
-								{
-									"key": "category",
-									"value": "{{menuCategoryId}}",
-									"description": "Filter by specific category ID"
-								},
-								{
-									"key": "shopOwnerId",
-									"value": "",
-									"description": "Filter by shop owner ID"
-								}
-							]
-						},
-						"description": "Public search API for customers. Returns a flat list with 'categoryName' included."
-					},
-					"response": []
-				},
+
 				{
 					"name": "Get Menu Items by Branch (Path) & Category (Query)",
 					"request": {

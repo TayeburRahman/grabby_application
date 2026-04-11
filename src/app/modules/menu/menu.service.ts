@@ -28,7 +28,6 @@ const attachActiveEvents = async (items: any[], shopOwnerId?: string) => {
 
   return items.map(item => {
     const itemObj = item.toObject ? item.toObject() : item;
-
     // Find a valid subscription that applies to this item
     const applicableSubscription = validSubscriptions.find((sub: any) => {
       if (sub.appliedOn === 'all') return true;
