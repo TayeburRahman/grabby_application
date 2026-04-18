@@ -149,9 +149,7 @@ const getPromoCodesCustomer = async (query: any) => {
   if (branchId) {
     filter.branchIds = branchId;
   }
-  
   const promoCodes = await PromoCode.find(filter).select('status branchId');
-
   return promoCodes;
 };
  

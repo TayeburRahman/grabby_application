@@ -2167,6 +2167,34 @@
 "response": []
 },
 {
+"name": "Get Promo Codes Customer",
+"request": {
+"method": "POST",
+"header": [
+{
+"key": "Content-Type",
+"value": "application/json"
+}
+],
+"body": {
+"mode": "raw",
+"raw": "{\n  \"branchId\": \"{{branchId}}\"\n}"
+},
+"url": {
+"raw": "{{baseUrl}}/promo-code/customer",
+"host": [
+"{{baseUrl}}"
+],
+"path": [
+"promo-code",
+"customer"
+]
+},
+"description": "Get available promo codes for a specific branch (customer endpoint)."
+},
+"response": []
+},
+{
 "name": "Validate Promo Code",
 "request": {
 "method": "POST",

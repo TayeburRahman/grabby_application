@@ -41,7 +41,7 @@ router.get(
   PromoCodeController.getPromoCodes
 );
 
-router.post(
+router.get(
   '/customer', 
   PromoCodeController.getPromoCodesCustomer
 );
