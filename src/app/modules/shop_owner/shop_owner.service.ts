@@ -264,6 +264,33 @@ const updateBranchAvailability = async (
   return branch;
 };
 
+const getAllBranches = async (userId: string) => {
+  const shopOwner = await ShopOwner.findById(userId);
+  if (!shopOwner) {
+    throw new ApiError(httpStatus.NOT_FOUND, "Shop owner not found");
+  }
+
+  const branches = await Branch.find({ shopOwnerId: shopOwner._id });
+  return branches;
+};
+
+const getBranchDetails = async (userId: string, branchId: string) => {
+  const shopOwner = await ShopOwner.findById(userId);
+  if (!shopOwner) {
+    throw new ApiError(httpStatus.NOT_FOUND, "Shop owner not found");
+  }
+
+  const branch = await Branch.findOne({
+    _id: branchId,
+    shopOwnerId: shopOwner._id,
+  });
+  if (!branch) {
+    throw new ApiError(httpStatus.NOT_FOUND, "Branch not found");
+  }
+
+  return branch;
+};
+
 export const ShopOwnerService = {
   saveLocation,
   saveBusinessInfo,
@@ -274,4 +301,6 @@ export const ShopOwnerService = {
   deleteBranch,
   updateBranch,
   updateBranchAvailability,
+  getAllBranches,
+  getBranchDetails,
 };

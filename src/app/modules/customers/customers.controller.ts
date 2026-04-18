@@ -95,10 +95,29 @@ const getSingleBranch = catchAsync(async (req, res) => {
   });
 });
 
+const getBranchDetails = catchAsync(async (req, res) => {
+  const branchId = req.params.id;
+  const userId = req.user?.userId as string;
+  const customer = await CustomerService.getMyProfile(userId);
+
+  const lat = req.query.lat ? Number(req.query.lat) : (customer.lat || undefined);
+  const lon = req.query.lon ? Number(req.query.lon) : (customer.lon || undefined);
+
+  const result = await CustomerService.getBranchDetailsBrief(branchId, lat, lon);
+
+  sendResponse(res, {
+    statusCode: httpStatus.OK,
+    success: true,
+    message: "Branch brief details retrieved successfully",
+    data: result,
+  });
+});
+
 export const CustomerController = {
   getMyProfile,
   updateProfile,
   saveLocation,
   getBranches,
   getSingleBranch,
+  getBranchDetails,
 };

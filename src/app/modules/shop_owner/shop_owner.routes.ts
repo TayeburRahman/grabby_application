@@ -56,6 +56,19 @@ router.post(
   ShopOwnerController.createBranch
 );
 
+router.get(
+  "/branch",
+  auth(ENUM_USER_ROLE.SHOP_OWNER),
+  ShopOwnerController.getAllBranches
+);
+
+router.get(
+  "/branch/:branchId",
+  auth(ENUM_USER_ROLE.SHOP_OWNER),
+  validateRequest(ShopOwnerValidation.deleteBranchSchema),
+  ShopOwnerController.getBranchDetails
+);
+
 router.delete(
   "/branch/:branchId",
   auth(ENUM_USER_ROLE.SHOP_OWNER),

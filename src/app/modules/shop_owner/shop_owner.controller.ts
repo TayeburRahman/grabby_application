@@ -78,6 +78,30 @@ const createBranch = catchAsync(async (req: Request, res: Response) => {
   });
 });
 
+// ─── Get All Branches ───────────────────────────────────────────────
+const getAllBranches = catchAsync(async (req: Request, res: Response) => {
+  const { userId } = req.user as IReqUser;
+  const result = await ShopOwnerService.getAllBranches(userId);
+  sendResponse(res, {
+    statusCode: 200,
+    success: true,
+    message: "Branches retrieved successfully.",
+    data: result,
+  });
+});
+
+// ─── Get Branch Details ─────────────────────────────────────────────
+const getBranchDetails = catchAsync(async (req: Request, res: Response) => {
+  const { userId } = req.user as IReqUser;
+  const result = await ShopOwnerService.getBranchDetails(userId, req.params.branchId);
+  sendResponse(res, {
+    statusCode: 200,
+    success: true,
+    message: "Branch details retrieved successfully.",
+    data: result,
+  });
+});
+
 // ─── Delete Branch ─────────────────────────────────────────────────
 const deleteBranch = catchAsync(async (req: Request, res: Response) => {
   const { userId } = req.user as IReqUser;
@@ -124,6 +148,8 @@ export const ShopOwnerController = {
   saveDocuments,
   updateProfile,
   createBranch,
+  getAllBranches,
+  getBranchDetails,
   deleteBranch,
   updateBranch,
   updateBranchAvailability,

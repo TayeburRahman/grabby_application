@@ -7,6 +7,8 @@ import { MenuRoutes } from '../modules/menu/menu.routes';
 import { EventOfferRoutes } from '../modules/event_offer/event_offer.routes';
 import { CustomerRoutes } from '../modules/customers/customers.routes';
 import { CustomerStampRoutes } from '../modules/customer_stamps/customer_stamps.routes';
+import { BranchRoutes } from '../modules/customers/branches.routes';
+import { PromoCodeRoutes } from '../modules/promo_code/promo_code.routes';
 
 const router = express.Router();
 
@@ -42,6 +44,14 @@ const moduleRoutes = [
   {
     path: '/customer-stamps',
     route: CustomerStampRoutes,
+  },
+  {
+    path: '/branches',
+    route: BranchRoutes,
+  },
+  {
+    path: '/promo-code',
+    route: PromoCodeRoutes,
   },
 ];
 moduleRoutes.forEach(route => router.use(route.path, route.route));
