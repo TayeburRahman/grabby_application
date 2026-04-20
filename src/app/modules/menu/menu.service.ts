@@ -5,8 +5,12 @@ import { EventSubscription } from '../event_offer/event_subscription.model';
 import { Branch } from '../shop_owner/shop_owner.model';
 
 const attachActiveEvents = async (items: any[], shopOwnerId?: string) => {
-  if (!shopOwnerId) return items;
+  if (!shopOwnerId) {
+    return items.map((item) => (item.toObject ? item.toObject() : item));
+  }
+
   const now = new Date();
+  const plainItems = items.map((item) => (item.toObject ? item.toObject() : item));
 
   // 1. Find all active subscriptions for this shop owner
   const activeSubscriptions = await EventSubscription.find({
@@ -24,10 +28,9 @@ const attachActiveEvents = async (items: any[], shopOwnerId?: string) => {
   // 2. Filter out those where template didn't match (eventOfferId will be null)
   const validSubscriptions = activeSubscriptions.filter((sub: any) => sub.eventOfferId !== null);
 
-  if (validSubscriptions.length === 0) return items;
+  if (validSubscriptions.length === 0) return plainItems;
 
-  return items.map(item => {
-    const itemObj = item.toObject ? item.toObject() : item;
+  return plainItems.map(itemObj => {
     // Find a valid subscription that applies to this item
     const applicableSubscription = validSubscriptions.find((sub: any) => {
       if (sub.appliedOn === 'all') return true;

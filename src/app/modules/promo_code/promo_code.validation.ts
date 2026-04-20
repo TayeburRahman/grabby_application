@@ -6,6 +6,7 @@ const createPromoCodeSchema = z.object({
     z.object({
       code: z.string({ required_error: 'Code is required' }).min(1, 'Code cannot be empty'),
       status: z.enum(['active', 'inactive']).optional().default('active'),
+      discountPercent: z.number().min(0).max(100).optional().default(0),
       branchIds: z.union([
         z.array(z.string().regex(/^[0-9a-fA-F]{24}$/, 'Invalid ObjectId')),
         z.literal('all'),
@@ -15,6 +16,7 @@ const createPromoCodeSchema = z.object({
     z.array(z.object({
       code: z.string({ required_error: 'Code is required' }).min(1, 'Code cannot be empty'),
       status: z.enum(['active', 'inactive']).optional().default('active'),
+      discountPercent: z.number().min(0).max(100).optional().default(0),
       branchIds: z.union([
         z.array(z.string().regex(/^[0-9a-fA-F]{24}$/, 'Invalid ObjectId')),
         z.literal('all'),
@@ -30,6 +32,7 @@ const updatePromoCodeSchema = z.object({
   body: z.object({
     code: z.string().min(1).optional(),
     status: z.enum(['active', 'inactive']).optional(),
+    discountPercent: z.number().min(0).max(100).optional(),
     branchIds: z.union([
       z.array(z.string().regex(/^[0-9a-fA-F]{24}$/, 'Invalid ObjectId')),
       z.literal('all'),

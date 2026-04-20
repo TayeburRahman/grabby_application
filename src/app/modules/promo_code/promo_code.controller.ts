@@ -75,10 +75,11 @@ const getPromoCodesCustomer = catchAsync(async (req: Request, res: Response) => 
 
 const validatePromoCode = catchAsync(async (req: Request, res: Response) => {
   const { code, branchId } = req.body;
+
   const result = await PromoCodeService.validatePromoCode(code, branchId);
   sendResponse(res, {
     statusCode: 200,
-    success: result.isValid,
+    success: true,
     message: result.message,
     data: result,
   });

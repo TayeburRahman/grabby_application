@@ -5,15 +5,18 @@ import Customer from "../customers/customers.model";
 import { Menu } from "../menu/menu.model";
 
 const getCustomerStampsByBranch = async (authId: string, branchId: string) => {
+  console.log('==', authId, branchId)
   const customer = await Customer.findOne({ authId });
   if (!customer) {
     throw new AppError(httpStatus.NOT_FOUND, "Customer not found");
   }
 
   const customerStamp = await CustomerStamp.findOne({
-    customer: customer._id,
+    customer: customer._id.toString(),
     branch: branchId,
   });
+
+  console.log(customerStamp)
 
   return {
     totalStamps: customerStamp ? customerStamp.totalStamps : 0,
@@ -51,6 +54,7 @@ const checkEligibility = async (
   menuId: string,
   stamps: number = 0
 ) => {
+  console.log("===", authId, branchId, menuId, stamps);
   const customer = await Customer.findOne({ authId });
   if (!customer) {
     throw new AppError(httpStatus.NOT_FOUND, "Customer not found");
@@ -69,10 +73,6 @@ const checkEligibility = async (
   const dbTotalStamps = customerStamp ? customerStamp.totalStamps : 0;
 
   const currentStamps = stamps > 0 ? stamps : dbTotalStamps;
-
-  if (stamps > dbTotalStamps) {
-    throw new AppError(httpStatus.BAD_REQUEST, "Provided stamps exceed total stamps in branch");
-  }
 
   const requiredStamps = menu.stamp || 0;
   const isFree = requiredStamps > 0 && currentStamps >= requiredStamps;

@@ -2,14 +2,18 @@ import httpStatus from 'http-status';
 import ApiError from '../../../errors/ApiError';
 import { PromoCode } from './promo_code.model';
 import { Branch } from '../shop_owner/shop_owner.model';
+import mongoose from 'mongoose';
 
 const createPromoCode = async (userId: string, payload: any) => {
   if (Array.isArray(payload)) {
+    console.log("== Bulk Creation ==", )
     // Bulk creation
     const promoCodesToCreate = [];
 
     for (const promoCodeData of payload) {
-      const { code, status, branchIds } = promoCodeData;
+      const { code, status, discountPercent, branchIds } = promoCodeData;
+
+      console.log("discountPercent", discountPercent)
 
       // If branchIds is 'all', get all branch IDs for the shop owner
       let finalBranchIds = branchIds;
@@ -22,6 +26,7 @@ const createPromoCode = async (userId: string, payload: any) => {
         code,
         shopOwnerId: userId,
         status: status || 'active',
+        discountPercent: discountPercent,
         branchIds: finalBranchIds,
       });
     }
@@ -30,7 +35,7 @@ const createPromoCode = async (userId: string, payload: any) => {
     return promoCodes;
   } else {
     // Single creation
-    const { code, status, branchIds } = payload;
+    const { code, status, discountPercent, branchIds } = payload;
 
     // If branchIds is 'all', get all branch IDs for the shop owner
     let finalBranchIds = branchIds;
@@ -43,6 +48,7 @@ const createPromoCode = async (userId: string, payload: any) => {
       code,
       shopOwnerId: userId,
       status,
+      discountPercent,
       branchIds: finalBranchIds,
     });
 
@@ -124,22 +130,26 @@ const getPromoCodes = async (query: any) => {
 };
 
 const validatePromoCode = async (code: string, branchId: string) => {
-  const promoCode = await PromoCode.findOne({
-    code,
-    status: 'active',
-    $or: [
-      { branchIds: branchId },
-      { branchIds: 'all' },
-    ],
-  });
 
-  return {
-    isValid: !!promoCode,
-    code: promoCode?.code || null,
-    status: promoCode?.status || null,
-    branchIds: promoCode?.branchIds || null,
-    message: promoCode ? 'Promo code is valid' : 'Promo code is not valid or inactive',
-  };
+  try {
+    const id = new mongoose.Types.ObjectId(branchId);
+    const promoCode = await PromoCode.findOne({
+      code: code,
+      status: "active",
+      branchIds: { $in: [id] }
+    });
+
+    return {
+      isValid: !!promoCode,
+      code: promoCode?.code || null,
+      status: promoCode?.status || null,
+      discountPercent: promoCode?.discountPercent || 0,
+      message: promoCode ? 'Promo code is valid' : 'Promo code is not valid or inactive',
+    };
+  } catch (error) {
+    console.error('Error validating promo code:', error);
+    throw new ApiError(httpStatus.INTERNAL_SERVER_ERROR, 'Error validating promo code');
+  }
 };
 
 const getPromoCodesCustomer = async (query: any) => {
@@ -149,10 +159,10 @@ const getPromoCodesCustomer = async (query: any) => {
   if (branchId) {
     filter.branchIds = branchId;
   }
-  const promoCodes = await PromoCode.find(filter).select('status branchId');
+  const promoCodes = await PromoCode.find(filter).select('code status branchIds discountPercent');
   return promoCodes;
 };
- 
+
 export const PromoCodeService = {
   createPromoCode,
   updatePromoCode,

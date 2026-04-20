@@ -6,6 +6,7 @@ import { Branch } from "../shop_owner/shop_owner.model";
 import { Menu } from "../menu/menu.model";
 import { MenuCategory } from "../menu_category/menu_category.model";
 import { MenuService } from "../menu/menu.service";
+import { CustomerStampService } from "../customer_stamps/customer_stamps.service";
 import QueryBuilder from "../../../builder/QueryBuilder";
 
 const updateProfile = async (
@@ -158,7 +159,8 @@ const getSingleBranch = async (
   lat?: number,
   lon?: number,
   categoryId?: string,
-  query: Record<string, unknown> = {}
+  query: Record<string, unknown> = {},
+  customerAuthId?: string
 ) => {
   const branch = await Branch.findById(branchId).populate("shopOwnerId", "shop_name shop_logo profile_image");
   if (!branch) {
@@ -193,14 +195,30 @@ const getSingleBranch = async (
 
     const menus = await MenuService.attachActiveEvents(rawMenus, shopOwnerId.toString());
 
+    const branchStampData = customerAuthId
+      ? await CustomerStampService.getCustomerStampsByBranch(customerAuthId, branchId)
+      : { totalStamps: 0 };
+    const branchTotalStamps = branchStampData.totalStamps || 0;
+
     const categoriesWithMenus = categories.map((cat: any) => {
       return {
         _id: cat._id,
         name: cat.name,
-        menus: menus.filter((m: any) => m.category?._id?.toString() === cat._id.toString())
+        menus: menus
+          .filter((m: any) => m.category?._id?.toString() === cat._id.toString())
+          .map((menu: any) => {
+            const menuObj = menu?.toObject ? menu.toObject() : menu;
+            return {
+              ...menuObj,
+              totalStamps: branchTotalStamps,
+              isFree: (menuObj.stamp || 0) > 0 && branchTotalStamps >= (menuObj.stamp || 0),
+              remainingStamps: branchTotalStamps - (menuObj.stamp || 0),
+            };
+          })
       };
     });
 
+    formattedBranch.totalStamps= branchTotalStamps
     // Filter out categories that have no menus (especially important when paginating)
     formattedBranch.menu_categories = categoriesWithMenus.filter(cat => cat.menus.length > 0);
   } else {

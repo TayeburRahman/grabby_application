@@ -83,8 +83,9 @@ const getSingleBranch = catchAsync(async (req, res) => {
   const lat = req.query.lat ? Number(req.query.lat) : (customer.lat || undefined);
   const lon = req.query.lon ? Number(req.query.lon) : (customer.lon || undefined);
   const categoryId = req.query.categoryId as string | undefined;
+  const customerAuthId = req.user?.authId?.toString();
 
-  const result = await CustomerService.getSingleBranch(branchId, lat, lon, categoryId, req.query);
+  const result = await CustomerService.getSingleBranch(branchId, lat, lon, categoryId, req.query, customerAuthId);
 
   sendResponse(res, {
     statusCode: httpStatus.OK,

@@ -9,6 +9,8 @@ import { CustomerRoutes } from '../modules/customers/customers.routes';
 import { CustomerStampRoutes } from '../modules/customer_stamps/customer_stamps.routes';
 import { BranchRoutes } from '../modules/customers/branches.routes';
 import { PromoCodeRoutes } from '../modules/promo_code/promo_code.routes';
+import { UpcomingEventsRoutes } from '../modules/upcoming_events/upcoming_events.routes';
+import { CarPlateRoutes } from '../modules/car_plates/car_plates.routes';
 
 const router = express.Router();
 
@@ -52,6 +54,14 @@ const moduleRoutes = [
   {
     path: '/promo-code',
     route: PromoCodeRoutes,
+  },
+  {
+    path: '/upcoming-events',
+    route: UpcomingEventsRoutes,
+  },
+  {
+    path: '/car-plates',
+    route: CarPlateRoutes,
   },
 ];
 moduleRoutes.forEach(route => router.use(route.path, route.route));

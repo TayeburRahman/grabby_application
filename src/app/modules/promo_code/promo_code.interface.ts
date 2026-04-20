@@ -6,6 +6,7 @@ export interface IPromoCode {
   shopOwnerId: Types.ObjectId;
   status: 'active' | 'inactive';
   branchIds: Types.ObjectId[] | 'all';
+  discountPercent?: number;
   createdAt?: Date;
   updatedAt?: Date;
 }

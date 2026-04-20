@@ -28,6 +28,12 @@ const PromoCodeSchema = new Schema<IPromoCode>(
         message: 'branchIds must be an array of ObjectIds or "all"',
       },
     },
+    discountPercent: {
+      type: Number,
+      default: 0,
+      min: 0,
+      max: 100,
+    },
   },
   {
     timestamps: true,

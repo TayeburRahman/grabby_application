@@ -4,10 +4,10 @@ import sendResponse from "../../../shared/sendResponse";
 import { CustomerStampService } from "./customer_stamps.service";
 
 const getCustomerStampsByBranch = catchAsync(async (req, res) => {
-  const userId = req.user?.userId as string;
+  const authId = req.user?.authId as string;
   const branchId = req.params.branchId;
 
-  const result = await CustomerStampService.getCustomerStampsByBranch(userId, branchId);
+  const result = await CustomerStampService.getCustomerStampsByBranch(authId, branchId);
 
   sendResponse(res, {
     statusCode: httpStatus.OK,
@@ -18,10 +18,10 @@ const getCustomerStampsByBranch = catchAsync(async (req, res) => {
 });
 
 const addStamp = catchAsync(async (req, res) => {
-  const userId = req.user?.userId as string;
+  const authId = req.user?.authId as string;
   const { branchId, stamps } = req.body;
 
-  const result = await CustomerStampService.addStamp(userId, branchId, stamps || 1);
+  const result = await CustomerStampService.addStamp(authId, branchId, stamps || 1);
 
   sendResponse(res, {
     statusCode: httpStatus.OK,
@@ -32,11 +32,11 @@ const addStamp = catchAsync(async (req, res) => {
 });
 
 const checkEligibility = catchAsync(async (req, res) => {
-  const userId = req.user?.userId as string;
+  const authId = req.user?.authId as string;
   const { branchId, menuId, stamps } = req.query;
 
   const result = await CustomerStampService.checkEligibility(
-    userId,
+    authId,
     branchId as string,
     menuId as string,
     Number(stamps || 0)

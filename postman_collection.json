@@ -54,6 +54,16 @@
 "key": "promoCodeId",
 "value": "",
 "type": "string"
+},
+{
+"key": "carPlateId",
+"value": "",
+"type": "string"
+},
+{
+"key": "upcomingEventId",
+"value": "",
+"type": "string"
 }
 ],
 "item": [
@@ -2223,6 +2233,298 @@
 "response": []
 }
 ]
+},
+{
+"name": "Upcoming Events",
+"item": [
+{
+"name": "Create Upcoming Event",
+"request": {
+"method": "POST",
+"header": [
+{
+"key": "Authorization",
+"value": "Bearer {{accessToken}}"
+}
+],
+"body": {
+"mode": "formdata",
+"formdata": [
+{
+"key": "name",
+"value": "Coffee Festival 2024",
+"type": "text"
+},
+{
+"key": "startDate",
+"value": "2024-05-01",
+"type": "text"
+},
+{
+"key": "endDate",
+"value": "2024-05-15",
+"type": "text"
+},
+{
+"key": "image",
+"type": "file",
+"src": []
+}
+]
+},
+"url": {
+"raw": "{{baseUrl}}/upcoming-events/create",
+"host": [
+"{{baseUrl}}"
+],
+"path": [
+"upcoming-events",
+"create"
+]
+},
+"description": "Create a new upcoming event (Admin only). Supports multiple icon uploads via 'image' field."
+},
+"response": []
+},
+{
+"name": "Get All Upcoming Events",
+"request": {
+"method": "GET",
+"header": [],
+"url": {
+"raw": "{{baseUrl}}/upcoming-events",
+"host": [
+"{{baseUrl}}"
+],
+"path": [
+"upcoming-events"
+]
+},
+"description": "Get all upcoming events (Public)."
+},
+"response": []
+},
+{
+"name": "Get Upcoming Event by ID",
+"request": {
+"method": "GET",
+"header": [],
+"url": {
+"raw": "{{baseUrl}}/upcoming-events/{{upcomingEventId}}",
+"host": [
+"{{baseUrl}}"
+],
+"path": [
+"upcoming-events",
+"{{upcomingEventId}}"
+]
+},
+"description": "Get upcoming event details by ID (Public)."
+},
+"response": []
+},
+{
+"name": "Update Upcoming Event",
+"request": {
+"method": "PATCH",
+"header": [
+{
+"key": "Authorization",
+"value": "Bearer {{accessToken}}"
+}
+],
+"body": {
+"mode": "formdata",
+"formdata": [
+{
+"key": "name",
+"value": "Updated Coffee Festival 2024",
+"type": "text"
+},
+{
+"key": "image",
+"type": "file",
+"src": []
+}
+]
+},
+"url": {
+"raw": "{{baseUrl}}/upcoming-events/{{upcomingEventId}}",
+"host": [
+"{{baseUrl}}"
+],
+"path": [
+"upcoming-events",
+"{{upcomingEventId}}"
+]
+},
+"description": "Update an upcoming event (Admin only). Supports updating fields and icons."
+},
+"response": []
+},
+{
+"name": "Delete Upcoming Event",
+"request": {
+"method": "DELETE",
+"header": [
+{
+"key": "Authorization",
+"value": "Bearer {{accessToken}}"
+}
+],
+"url": {
+"raw": "{{baseUrl}}/upcoming-events/{{upcomingEventId}}",
+"host": [
+"{{baseUrl}}"
+],
+"path": [
+"upcoming-events",
+"{{upcomingEventId}}"
+]
+},
+"description": "Delete an upcoming event (Admin only)."
+},
+"response": []
+}
+]
+}
+,
+{
+"name": "Car Plates",
+"item": [
+{
+"name": "Create Car Plate",
+"request": {
+"method": "POST",
+"header": [
+{
+"key": "Content-Type",
+"value": "application/json"
+},
+{
+"key": "Authorization",
+"value": "Bearer {{accessToken}}"
+}
+],
+"body": {
+"mode": "raw",
+"raw": "{\n  \"carNumberSource\": \"Dubai\",\n  \"plateCode\": \"ABC123\"\n}"
+},
+"url": {
+"raw": "{{baseUrl}}/car-plates",
+"host": [
+"{{baseUrl}}"
+],
+"path": [
+"car-plates"
+]
+},
+"description": "Create a new car plate for the authenticated customer."
+},
+"response": []
+},
+{
+"name": "Get All Car Plates",
+"request": {
+"method": "GET",
+"header": [
+{
+"key": "Authorization",
+"value": "Bearer {{accessToken}}"
+}
+],
+"url": {
+"raw": "{{baseUrl}}/car-plates",
+"host": [
+"{{baseUrl}}"
+],
+"path": [
+"car-plates"
+]
+},
+"description": "Get all car plates for the authenticated customer."
+},
+"response": []
+},
+{
+"name": "Get Car Plate by ID",
+"request": {
+"method": "GET",
+"header": [
+{
+"key": "Authorization",
+"value": "Bearer {{accessToken}}"
+}
+],
+"url": {
+"raw": "{{baseUrl}}/car-plates/{{carPlateId}}",
+"host": [
+"{{baseUrl}}"
+],
+"path": [
+"car-plates",
+"{{carPlateId}}"
+]
+},
+"description": "Get a specific car plate by ID for the authenticated customer."
+},
+"response": []
+},
+{
+"name": "Update Car Plate",
+"request": {
+"method": "PATCH",
+"header": [
+{
+"key": "Content-Type",
+"value": "application/json"
+},
+{
+"key": "Authorization",
+"value": "Bearer {{accessToken}}"
+}
+],
+"body": {
+"mode": "raw",
+"raw": "{\n  \"carNumberSource\": \"Abu Dhabi\",\n  \"plateCode\": \"XYZ789\"\n}"
+},
+"url": {
+"raw": "{{baseUrl}}/car-plates/{{carPlateId}}",
+"host": [
+"{{baseUrl}}"
+],
+"path": [
+"car-plates",
+"{{carPlateId}}"
+]
+},
+"description": "Update a car plate for the authenticated customer."
+},
+"response": []
+},
+{
+"name": "Delete Car Plate",
+"request": {
+"method": "DELETE",
+"header": [
+{
+"key": "Authorization",
+"value": "Bearer {{accessToken}}"
+}
+],
+"url": {
+"raw": "{{baseUrl}}/car-plates/{{carPlateId}}",
+"host": [
+"{{baseUrl}}"
+],
+"path": [
+"car-plates",
+"{{carPlateId}}"
+]
+},
+"description": "Delete a car plate for the authenticated customer."
+},
+"response": []
 }
 ]
 }
