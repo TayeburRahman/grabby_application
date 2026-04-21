@@ -67,7 +67,8 @@ const getPromoCodesSchema = z.object({
 const validatePromoCodeSchema = z.object({
   body: z.object({
     code: z.string({ required_error: 'Code is required' }).min(1, 'Code cannot be empty'),
-    branchId: z.string({ required_error: 'Branch ID is required' }).regex(/^[0-9a-fA-F]{24}$/, 'Invalid ObjectId'),
+    shopOwnerId: z.string({ required_error: 'Shop Owner ID is required' }).regex(/^[0-9a-fA-F]{24}$/, 'Invalid ObjectId'),
+    menuId: z.string({ required_error: 'Menu ID is required' }).regex(/^[0-9a-fA-F]{24}$/, 'Invalid ObjectId'),
   }),
 });
 

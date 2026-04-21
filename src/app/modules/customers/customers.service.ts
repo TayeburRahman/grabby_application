@@ -142,8 +142,16 @@ const processBranchData = (branch: any, lat?: number, lon?: number) => {
  * Sorts branches by proximity to the customer if coordinates are provided 
  */
 
-const getBranchesForCustomer = async (lat?: number, lon?: number) => {
-  const branches = await Branch.find({}).populate("shopOwnerId", "shop_name shop_logo profile_image");
+const getBranchesForCustomer = async (lat?: number, lon?: number, searchTerm?: string) => {
+  let filter: any = {};
+  if (searchTerm) {
+    filter.$or = [
+      { branch_name: { $regex: searchTerm, $options: "i" } },
+      { address: { $regex: searchTerm, $options: "i" } },
+    ];
+  }
+
+  const branches = await Branch.find(filter).populate("shopOwnerId", "shop_name shop_logo profile_image");
 
   const processedBranches = branches.map((branch: any) => processBranchData(branch, lat, lon));
 

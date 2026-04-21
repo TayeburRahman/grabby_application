@@ -2,11 +2,12 @@ import httpStatus from 'http-status';
 import ApiError from '../../../errors/ApiError';
 import { PromoCode } from './promo_code.model';
 import { Branch } from '../shop_owner/shop_owner.model';
+import { Menu } from '../menu/menu.model';
 import mongoose from 'mongoose';
 
 const createPromoCode = async (userId: string, payload: any) => {
   if (Array.isArray(payload)) {
-    console.log("== Bulk Creation ==", )
+    console.log("== Bulk Creation ==",)
     // Bulk creation
     const promoCodesToCreate = [];
 
@@ -129,25 +130,48 @@ const getPromoCodes = async (query: any) => {
   return promoCodes;
 };
 
-const validatePromoCode = async (code: string, branchId: string) => {
-
+const validatePromoCode = async (code: string, shopOwnerId: string, menuId: string) => {
   try {
-    const id = new mongoose.Types.ObjectId(branchId);
+    const id = new mongoose.Types.ObjectId(shopOwnerId);
+
+    // Fetch menu to get the price
+    const menu = await Menu.findById(menuId);
+    if (!menu) {
+      throw new ApiError(httpStatus.NOT_FOUND, 'Menu item not found');
+    }
+
+    const menuPrice = menu.price;
+
     const promoCode = await PromoCode.findOne({
       code: code,
-      status: "active",
-      branchIds: { $in: [id] }
+      status: 'active',
+      shopOwnerId: id,
     });
 
+    if (!promoCode) {
+      return {
+        isValid: false,
+        message: 'Promo code is not valid or inactive',
+      };
+    }
+
+    const discountAmount = (menuPrice * (promoCode.discountPercent || 0)) / 100;
+    const finalPrice = menuPrice - discountAmount;
+
     return {
-      isValid: !!promoCode,
-      code: promoCode?.code || null,
-      status: promoCode?.status || null,
-      discountPercent: promoCode?.discountPercent || 0,
-      message: promoCode ? 'Promo code is valid' : 'Promo code is not valid or inactive',
+      isValid: true,
+      code: promoCode.code,
+      status: promoCode.status,
+      discountPercent: promoCode.discountPercent || 0,
+      menuId,
+      originalPrice: menuPrice,
+      discountAmount,
+      finalPrice,
+      message: 'Promo code is valid',
     };
   } catch (error) {
     console.error('Error validating promo code:', error);
+    if (error instanceof ApiError) throw error;
     throw new ApiError(httpStatus.INTERNAL_SERVER_ERROR, 'Error validating promo code');
   }
 };

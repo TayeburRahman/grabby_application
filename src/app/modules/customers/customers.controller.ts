@@ -41,6 +41,7 @@ const getBranches = catchAsync(async (req, res) => {
   // Use provided lat/lon or default to customer's saved location
   const lat = req.query.lat ? Number(req.query.lat) : (customer.lat || undefined);
   const lon = req.query.lon ? Number(req.query.lon) : (customer.lon || undefined);
+  const searchTerm = req.query.searchTerm as string;
 
   if (!lat || !lon) {
     return sendResponse(res, {
@@ -51,7 +52,7 @@ const getBranches = catchAsync(async (req, res) => {
     });
   }
 
-  const result = await CustomerService.getBranchesForCustomer(lat, lon);
+  const result = await CustomerService.getBranchesForCustomer(lat, lon, searchTerm);
 
   sendResponse(res, {
     statusCode: httpStatus.OK,
