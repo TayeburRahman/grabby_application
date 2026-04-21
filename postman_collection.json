@@ -2527,4 +2527,225 @@
 "response": []
 }
 ]
+},
+{
+"name": "Cart",
+"item": [
+{
+"name": "Add to Cart",
+"request": {
+"method": "POST",
+"header": [
+{
+"key": "Authorization",
+"value": "Bearer {{accessToken}}"
+},
+{
+"key": "Content-Type",
+"value": "application/json"
+}
+],
+"body": {
+"mode": "raw",
+"raw": "{\n  \"branchId\": \"{{branchId}}\",\n  \"productId\": \"{{menuId}}\",\n  \"productType\": \"menu\",\n  \"menuName\": \"Cappuccino Deluxe\",\n  \"menuPrice\": 22,\n  \"menuImage\": \"/images/image/cappuccino.png\",\n  \"quantity\": 1,\n  \"additionalItems\": [\n    {\n      \"itemId\": \"addon_id_1\",\n      \"name\": \"Whipped Cream\",\n      \"price\": 2.5,\n      \"image\": \"/images/image/whipped.png\",\n      \"quantity\": 1\n    }\n  ]\n}"
+},
+"url": {
+"raw": "{{baseUrl}}/cart/add",
+"host": [
+"{{baseUrl}}"
+],
+"path": [
+"cart",
+"add"
+]
+},
+"description": "Add a menu item to the customer's cart with optional additional items. Validates stamp requirements for free items."
+},
+"response": []
+},
+{
+"name": "Add Additional Item to Cart",
+"request": {
+"method": "POST",
+"header": [
+{
+"key": "Authorization",
+"value": "Bearer {{accessToken}}"
+},
+{
+"key": "Content-Type",
+"value": "application/json"
+}
+],
+"body": {
+"mode": "raw",
+"raw": "{\n  \"branchId\": \"{{branchId}}\",\n  \"productId\": \"{{menuId}}\",\n  \"productType\": \"additional_item\",\n  \"menuName\": \"Extra Cheese\",\n  \"menuPrice\": 2.5,\n  \"menuImage\": \"/images/image/cheese.png\",\n  \"quantity\": 1,\n  \"additionalItems\": []\n}"
+},
+"url": {
+"raw": "{{baseUrl}}/cart/add",
+"host": [
+"{{baseUrl}}"
+],
+"path": [
+"cart",
+"add"
+]
+},
+"description": "Add an additional item as a separate cart item. No stamp validation required."
+},
+"response": []
+},
+{
+"name": "Update Cart Item",
+"request": {
+"method": "PATCH",
+"header": [
+{
+"key": "Authorization",
+"value": "Bearer {{accessToken}}"
+},
+{
+"key": "Content-Type",
+"value": "application/json"
+}
+],
+"body": {
+"mode": "raw",
+"raw": "{\n  \"quantity\": 2,\n  \"additionalItems\": [\n    {\n      \"itemId\": \"addon_id_1\",\n      \"name\": \"Extra Milk\",\n      \"price\": 3,\n      \"image\": \"/images/image/milk.png\",\n      \"quantity\": 1\n    }\n  ]\n}"
+},
+"url": {
+"raw": "{{baseUrl}}/cart/item/{{cartItemId}}",
+"host": [
+"{{baseUrl}}"
+],
+"path": [
+"cart",
+"item",
+"{{cartItemId}}"
+]
+},
+"description": "Update quantity and additional items for a cart item (menu or additional item). Handles stamp adjustments automatically for free menu items."
+},
+"response": []
+},
+{
+"name": "Remove from Cart",
+"request": {
+"method": "DELETE",
+"header": [
+{
+"key": "Authorization",
+"value": "Bearer {{accessToken}}"
+}
+],
+"url": {
+"raw": "{{baseUrl}}/cart/item/{{cartItemId}}",
+"host": [
+"{{baseUrl}}"
+],
+"path": [
+"cart",
+"item",
+"{{cartItemId}}"
+]
+},
+"description": "Remove a menu item or additional item from the cart. Refunds stamps if the removed item was a free menu item."
+},
+"response": []
+},
+{
+"name": "Get Cart",
+"request": {
+"method": "GET",
+"header": [
+{
+"key": "Authorization",
+"value": "Bearer {{accessToken}}"
+}
+],
+"url": {
+"raw": "{{baseUrl}}/cart?branchId={{branchId}}",
+"host": [
+"{{baseUrl}}"
+],
+"path": [
+"cart"
+],
+"query": [
+{
+"key": "branchId",
+"value": "{{branchId}}",
+"disabled": false
+}
+]
+},
+"description": "Retrieve the customer's cart (including menu items and additional items) for a specific branch or all branches."
+},
+"response": []
+},
+{
+"name": "Clear Cart",
+"request": {
+"method": "DELETE",
+"header": [
+{
+"key": "Authorization",
+"value": "Bearer {{accessToken}}"
+},
+{
+"key": "Content-Type",
+"value": "application/json"
+}
+],
+"body": {
+"mode": "raw",
+"raw": "{\n  \"branchId\": \"{{branchId}}\"\n}"
+},
+"url": {
+"raw": "{{baseUrl}}/cart/clear",
+"host": [
+"{{baseUrl}}"
+],
+"path": [
+"cart",
+"clear"
+]
+},
+"description": "Clear the customer's cart (including all menu items and additional items) for a specific branch or all branches."
+},
+"response": []
+},
+{
+"name": "Get Cart Summary",
+"request": {
+"method": "GET",
+"header": [
+{
+"key": "Authorization",
+"value": "Bearer {{accessToken}}"
+}
+],
+"url": {
+"raw": "{{baseUrl}}/cart/summary?branchId={{branchId}}",
+"host": [
+"{{baseUrl}}"
+],
+"path": [
+"cart",
+"summary"
+],
+"query": [
+{
+"key": "branchId",
+"value": "{{branchId}}",
+"disabled": false
+}
+]
+},
+"description": "Get a summary of the customer's cart including menu items and additional items, with total items and amount."
+},
+"response": []
+}
+]
+}]
 }
