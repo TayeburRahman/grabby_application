@@ -22,11 +22,10 @@ const addToCart = async (customerId: string, cartData: any) => {
     const {
       branchId,
       productId,
-      productType,
       menuName,
-      menuPrice,
+      menuPrice = 0,
       menuImage,
-      quantity,
+      quantity = 0,
       additionalItems = []
     } = itemData;
 
@@ -36,58 +35,31 @@ const addToCart = async (customerId: string, cartData: any) => {
       throw new ApiError(httpStatus.NOT_FOUND, `Branch not found: ${branchId}`);
     }
 
-    // Validate menu item exists if productType is 'menu' 
+    // Validate menu item exists
     let menuStamps = 0;
-    if (productType === 'menu') {
-      const menu = await Menu.findById(productId);
-      if (!menu) {
-        throw new ApiError(httpStatus.NOT_FOUND, 'Menu item not found');
-      }
-      if (!menu.isAvailable) {
-        throw new ApiError(httpStatus.BAD_REQUEST, 'Menu item is not available');
-      }
+    const menu = await Menu.findById(productId);
+    if (!menu) {
+      throw new ApiError(httpStatus.NOT_FOUND, 'Menu item not found');
+    }
+    if (!menu.isAvailable) {
+      throw new ApiError(httpStatus.BAD_REQUEST, 'Menu item is not available');
+    }
 
-      menuStamps = menu.stamp || 0;
+    menuStamps = menu.stamp || 0;
 
-      // Check if item can be taken for free
-      if (menuPrice === 0 && menuStamps === 0) {
-        throw new ApiError(httpStatus.BAD_REQUEST, 'This menu item cannot be taken for free');
-      }
-
-      // If price is 0, check customer stamps
-      if (menuPrice === 0 && menuStamps > 0) {
-        const customerStampData = await CustomerStampService.getCustomerStampsByBranch(
-          customer.authId.toString(),
-          branchId
+    // If price is 0 and it's a menu item (quantity > 0), check stamps
+    if (quantity > 0 && menuPrice === 0 && menuStamps > 0) {
+      const customerStampData = await CustomerStampService.getCustomerStampsByBranch(
+        customer.authId.toString(),
+        branchId
+      );
+      const customerTotalStamps = customerStampData.totalStamps || 0;
+      if (customerTotalStamps < menuStamps) {
+        throw new ApiError(
+          httpStatus.BAD_REQUEST,
+          `Insufficient stamps. Required: ${menuStamps}, Available: ${customerTotalStamps}`
         );
-        const customerTotalStamps = customerStampData.totalStamps || 0;
-        if (customerTotalStamps < menuStamps) {
-          throw new ApiError(
-            httpStatus.BAD_REQUEST,
-            `Insufficient stamps. Required: ${menuStamps}, Available: ${customerTotalStamps}`
-          );
-        }
       }
-    } else if (productType === 'additional_item') {
-      const menu = await Menu.findById(productId);
-      if (!menu) {
-        throw new ApiError(httpStatus.NOT_FOUND, 'Menu not found');
-      }
-      if (!menu.isAvailable) {
-        throw new ApiError(httpStatus.BAD_REQUEST, 'Menu is not available');
-      }
-
-      // Find the additional item
-      const additionalItem = menu.additionalItems?.flatMap(group => group.items).find(item => item.name === menuName);
-      if (!additionalItem) {
-        throw new ApiError(httpStatus.NOT_FOUND, 'Additional item not found in menu');
-      }
-      if (additionalItem.price !== menuPrice) {
-        throw new ApiError(httpStatus.BAD_REQUEST, 'Price mismatch for additional item');
-      }
-
-      // No stamps for additional items
-      menuStamps = 0;
     }
 
     // Find or create cart for this customer and branch
@@ -104,31 +76,73 @@ const addToCart = async (customerId: string, cartData: any) => {
     }
 
     // Calculate total price for this item
-    let totalPrice = menuPrice * quantity;
+    let totalPrice = (menuPrice || 0) * (quantity || 0);
 
     // Add additional items price
     for (const additionalItem of additionalItems) {
       totalPrice += additionalItem.price * additionalItem.quantity;
     }
 
-    // Always add as a new item to ensure different objects for all menu items and additional items
-    const newItem: ICartItem = {
-      customerId: customerId as any,
-      branchId: branchId as any,
-      productId: productId as any,
-      productType,
-      menuName,
-      menuPrice,
-      menuImage,
-      quantity,
-      additionalItems,
-      totalPrice,
-    };
+    // Check if item already exists in cart
+    const existingItem = cart.items.find(
+      (item) => item.productId && item.productId.equals(productId)
+    );
 
-    cart.items.push(newItem);
+    if (existingItem) {
+      // Update existing item details if provided
+      if (menuName) existingItem.menuName = menuName;
+      if (menuPrice !== undefined) existingItem.menuPrice = menuPrice;
+      if (menuImage) existingItem.menuImage = menuImage;
+      
+      // Update quantity
+      existingItem.quantity = (existingItem.quantity || 0) + (quantity || 0);
 
-    // Deduct stamps if price is 0
-    if (menuPrice === 0 && menuStamps > 0) {
+      // Merge additional items
+      if (additionalItems && additionalItems.length > 0) {
+        if (!existingItem.additionalItems) {
+          existingItem.additionalItems = [];
+        }
+
+        for (const newAddon of additionalItems) {
+          const existingAddon = existingItem.additionalItems.find(
+            (addon) => addon.itemId && addon.itemId.toString() === newAddon.itemId.toString()
+          );
+
+          if (existingAddon) {
+            existingAddon.quantity = (existingAddon.quantity || 0) + (newAddon.quantity || 0);
+          } else {
+            existingItem.additionalItems.push(newAddon);
+          }
+        }
+      }
+
+      // Recalculate total price for the updated item
+      let updatedItemTotalPrice = (existingItem.menuPrice || 0) * (existingItem.quantity || 0);
+      for (const addon of existingItem.additionalItems || []) {
+        updatedItemTotalPrice += (addon.price || 0) * (addon.quantity || 0);
+      }
+      existingItem.totalPrice = updatedItemTotalPrice;
+      
+      // Mark items array as modified to ensure Mongoose saves changes to subdocuments
+      cart.markModified('items');
+    } else {
+      // Add as a new item if not exists
+      const newItem: ICartItem = {
+        customerId: customerId as any,
+        branchId: branchId as any,
+        productId: productId as any,
+        menuName,
+        menuPrice,
+        menuImage,
+        quantity,
+        additionalItems,
+        totalPrice: totalPrice,
+      };
+      cart.items.push(newItem);
+    }
+
+    // Deduct stamps if price is 0 and quantity > 0
+    if (quantity > 0 && menuPrice === 0 && menuStamps > 0) {
       await CustomerStampService.addStamp(
         customer.authId.toString(),
         branchId,
@@ -137,7 +151,7 @@ const addToCart = async (customerId: string, cartData: any) => {
     }
 
     // Update cart totals
-    cart.totalItems = cart.items.reduce((sum, item) => sum + item.quantity, 0);
+    cart.totalItems = cart.items.reduce((sum, item) => sum + (item.quantity || 0) + (item.additionalItems?.length || 0), 0);
     cart.totalAmount = cart.items.reduce((sum, item) => sum + item.totalPrice, 0);
 
     await cart.save();
@@ -166,52 +180,76 @@ const updateCartItem = async (customerId: string, itemId: string, updateData: an
   if (quantity === 0) {
     // Remove item if quantity is 0
     // Refund stamps if item price is 0
-    if (item.menuPrice === 0 && item.productType === 'menu') {
+    if ((item.menuPrice || 0) === 0) {
       const menu = await Menu.findById(item.productId);
       if (menu && menu.stamp && menu.stamp > 0) {
         await CustomerStampService.addStamp(
           customer?.authId.toString() || customerId,
           cart.branchId.toString(),
-          item.quantity * menu.stamp
+          (item.quantity || 0) * menu.stamp
         );
       }
     }
     cart.items.splice(itemIndex, 1);
   } else {
-    const oldQuantity = item.quantity;
-    const quantityDifference = quantity - oldQuantity;
+    // Only update main item quantity and handle stamps if quantity is provided
+    if (quantity !== undefined) {
+      const oldQuantity = item.quantity || 0;
+      const quantityDifference = quantity - oldQuantity;
 
-    // Update quantity
-    item.quantity = quantity;
+      // Update quantity
+      item.quantity = quantity;
 
-    // Handle stamp adjustments for free items
-    if (item.menuPrice === 0 && item.productType === 'menu' && quantityDifference !== 0) {
-      const menu = await Menu.findById(item.productId);
-      if (menu && menu.stamp && menu.stamp > 0) {
-        // Negative value = deduct stamps, Positive value = refund stamps
-        await CustomerStampService.addStamp(
-          customer?.authId.toString() || customerId,
-          cart.branchId.toString(),
-          -(quantityDifference * menu.stamp)
-        );
+      // Handle stamp adjustments for free items
+      if ((item.menuPrice || 0) === 0 && quantityDifference !== 0) {
+        const menu = await Menu.findById(item.productId);
+        if (menu && menu.stamp && menu.stamp > 0) {
+          // Negative value = deduct stamps, Positive value = refund stamps
+          await CustomerStampService.addStamp(
+            customer?.authId.toString() || customerId,
+            cart.branchId.toString(),
+            -(quantityDifference * menu.stamp)
+          );
+        }
       }
     }
 
     // Update additional items if provided
-    if (additionalItems) {
-      item.additionalItems = additionalItems;
+    if (additionalItems && Array.isArray(additionalItems)) {
+      if (!item.additionalItems) {
+        item.additionalItems = [];
+      }
+
+      for (const updateAddon of additionalItems) {
+        const existingAddon = item.additionalItems.find(
+          (addon) => addon.itemId && addon.itemId.toString() === updateAddon.itemId.toString()
+        );
+
+        if (existingAddon) {
+          // Update quantity and any other provided fields
+          if (updateAddon.quantity !== undefined) existingAddon.quantity = updateAddon.quantity;
+          if (updateAddon.name) existingAddon.name = updateAddon.name;
+          if (updateAddon.price !== undefined) existingAddon.price = updateAddon.price;
+          if (updateAddon.image) existingAddon.image = updateAddon.image;
+        } else {
+          // If it's a new addon, we need name and price to add it safely
+          if (updateAddon.name && updateAddon.price !== undefined) {
+            item.additionalItems.push(updateAddon);
+          }
+        }
+      }
     }
 
     // Recalculate total price
-    let totalPrice = item.menuPrice * item.quantity;
+    let totalPrice = (item.menuPrice || 0) * (item.quantity || 0);
     for (const additionalItem of item.additionalItems || []) {
-      totalPrice += additionalItem.price * (additionalItem.quantity || 1);
+      totalPrice += (additionalItem.price || 0) * (additionalItem.quantity || 0);
     }
     item.totalPrice = totalPrice;
   }
 
   // Update cart totals
-  cart.totalItems = cart.items.reduce((sum, item) => sum + item.quantity, 0);
+  cart.totalItems = cart.items.reduce((sum, item) => sum + (item.quantity || 0) + (item.additionalItems?.length || 0), 0);
   cart.totalAmount = cart.items.reduce((sum, item) => sum + item.totalPrice, 0);
 
   await cart.save();
@@ -231,15 +269,15 @@ const removeFromCart = async (customerId: string, itemId: string) => {
 
   const removedItem = cart.items[itemIndex];
   const customer = await Customer.findById(customerId);
-  
+
   // Refund stamps if item price is 0
-  if (removedItem.menuPrice === 0 && removedItem.productType === 'menu') {
+  if ((removedItem.menuPrice || 0) === 0) {
     const menu = await Menu.findById(removedItem.productId);
     if (menu && menu.stamp && menu.stamp > 0) {
       await CustomerStampService.addStamp(
         customer?.authId.toString() || customerId,
         cart.branchId.toString(),
-        removedItem.quantity * menu.stamp
+        (removedItem.quantity || 0) * menu.stamp
       );
     }
   }
@@ -247,7 +285,7 @@ const removeFromCart = async (customerId: string, itemId: string) => {
   cart.items.splice(itemIndex, 1);
 
   // Update cart totals
-  cart.totalItems = cart.items.reduce((sum, item) => sum + item.quantity, 0);
+  cart.totalItems = cart.items.reduce((sum, item) => sum + (item.quantity || 0) + (item.additionalItems?.length || 0), 0);
   cart.totalAmount = cart.items.reduce((sum, item) => sum + item.totalPrice, 0);
 
   await cart.save();
@@ -291,7 +329,6 @@ const getCartSummary = async (customerId: string, branchId?: string) => {
     totalAmount: cart.totalAmount,
     items: cart.items.map(item => ({
       productId: item.productId,
-      productType: item.productType,
       menuName: item.menuName,
       quantity: item.quantity,
       totalPrice: item.totalPrice,

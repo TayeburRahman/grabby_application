@@ -4,12 +4,11 @@ export interface ICartItem {
   _id?: Types.ObjectId;
   customerId: Types.ObjectId;
   branchId: Types.ObjectId;
-  productId: Types.ObjectId; // Menu ID or Additional Item ID
-  productType: 'menu' | 'additional_item';
-  menuName: string;
-  menuPrice: number;
+  productId: Types.ObjectId; // Menu ID
+  menuName?: string;
+  menuPrice?: number;
   menuImage?: string;
-  quantity: number;
+  quantity?: number;
   additionalItems?: ICartAdditionalItem[];
   totalPrice: number;
   createdAt?: Date;

@@ -16,12 +16,11 @@ const cartItemSchema = new Schema(
   {
     customerId: { type: Schema.Types.ObjectId, ref: 'Customer', required: true },
     branchId: { type: Schema.Types.ObjectId, ref: 'Branch', required: true },
-    productId: { type: Schema.Types.ObjectId, required: true }, // Menu ID or Additional Item ID
-    productType: { type: String, enum: ['menu', 'additional_item'], required: true },
-    menuName: { type: String, required: true },
-    menuPrice: { type: Number, required: true },
+    productId: { type: Schema.Types.ObjectId, required: true }, // Menu ID or Additional Item ID 
+    menuName: { type: String, required: false },
+    menuPrice: { type: Number, required: false },
     menuImage: { type: String, default: null },
-    quantity: { type: Number, required: true, default: 1 },
+    quantity: { type: Number, required: false, default: 0 },
     additionalItems: { type: [cartAdditionalItemSchema], default: [] },
     totalPrice: { type: Number, required: true },
   },
