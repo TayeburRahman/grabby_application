@@ -74,9 +74,9 @@ const getPromoCodesCustomer = catchAsync(async (req: Request, res: Response) => 
 });
 
 const validatePromoCode = catchAsync(async (req: Request, res: Response) => {
-  const { code, shopOwnerId, menuId } = req.body;
+  const { code, shopOwnerId, cartId } = req.body;
 
-  const result = await PromoCodeService.validatePromoCode(code, shopOwnerId, menuId);
+  const result = await PromoCodeService.validatePromoCode(code, shopOwnerId, cartId);
   sendResponse(res, {
     statusCode: 200,
     success: true,

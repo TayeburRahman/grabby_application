@@ -4,6 +4,7 @@ import { PromoCode } from './promo_code.model';
 import { Branch } from '../shop_owner/shop_owner.model';
 import { Menu } from '../menu/menu.model';
 import mongoose from 'mongoose';
+import { Cart } from '../cart/cart.model';
 
 const createPromoCode = async (userId: string, payload: any) => {
   if (Array.isArray(payload)) {
@@ -130,17 +131,17 @@ const getPromoCodes = async (query: any) => {
   return promoCodes;
 };
 
-const validatePromoCode = async (code: string, shopOwnerId: string, menuId: string) => {
+const validatePromoCode = async (code: string, shopOwnerId: string, cartId: string) => {
   try {
     const id = new mongoose.Types.ObjectId(shopOwnerId);
 
-    // Fetch menu to get the price
-    const menu = await Menu.findById(menuId);
-    if (!menu) {
-      throw new ApiError(httpStatus.NOT_FOUND, 'Menu item not found');
+    // Fetch cart to get the total amount
+    const cart = await Cart.findById(cartId);
+    if (!cart) {
+      throw new ApiError(httpStatus.NOT_FOUND, 'Cart not found');
     }
 
-    const menuPrice = menu.price;
+    const totalAmount = cart.totalAmount;
 
     const promoCode = await PromoCode.findOne({
       code: code,
@@ -155,16 +156,16 @@ const validatePromoCode = async (code: string, shopOwnerId: string, menuId: stri
       };
     }
 
-    const discountAmount = (menuPrice * (promoCode.discountPercent || 0)) / 100;
-    const finalPrice = menuPrice - discountAmount;
+    const discountAmount = (totalAmount * (promoCode.discountPercent || 0)) / 100;
+    const finalPrice = totalAmount - discountAmount;
 
     return {
       isValid: true,
       code: promoCode.code,
       status: promoCode.status,
       discountPercent: promoCode.discountPercent || 0,
-      menuId,
-      originalPrice: menuPrice,
+      cartId,
+      originalPrice: totalAmount,
       discountAmount,
       finalPrice,
       message: 'Promo code is valid',

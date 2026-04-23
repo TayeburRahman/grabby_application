@@ -56,6 +56,11 @@
 "type": "string"
 },
 {
+"key": "orderId",
+"value": "",
+"type": "string"
+},
+{
 "key": "carPlateId",
 "value": "",
 "type": "string"
@@ -2216,7 +2221,7 @@
 ],
 "body": {
 "mode": "raw",
-"raw": "{\n  \"code\": \"SUMMER2024\",\n  \"branchId\": \"{{branchId}}\"\n}"
+"raw": "{\n  \"code\": \"SUMMER206\",\n  \"shopOwnerId\": \"69abd78b7cd774b6e0a41acd\",\n  \"cartId\": \"69d5f102f11015b5775a9501\"\n}"
 },
 "url": {
 "raw": "{{baseUrl}}/promo-code/validate",
@@ -2744,8 +2749,184 @@
 },
 "description": "Get a summary of the customer's cart including menu items and additional items, with total items and amount."
 },
-"response": []
-}
+      }
+    ]
+  },
+  {
+    "name": "Order",
+    "item": [
+      {
+        "name": "Create Order",
+        "request": {
+          "method": "POST",
+          "header": [
+            {
+              "key": "Authorization",
+              "value": "Bearer {{accessToken}}"
+            },
+            {
+              "key": "Content-Type",
+              "value": "application/json"
+            }
+          ],
+          "body": {
+            "mode": "raw",
+            "raw": "{\n  \"branchId\": \"{{branchId}}\",\n  \"items\": [\n    {\n      \"productId\": \"{{menuId}}\",\n      \"menuName\": \"Cappuccino Deluxe\",\n      \"menuPrice\": 22,\n      \"menuImage\": \"/images/image/cappuccino.png\",\n      \"quantity\": 1,\n      \"additionalItems\": [\n        {\n          \"itemId\": \"69abda42ddcc21dbd181cca9\",\n          \"name\": \"Whipped Cream\",\n          \"price\": 2.5,\n          \"quantity\": 1\n        }\n      ],\n      \"totalPrice\": 24.5\n    }\n  ],\n  \"pickupType\": \"carPickup\",\n  \"applyGrabbyCredit\": 0,\n  \"applyPromoCode\": 0,\n  \"totalAmount\": 24.5,\n  \"paymentMethod\": \"Credit Card\",\n  \"carPlates\": \"DXB 12345\",\n  \"transactionId\": \"6478ytwefgfwe456743654\"\n}"
+          },
+          "url": {
+            "raw": "{{baseUrl}}/orders",
+            "host": [
+              "{{baseUrl}}"
+            ],
+            "path": [
+              "orders"
+            ]
+          },
+          "description": "Create a new order from cart items. Defaults payment status to paid."
+        },
+        "response": []
+      },
+      {
+        "name": "Get My Orders",
+        "request": {
+          "method": "GET",
+          "header": [
+            {
+              "key": "Authorization",
+              "value": "Bearer {{accessToken}}"
+            }
+          ],
+          "url": {
+            "raw": "{{baseUrl}}/orders/my-orders?status=placed&page=1&limit=10",
+            "host": [
+              "{{baseUrl}}"
+            ],
+            "path": [
+              "orders",
+              "my-orders"
+            ],
+            "query": [
+              {
+                "key": "status",
+                "value": "placed",
+                "disabled": false
+              },
+              {
+                "key": "page",
+                "value": "1",
+                "disabled": false
+              },
+              {
+                "key": "limit",
+                "value": "10",
+                "disabled": false
+              }
+            ]
+          },
+          "description": "Get all orders for the current customer."
+        },
+        "response": []
+      },
+      {
+        "name": "Get Branch Orders",
+        "request": {
+          "method": "GET",
+          "header": [
+            {
+              "key": "Authorization",
+              "value": "Bearer {{accessToken}}"
+            }
+          ],
+          "url": {
+            "raw": "{{baseUrl}}/orders/branch/{{branchId}}?status=placed&page=1&limit=10",
+            "host": [
+              "{{baseUrl}}"
+            ],
+            "path": [
+              "orders",
+              "branch",
+              "{{branchId}}"
+            ],
+            "query": [
+              {
+                "key": "status",
+                "value": "placed",
+                "disabled": false
+              },
+              {
+                "key": "page",
+                "value": "1",
+                "disabled": false
+              },
+              {
+                "key": "limit",
+                "value": "10",
+                "disabled": false
+              }
+            ]
+          },
+          "description": "Get all orders for a specific branch (Shop Owner/Admin)."
+        },
+        "response": []
+      },
+      {
+        "name": "Get Order Details",
+        "request": {
+          "method": "GET",
+          "header": [
+            {
+              "key": "Authorization",
+              "value": "Bearer {{accessToken}}"
+            }
+          ],
+          "url": {
+            "raw": "{{baseUrl}}/orders/{{orderId}}",
+            "host": [
+              "{{baseUrl}}"
+            ],
+            "path": [
+              "orders",
+              "{{orderId}}"
+            ]
+          },
+          "description": "Get details of a specific order."
+        },
+        "response": []
+      },
+      {
+        "name": "Update Order Status",
+        "request": {
+          "method": "PATCH",
+          "header": [
+            {
+              "key": "Authorization",
+              "value": "Bearer {{accessToken}}"
+            },
+            {
+              "key": "Content-Type",
+              "value": "application/json"
+            }
+          ],
+          "body": {
+            "mode": "raw",
+            "raw": "{\n  \"status\": \"preparing\"\n}"
+          },
+          "url": {
+            "raw": "{{baseUrl}}/orders/{{orderId}}/status",
+            "host": [
+              "{{baseUrl}}"
+            ],
+            "path": [
+              "orders",
+              "{{orderId}}",
+              "status"
+            ]
+          },
+          "description": "Update the status of an order."
+        },
+        "response": []
+      }
+    ]
+  }
 ]
-}]
 }
