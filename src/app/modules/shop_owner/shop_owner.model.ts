@@ -57,6 +57,10 @@ const ShopOwnerSchema = new Schema<IShopOwner>(
       enum: ["active", "deactivate"],
       default: "active",
     },
+    isRewardPointEnabled: {
+      type: Boolean,
+      default: true,
+    },
   },
   {
     timestamps: true,

@@ -141,6 +141,18 @@ const updateBranchAvailability = catchAsync(async (req: Request, res: Response) 
   });
 });
 
+// ─── Toggle Reward Points ──────────────────────────────────────────
+const toggleRewardPoints = catchAsync(async (req: Request, res: Response) => {
+  const { userId } = req.user as IReqUser;
+  const result = await ShopOwnerService.toggleRewardPoints(userId);
+  sendResponse(res, {
+    statusCode: 200,
+    success: true,
+    message: `Reward points feature is now ${result.isRewardPointEnabled ? 'enabled' : 'disabled'}.`,
+    data: result,
+  });
+});
+
 export const ShopOwnerController = {
   saveLocation,
   saveBusinessInfo,
@@ -153,4 +165,5 @@ export const ShopOwnerController = {
   deleteBranch,
   updateBranch,
   updateBranchAvailability,
+  toggleRewardPoints,
 };

@@ -291,6 +291,19 @@ const getBranchDetails = async (userId: string, branchId: string) => {
   return branch;
 };
 
+// ─── Toggle Reward Points ──────────────────────────────────────────
+const toggleRewardPoints = async (userId: string) => {
+  const shopOwner = await ShopOwner.findById(userId);
+  if (!shopOwner) {
+    throw new ApiError(httpStatus.NOT_FOUND, "Shop owner not found");
+  }
+
+  shopOwner.isRewardPointEnabled = !shopOwner.isRewardPointEnabled;
+  await shopOwner.save();
+
+  return shopOwner;
+};
+
 export const ShopOwnerService = {
   saveLocation,
   saveBusinessInfo,
@@ -303,4 +316,5 @@ export const ShopOwnerService = {
   updateBranchAvailability,
   getAllBranches,
   getBranchDetails,
+  toggleRewardPoints,
 };

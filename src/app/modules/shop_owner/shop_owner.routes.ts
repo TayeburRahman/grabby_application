@@ -48,6 +48,13 @@ router.patch(
   ShopOwnerController.updateProfile
 );
 
+// ─── Toggle Reward Points ──────────────────────────────────────────
+router.patch(
+  "/reward-points/toggle",
+  auth(ENUM_USER_ROLE.SHOP_OWNER),
+  ShopOwnerController.toggleRewardPoints
+);
+
 // ─── Branch Management ─────────────────────────────────────────────
 router.post(
   "/branch",

@@ -3,6 +3,8 @@ import ApiError from '../../../errors/ApiError';
 import { IOrder } from './order.interface';
 import { Order } from './order.model';
 import { Cart } from '../cart/cart.model';
+import CustomerStamp from '../customer_stamps/customer_stamps.model';
+import { Branch } from '../shop_owner/shop_owner.model';
 import QueryBuilder from '../../../builder/QueryBuilder';
 
 const generateOrderId = async (): Promise<string> => {
@@ -35,6 +37,23 @@ const createOrder = async (customerId: string, payload: Partial<IOrder>) => {
   // Clear cart after successful order
   if (result) {
     await Cart.deleteMany({ customerId, branchId: payload.branchId });
+
+    // Calculate and add earned points (stamps) for the shop
+    // 2 points for every 5 total price
+    const earnedPoints = Math.floor((payload.totalAmount || 0) / 5) * 2;
+    if (earnedPoints > 0) {
+      // Check if the shop owner has reward points enabled
+      const branch = await Branch.findById(payload.branchId).populate('shopOwnerId');
+      const isRewardEnabled = branch && (branch.shopOwnerId as any)?.isRewardPointEnabled !== false;
+
+      if (isRewardEnabled) {
+        await CustomerStamp.findOneAndUpdate(
+          { customer: customerId, branch: payload.branchId },
+          { $inc: { totalStamps: earnedPoints } },
+          { upsert: true, new: true }
+        );
+      }
+    }
   }
 
   return result;

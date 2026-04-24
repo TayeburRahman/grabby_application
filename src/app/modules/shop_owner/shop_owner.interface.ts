@@ -51,6 +51,7 @@ export type IShopOwner = Document & {
   approval_status: "pending" | "approved" | "rejected";
 
   status: "active" | "deactivate";
+  isRewardPointEnabled?: boolean;
   createdAt?: Date;
   updatedAt?: Date;
 };
