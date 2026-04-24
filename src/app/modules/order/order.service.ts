@@ -3,7 +3,7 @@ import ApiError from '../../../errors/ApiError';
 import { IOrder } from './order.interface';
 import { Order } from './order.model';
 import { Cart } from '../cart/cart.model';
-import CustomerStamp from '../customer_stamps/customer_stamps.model';
+import Customer from '../customers/customers.model';
 import { Branch } from '../shop_owner/shop_owner.model';
 import QueryBuilder from '../../../builder/QueryBuilder';
 
@@ -47,10 +47,9 @@ const createOrder = async (customerId: string, payload: Partial<IOrder>) => {
       const isRewardEnabled = branch && (branch.shopOwnerId as any)?.isRewardPointEnabled !== false;
 
       if (isRewardEnabled) {
-        await CustomerStamp.findOneAndUpdate(
-          { customer: customerId, branch: payload.branchId },
-          { $inc: { totalStamps: earnedPoints } },
-          { upsert: true, new: true }
+        await Customer.findByIdAndUpdate(
+          customerId,
+          { $inc: { pointWallet: earnedPoints } }
         );
       }
     }

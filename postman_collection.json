@@ -1,2932 +1,2858 @@
 {
-"info": {
-"name": "Ayah Almheiri Backend API",
-"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
-"description": "Complete API collection for Ayah Almheiri mobile café ordering platform."
-},
-"variable": [
-{
-"key": "baseUrl",
-"value": "http://localhost:5000",
-"type": "string"
-},
-{
-"key": "accessToken",
-"value": "",
-"type": "string"
-},
-{
-"key": "shopOwnerId",
-"value": "",
-"type": "string"
-},
-{
-"key": "branchId",
-"value": "",
-"type": "string"
-},
-{
-"key": "adminId",
-"value": "",
-"type": "string"
-},
-{
-"key": "customerId",
-"value": "",
-"type": "string"
-},
-{
-"key": "menuId",
-"value": "",
-"type": "string"
-},
-{
-"key": "menuCategoryId",
-"value": "",
-"type": "string"
-},
-{
-"key": "eventOfferId",
-"value": "",
-"type": "string"
-},
-{
-"key": "promoCodeId",
-"value": "",
-"type": "string"
-},
-{
-"key": "orderId",
-"value": "",
-"type": "string"
-},
-{
-"key": "carPlateId",
-"value": "",
-"type": "string"
-},
-{
-"key": "upcomingEventId",
-"value": "",
-"type": "string"
-}
-],
-"item": [
-{
-"name": "Auth",
-"item": [
-{
-"name": "Register Customer",
-"request": {
-"method": "POST",
-"header": [
-{
-"key": "Content-Type",
-"value": "application/json"
-}
-],
-"body": {
-"mode": "raw",
-"raw": "{\n  \"name\": \"John Doe\",\n  \"email\": \"customer@example.com\",\n  \"phone_number\": \"+971501234567\",\n  \"password\": \"password123\",\n  \"confirmPassword\": \"password123\",\n  \"termsAccepted\": true\n}"
-},
-"url": {
-"raw": "{{baseUrl}}/auth/customer/register",
-"host": [
-"{{baseUrl}}"
-],
-"path": [
-"auth",
-"customer",
-"register"
-]
-},
-"description": "Register a new customer account. Sends OTP to email."
-},
-"response": []
-},
-{
-"name": "Register Shop Owner",
-"request": {
-"method": "POST",
-"header": [
-{
-"key": "Content-Type",
-"value": "application/json"
-}
-],
-"body": {
-"mode": "raw",
-"raw": "{\n  \"name\": \"Shop Owner\",\n  \"email\": \"shopowner@example.com\",\n  \"phone_number\": \"+971501234567\",\n  \"password\": \"password123\",\n  \"confirmPassword\": \"password123\",\n  \"termsAccepted\": true\n}"
-},
-"url": {
-"raw": "{{baseUrl}}/auth/shop-owner/register",
-"host": [
-"{{baseUrl}}"
-],
-"path": [
-"auth",
-"shop-owner",
-"register"
-]
-},
-"description": "Register a new shop owner account. Sends OTP to email."
-},
-"response": []
-},
-{
-"name": "Verify OTP",
-"request": {
-"method": "POST",
-"header": [
-{
-"key": "Content-Type",
-"value": "application/json"
-}
-],
-"body": {
-"mode": "raw",
-"raw": "{\n  \"email\": \"user@example.com\",\n  \"activation_code\": \"123456\"\n}"
-},
-"url": {
-"raw": "{{baseUrl}}/auth/verify-otp",
-"host": [
-"{{baseUrl}}"
-],
-"path": [
-"auth",
-"verify-otp"
-]
-},
-"description": "Verify OTP for account activation."
-},
-"response": []
-},
-{
-"name": "Resend OTP",
-"request": {
-"method": "POST",
-"header": [
-{
-"key": "Content-Type",
-"value": "application/json"
-}
-],
-"body": {
-"mode": "raw",
-"raw": "{\n  \"email\": \"user@example.com\"\n}"
-},
-"url": {
-"raw": "{{baseUrl}}/auth/resend-otp",
-"host": [
-"{{baseUrl}}"
-],
-"path": [
-"auth",
-"resend-otp"
-]
-},
-"description": "Resend OTP to email."
-},
-"response": []
-},
-{
-"name": "Login",
-"request": {
-"method": "POST",
-"header": [
-{
-"key": "Content-Type",
-"value": "application/json"
-}
-],
-"body": {
-"mode": "raw",
-"raw": "{\n  \"email\": \"user@example.com\",\n  \"password\": \"password123\"\n}"
-},
-"url": {
-"raw": "{{baseUrl}}/auth/login",
-"host": [
-"{{baseUrl}}"
-],
-"path": [
-"auth",
-"login"
-]
-},
-"description": "Login with email and password."
-},
-"response": []
-},
-{
-"name": "Forgot Password",
-"request": {
-"method": "POST",
-"header": [
-{
-"key": "Content-Type",
-"value": "application/json"
-}
-],
-"body": {
-"mode": "raw",
-"raw": "{\n  \"email\": \"user@example.com\"\n}"
-},
-"url": {
-"raw": "{{baseUrl}}/auth/forgot-password",
-"host": [
-"{{baseUrl}}"
-],
-"path": [
-"auth",
-"forgot-password"
-]
-},
-"description": "Send forgot password OTP."
-},
-"response": []
-},
-{
-"name": "Verify Forgot OTP",
-"request": {
-"method": "POST",
-"header": [
-{
-"key": "Content-Type",
-"value": "application/json"
-}
-],
-"body": {
-"mode": "raw",
-"raw": "{\n  \"email\": \"user@example.com\",\n  \"activation_code\": \"123456\"\n}"
-},
-"url": {
-"raw": "{{baseUrl}}/auth/verify-forgot-otp",
-"host": [
-"{{baseUrl}}"
-],
-"path": [
-"auth",
-"verify-forgot-otp"
-]
-},
-"description": "Verify forgot password OTP."
-},
-"response": []
-},
-{
-"name": "Resend Forgot Code",
-"request": {
-"method": "POST",
-"header": [
-{
-"key": "Content-Type",
-"value": "application/json"
-}
-],
-"body": {
-"mode": "raw",
-"raw": "{\n  \"email\": \"user@example.com\"\n}"
-},
-"url": {
-"raw": "{{baseUrl}}/auth/resend-forgot-code",
-"host": [
-"{{baseUrl}}"
-],
-"path": [
-"auth",
-"resend-forgot-code"
-]
-},
-"description": "Resend forgot password code."
-},
-"response": []
-},
-{
-"name": "Reset Password",
-"request": {
-"method": "POST",
-"header": [
-{
-"key": "Content-Type",
-"value": "application/json"
-},
-{
-"key": "Authorization",
-"value": "Bearer {{accessToken}}"
-}
-],
-"body": {
-"mode": "raw",
-"raw": "{\n  \"newPassword\": \"newpassword123\",\n  \"confirmPassword\": \"newpassword123\"\n}"
-},
-"url": {
-"raw": "{{baseUrl}}/auth/reset-password",
-"host": [
-"{{baseUrl}}"
-],
-"path": [
-"auth",
-"reset-password"
-]
-},
-"description": "Reset password with new password."
-},
-"response": []
-},
-{
-"name": "Change Password",
-"request": {
-"method": "PATCH",
-"header": [
-{
-"key": "Content-Type",
-"value": "application/json"
-},
-{
-"key": "Authorization",
-"value": "Bearer {{accessToken}}"
-}
-],
-"body": {
-"mode": "raw",
-"raw": "{\n  \"oldPassword\": \"oldpassword123\",\n  \"newPassword\": \"newpassword123\"\n}"
-},
-"url": {
-"raw": "{{baseUrl}}/auth/change-password",
-"host": [
-"{{baseUrl}}"
-],
-"path": [
-"auth",
-"change-password"
-]
-},
-"description": "Change password."
-},
-"response": []
-},
-{
-"name": "Get My Profile",
-"request": {
-"method": "GET",
-"header": [
-{
-"key": "Authorization",
-"value": "Bearer {{accessToken}}"
-}
-],
-"url": {
-"raw": "{{baseUrl}}/auth/profile",
-"host": [
-"{{baseUrl}}"
-],
-"path": [
-"auth",
-"profile"
-]
-},
-"description": "Get current user profile."
-},
-"response": []
-}
-]
-},
-{
-"name": "Shop Owner",
-"item": [
-{
-"name": "Save Location",
-"request": {
-"method": "POST",
-"header": [
-{
-"key": "Content-Type",
-"value": "application/json"
-},
-{
-"key": "Authorization",
-"value": "Bearer {{accessToken}}"
-}
-],
-"body": {
-"mode": "raw",
-"raw": "{\n  \"address\": \"Dubai, UAE\",\n  \"lat\": 25.2048,\n  \"lng\": 55.2708\n}"
-},
-"url": {
-"raw": "{{baseUrl}}/shop-owner/location",
-"host": [
-"{{baseUrl}}"
-],
-"path": [
-"shop-owner",
-"location"
-]
-},
-"description": "Save shop location."
-},
-"response": []
-},
-{
-"name": "Save Business Info",
-"request": {
-"method": "POST",
-"header": [
-{
-"key": "Content-Type",
-"value": "application/json"
-},
-{
-"key": "Authorization",
-"value": "Bearer {{accessToken}}"
-}
-],
-"body": {
-"mode": "raw",
-"raw": "{\n  \"shop_name\": \"My Coffee Shop\",\n  \"shop_license_number\": \"LIC123456\",\n  \"contact_email\": \"contact@shop.com\",\n  \"contact_phone\": \"+971501234567\"\n}"
-},
-"url": {
-"raw": "{{baseUrl}}/shop-owner/business/info",
-"host": [
-"{{baseUrl}}"
-],
-"path": [
-"shop-owner",
-"business",
-"info"
-]
-},
-"description": "Save business information."
-},
-"response": []
-},
-{
-"name": "Save Branches",
-"request": {
-"method": "POST",
-"header": [
-{
-"key": "Content-Type",
-"value": "application/json"
-},
-{
-"key": "Authorization",
-"value": "Bearer {{accessToken}}"
-}
-],
-"body": {
-"mode": "raw",
-"raw": "{\n  \"branches\": [\n    {\n      \"branch_name\": \"Main Branch\",\n      \"address\": \"Dubai Mall\",\n      \"lat\": 25.1972,\n      \"lng\": 55.2794,\n      \"phone_number\": \"+971501234567\",\n      \"availability\": [\n        {\n          \"day\": \"Monday\",\n          \"open\": \"8:00 AM\",\n          \"close\": \"10:00 PM\",\n          \"isClosed\": false\n        }\n      ],\n      \"applyMenuForAll\": false\n    }\n  ]\n}"
-},
-"url": {
-"raw": "{{baseUrl}}/shop-owner/business/branches",
-"host": [
-"{{baseUrl}}"
-],
-"path": [
-"shop-owner",
-"business",
-"branches"
-]
-},
-"description": "Save business branches."
-},
-"response": []
-},
-{
-"name": "Upload Documents",
-"request": {
-"method": "POST",
-"header": [
-{
-"key": "Authorization",
-"value": "Bearer {{accessToken}}"
-}
-],
-"body": {
-"mode": "formdata",
-"formdata": [
-{
-"key": "business_license",
-"type": "file",
-"src": []
-},
-{
-"key": "shop_logo",
-"type": "file",
-"src": []
-}
-]
-},
-"url": {
-"raw": "{{baseUrl}}/shop-owner/business/documents",
-"host": [
-"{{baseUrl}}"
-],
-"path": [
-"shop-owner",
-"business",
-"documents"
-]
-},
-"description": "Upload business documents."
-},
-"response": []
-},
-{
-"name": "Update Profile",
-"request": {
-"method": "PATCH",
-"header": [
-{
-"key": "Authorization",
-"value": "Bearer {{accessToken}}"
-}
-],
-"body": {
-"mode": "formdata",
-"formdata": [
-{
-"key": "name",
-"value": "Updated Name",
-"type": "text"
-},
-{
-"key": "profile_image",
-"type": "file",
-"src": []
-}
-]
-},
-"url": {
-"raw": "{{baseUrl}}/shop-owner/profile",
-"host": [
-"{{baseUrl}}"
-],
-"path": [
-"shop-owner",
-"profile"
-]
-},
-"description": "Update shop owner profile."
-},
-"response": []
-},
-{
-"name": "Create Branch",
-"request": {
-"method": "POST",
-"header": [
-{
-"key": "Content-Type",
-"value": "application/json"
-},
-{
-"key": "Authorization",
-"value": "Bearer {{accessToken}}"
-}
-],
-"body": {
-"mode": "raw",
-"raw": "{\n  \"branch_name\": \"New Branch\",\n  \"address\": \"New Location\",\n  \"lat\": 25.2048,\n  \"lng\": 55.2708,\n  \"phone_number\": \"+971501234567\",\n  \"availability\": [\n    {\n      \"day\": \"Monday\",\n      \"open\": \"8:00 AM\",\n      \"close\": \"10:00 PM\",\n      \"isClosed\": false\n    }\n  ],\n  \"applyMenuForAll\": false\n}"
-},
-"url": {
-"raw": "{{baseUrl}}/shop-owner/branch",
-"host": [
-"{{baseUrl}}"
-],
-"path": [
-"shop-owner",
-"branch"
-]
-},
-"description": "Create a new branch."
-},
-"response": []
-},
-{
-"name": "Get All Branches",
-"request": {
-"method": "GET",
-"header": [
-{
-"key": "Authorization",
-"value": "Bearer {{accessToken}}"
-}
-],
-"url": {
-"raw": "{{baseUrl}}/shop-owner/branch",
-"host": [
-"{{baseUrl}}"
-],
-"path": [
-"shop-owner",
-"branch"
-]
-},
-"description": "Get all branches for the shop owner."
-},
-"response": []
-},
-{
-"name": "Get Branch Details",
-"request": {
-"method": "GET",
-"header": [
-{
-"key": "Authorization",
-"value": "Bearer {{accessToken}}"
-}
-],
-"url": {
-"raw": "{{baseUrl}}/shop-owner/branch/{{branchId}}",
-"host": [
-"{{baseUrl}}"
-],
-"path": [
-"shop-owner",
-"branch",
-"{{branchId}}"
-]
-},
-"description": "Get details of a specific branch."
-},
-"response": []
-},
-{
-"name": "Update Branch",
-"request": {
-"method": "PATCH",
-"header": [
-{
-"key": "Content-Type",
-"value": "application/json"
-},
-{
-"key": "Authorization",
-"value": "Bearer {{accessToken}}"
-}
-],
-"body": {
-"mode": "raw",
-"raw": "{\n  \"branch_name\": \"Updated Branch Name\",\n  \"address\": \"Updated Address\"\n}"
-},
-"url": {
-"raw": "{{baseUrl}}/shop-owner/branch/{{branchId}}",
-"host": [
-"{{baseUrl}}"
-],
-"path": [
-"shop-owner",
-"branch",
-"{{branchId}}"
-]
-},
-"description": "Update branch information."
-},
-"response": []
-},
-{
-"name": "Update Branch Availability",
-"request": {
-"method": "PATCH",
-"header": [
-{
-"key": "Content-Type",
-"value": "application/json"
-},
-{
-"key": "Authorization",
-"value": "Bearer {{accessToken}}"
-}
-],
-"body": {
-"mode": "raw",
-"raw": "{\n  \"availability\": [\n    {\n      \"day\": \"Monday\",\n      \"open\": \"9:00 AM\",\n      \"close\": \"9:00 PM\",\n      \"isClosed\": false\n    }\n  ]\n}"
-},
-"url": {
-"raw": "{{baseUrl}}/shop-owner/branch/{{branchId}}/availability",
-"host": [
-"{{baseUrl}}"
-],
-"path": [
-"shop-owner",
-"branch",
-"{{branchId}}",
-"availability"
-]
-},
-"description": "Update branch availability."
-},
-"response": []
-},
-{
-"name": "Delete Branch",
-"request": {
-"method": "DELETE",
-"header": [
-{
-"key": "Authorization",
-"value": "Bearer {{accessToken}}"
-}
-],
-"url": {
-"raw": "{{baseUrl}}/shop-owner/branch/{{branchId}}",
-"host": [
-"{{baseUrl}}"
-],
-"path": [
-"shop-owner",
-"branch",
-"{{branchId}}"
-]
-},
-"description": "Delete a branch."
-},
-"response": []
-}
-]
-},
-{
-"name": "Admin",
-"item": [
-{
-"name": "Get Shop Owner Requests",
-"request": {
-"method": "GET",
-"header": [
-{
-"key": "Authorization",
-"value": "Bearer {{accessToken}}"
-}
-],
-"url": {
-"raw": "{{baseUrl}}/admin/shop_owner/request",
-"host": [
-"{{baseUrl}}"
-],
-"path": [
-"admin",
-"shop_owner",
-"request"
-]
-},
-"description": "Get pending shop owner registration requests."
-},
-"response": []
-},
-{
-"name": "Accept Shop Owner",
-"request": {
-"method": "PATCH",
-"header": [
-{
-"key": "Content-Type",
-"value": "application/json"
-},
-{
-"key": "Authorization",
-"value": "Bearer {{accessToken}}"
-}
-],
-"body": {
-"mode": "raw",
-"raw": "{\n  \"shopOwnerId\": \"{{shopOwnerId}}\"\n}"
-},
-"url": {
-"raw": "{{baseUrl}}/admin/shop_owner/accept",
-"host": [
-"{{baseUrl}}"
-],
-"path": [
-"admin",
-"shop_owner",
-"accept"
-]
-},
-"description": "Accept shop owner registration."
-},
-"response": []
-},
-{
-"name": "Block Shop Owner",
-"request": {
-"method": "PATCH",
-"header": [
-{
-"key": "Content-Type",
-"value": "application/json"
-},
-{
-"key": "Authorization",
-"value": "Bearer {{accessToken}}"
-}
-],
-"body": {
-"mode": "raw",
-"raw": "{\n  \"shopOwnerId\": \"{{shopOwnerId}}\"\n}"
-},
-"url": {
-"raw": "{{baseUrl}}/admin/shop_owner/blocked",
-"host": [
-"{{baseUrl}}"
-],
-"path": [
-"admin",
-"shop_owner",
-"blocked"
-]
-},
-"description": "Block or unblock shop owner."
-},
-"response": []
-},
-{
-"name": "Update Shop Owner Details",
-"request": {
-"method": "PATCH",
-"header": [
-{
-"key": "Content-Type",
-"value": "application/json"
-},
-{
-"key": "Authorization",
-"value": "Bearer {{accessToken}}"
-}
-],
-"body": {
-"mode": "raw",
-"raw": "{\n  \"shop_name\": \"Updated Shop Name\"\n}"
-},
-"url": {
-"raw": "{{baseUrl}}/admin/shop_owner/details/{{shopOwnerId}}",
-"host": [
-"{{baseUrl}}"
-],
-"path": [
-"admin",
-"shop_owner",
-"details",
-"{{shopOwnerId}}"
-]
-},
-"description": "Update shop owner details."
-},
-"response": []
-},
-{
-"name": "Get All Customers",
-"request": {
-"method": "GET",
-"header": [
-{
-"key": "Authorization",
-"value": "Bearer {{accessToken}}"
-}
-],
-"url": {
-"raw": "{{baseUrl}}/admin/customers",
-"host": [
-"{{baseUrl}}"
-],
-"path": [
-"admin",
-"customers"
-]
-},
-"description": "Get all customers."
-},
-"response": []
-},
-{
-"name": "Block Customer",
-"request": {
-"method": "PATCH",
-"header": [
-{
-"key": "Content-Type",
-"value": "application/json"
-},
-{
-"key": "Authorization",
-"value": "Bearer {{accessToken}}"
-}
-],
-"body": {
-"mode": "raw",
-"raw": "{\n  \"customerId\": \"{{customerId}}\"\n}"
-},
-"url": {
-"raw": "{{baseUrl}}/admin/customer/blocked",
-"host": [
-"{{baseUrl}}"
-],
-"path": [
-"admin",
-"customer",
-"blocked"
-]
-},
-"description": "Block or unblock customer."
-},
-"response": []
-},
-{
-"name": "Get Customer Overview",
-"request": {
-"method": "GET",
-"header": [
-{
-"key": "Authorization",
-"value": "Bearer {{accessToken}}"
-}
-],
-"url": {
-"raw": "{{baseUrl}}/admin/customer/overview",
-"host": [
-"{{baseUrl}}"
-],
-"path": [
-"admin",
-"customer",
-"overview"
-]
-},
-"description": "Get customer overview statistics."
-},
-"response": []
-},
-{
-"name": "Get Customer Details",
-"request": {
-"method": "GET",
-"header": [
-{
-"key": "Authorization",
-"value": "Bearer {{accessToken}}"
-}
-],
-"url": {
-"raw": "{{baseUrl}}/admin/customer/{{customerId}}",
-"host": [
-"{{baseUrl}}"
-],
-"path": [
-"admin",
-"customer",
-"{{customerId}}"
-]
-},
-"description": "Get detailed customer information."
-},
-"response": []
-},
-{
-"name": "Create Admin",
-"request": {
-"method": "POST",
-"header": [
-{
-"key": "Content-Type",
-"value": "application/json"
-},
-{
-"key": "Authorization",
-"value": "Bearer {{accessToken}}"
-}
-],
-"body": {
-"mode": "raw",
-"raw": "{\n  \"name\": \"New Admin\",\n  \"email\": \"admin@example.com\",\n  \"phone_number\": \"+971501234567\",\n  \"password\": \"password123\"\n}"
-},
-"url": {
-"raw": "{{baseUrl}}/admin/create",
-"host": [
-"{{baseUrl}}"
-],
-"path": [
-"admin",
-"create"
-]
-},
-"description": "Create a new admin (Super Admin only)."
-},
-"response": []
-},
-{
-"name": "Update Admin Profile",
-"request": {
-"method": "PATCH",
-"header": [
-{
-"key": "Content-Type",
-"value": "application/json"
-},
-{
-"key": "Authorization",
-"value": "Bearer {{accessToken}}"
-}
-],
-"body": {
-"mode": "raw",
-"raw": "{\n  \"name\": \"Updated Admin Name\"\n}"
-},
-"url": {
-"raw": "{{baseUrl}}/admin/profile/{{adminId}}",
-"host": [
-"{{baseUrl}}"
-],
-"path": [
-"admin",
-"profile",
-"{{adminId}}"
-]
-},
-"description": "Update admin profile (Super Admin only)."
-},
-"response": []
-},
-{
-"name": "Delete Admin",
-"request": {
-"method": "DELETE",
-"header": [
-{
-"key": "Authorization",
-"value": "Bearer {{accessToken}}"
-}
-],
-"url": {
-"raw": "{{baseUrl}}/admin/{{adminId}}",
-"host": [
-"{{baseUrl}}"
-],
-"path": [
-"admin",
-"{{adminId}}"
-]
-},
-"description": "Delete an admin (Super Admin only)."
-},
-"response": []
-}
-]
-},
-{
-"name": "Menu Category",
-"item": [
-{
-"name": "Create Menu Category",
-"request": {
-"method": "POST",
-"header": [
-{
-"key": "Content-Type",
-"value": "application/json"
-},
-{
-"key": "Authorization",
-"value": "Bearer {{accessToken}}"
-}
-],
-"body": {
-"mode": "raw",
-"raw": "{\n  \"name\": \"Beverages\",\n  \"description\": \"Hot and cold drinks\"\n}"
-},
-"url": {
-"raw": "{{baseUrl}}/menu-category/create",
-"host": [
-"{{baseUrl}}"
-],
-"path": [
-"menu-category",
-"create"
-]
-},
-"description": "Create a new menu category."
-},
-"response": []
-},
-{
-"name": "Get Menu Categories by Shop",
-"request": {
-"method": "GET",
-"header": [
-{
-"key": "Authorization",
-"value": "Bearer {{accessToken}}"
-}
-],
-"url": {
-"raw": "{{baseUrl}}/menu-category/shop",
-"host": [
-"{{baseUrl}}"
-],
-"path": [
-"menu-category",
-"shop"
-]
-},
-"description": "Get all menu categories for the shop owner."
-},
-"response": []
-},
-{
-"name": "Get Menu Categories by Branch",
-"request": {
-"method": "GET",
-"header": [],
-"url": {
-"raw": "{{baseUrl}}/menu-category/branch/{{branchId}}",
-"host": [
-"{{baseUrl}}"
-],
-"path": [
-"menu-category",
-"branch",
-"{{branchId}}"
-]
-},
-"description": "Get menu categories for a specific branch (public)."
-},
-"response": []
-},
-{
-"name": "Update Menu Category",
-"request": {
-"method": "PUT",
-"header": [
-{
-"key": "Content-Type",
-"value": "application/json"
-},
-{
-"key": "Authorization",
-"value": "Bearer {{accessToken}}"
-}
-],
-"body": {
-"mode": "raw",
-"raw": "{\n  \"name\": \"Updated Category Name\",\n  \"description\": \"Updated description\"\n}"
-},
-"url": {
-"raw": "{{baseUrl}}/menu-category/{{menuCategoryId}}",
-"host": [
-"{{baseUrl}}"
-],
-"path": [
-"menu-category",
-"{{menuCategoryId}}"
-]
-},
-"description": "Update a menu category."
-},
-"response": []
-},
-{
-"name": "Delete Menu Category",
-"request": {
-"method": "DELETE",
-"header": [
-{
-"key": "Authorization",
-"value": "Bearer {{accessToken}}"
-}
-],
-"url": {
-"raw": "{{baseUrl}}/menu-category/{{menuCategoryId}}",
-"host": [
-"{{baseUrl}}"
-],
-"path": [
-"menu-category",
-"{{menuCategoryId}}"
-]
-},
-"description": "Delete a menu category."
-},
-"response": []
-}
-]
-},
-{
-"name": "Menu",
-"item": [
-{
-"name": "Upload Menu Image",
-"request": {
-"method": "POST",
-"header": [
-{
-"key": "Authorization",
-"value": "Bearer {{accessToken}}"
-}
-],
-"body": {
-"mode": "formdata",
-"formdata": [
-{
-"key": "image",
-"type": "file",
-"src": []
-}
-]
-},
-"url": {
-"raw": "{{baseUrl}}/menu/upload-image",
-"host": [
-"{{baseUrl}}"
-],
-"path": [
-"menu",
-"upload-image"
-]
-},
-"description": "Upload menu item image."
-},
-"response": []
-},
-{
-"name": "Create Menu Item",
-"request": {
-"method": "POST",
-"header": [
-{
-"key": "Authorization",
-"value": "Bearer {{accessToken}}"
-}
-],
-"body": {
-"mode": "formdata",
-"formdata": [
-{
-"key": "name",
-"value": "Latte",
-"type": "text"
-},
-{
-"key": "description",
-"value": "Hot coffee with milk",
-"type": "text"
-},
-{
-"key": "price",
-"value": "25",
-"type": "text"
-},
-{
-"key": "category",
-"value": "{{menuCategoryId}}",
-"type": "text"
-},
-{
-"key": "branchIds",
-"value": "[\"{{branchId}}\"]",
-"type": "text"
-},
-{
-"key": "image",
-"type": "file",
-"src": []
-}
-]
-},
-"url": {
-"raw": "{{baseUrl}}/menu/create",
-"host": [
-"{{baseUrl}}"
-],
-"path": [
-"menu",
-"create"
-]
-},
-"description": "Create a new menu item."
-},
-"response": []
-},
-{
-"name": "Get All Menu Items (Shop)",
-"request": {
-"method": "GET",
-"header": [
-{
-"key": "Authorization",
-"value": "Bearer {{accessToken}}"
-}
-],
-"url": {
-"raw": "{{baseUrl}}/menu/shop",
-"host": [
-"{{baseUrl}}"
-],
-"path": [
-"menu",
-"shop"
-]
-},
-"description": "Get all menu items for the shop owner."
-},
-"response": []
-},
-{
-"name": "Update Menu Item",
-"request": {
-"method": "PATCH",
-"header": [
-{
-"key": "Authorization",
-"value": "Bearer {{accessToken}}"
-}
-],
-"body": {
-"mode": "formdata",
-"formdata": [
-{
-"key": "name",
-"value": "Updated Latte",
-"type": "text"
-},
-{
-"key": "price",
-"value": "30",
-"type": "text"
-}
-]
-},
-"url": {
-"raw": "{{baseUrl}}/menu/{{menuId}}",
-"host": [
-"{{baseUrl}}"
-],
-"path": [
-"menu",
-"{{menuId}}"
-]
-},
-"description": "Update a menu item."
-},
-"response": []
-},
-{
-"name": "Delete Menu Item",
-"request": {
-"method": "DELETE",
-"header": [
-{
-"key": "Authorization",
-"value": "Bearer {{accessToken}}"
-}
-],
-"url": {
-"raw": "{{baseUrl}}/menu/{{menuId}}",
-"host": [
-"{{baseUrl}}"
-],
-"path": [
-"menu",
-"{{menuId}}"
-]
-},
-"description": "Delete a menu item."
-},
-"response": []
-},
-{
-"name": "Get Menu Items by Category",
-"request": {
-"method": "GET",
-"header": [],
-"url": {
-"raw": "{{baseUrl}}/menu/category/{{branchId}}",
-"host": [
-"{{baseUrl}}"
-],
-"path": [
-"menu",
-"category",
-"{{branchId}}"
-]
-},
-"description": "Get menu items by category for a branch (public)."
-},
-"response": []
-},
-{
-"name": "Get Menu Item by ID",
-"request": {
-"method": "GET",
-"header": [],
-"url": {
-"raw": "{{baseUrl}}/menu/{{menuId}}",
-"host": [
-"{{baseUrl}}"
-],
-"path": [
-"menu",
-"{{menuId}}"
-]
-},
-"description": "Get menu item details by ID (public)."
-},
-"response": []
-}
-]
-},
-{
-"name": "Event Offer",
-"item": [
-{
-"name": "Create Event Offer (Shop Owner)",
-"request": {
-"method": "POST",
-"header": [
-{
-"key": "Content-Type",
-"value": "application/json"
-},
-{
-"key": "Authorization",
-"value": "Bearer {{accessToken}}"
-}
-],
-"body": {
-"mode": "raw",
-"raw": "{\n  \"title\": \"Summer Special\",\n  \"description\": \"20% off on all beverages\",\n  \"discount_percentage\": 20,\n  \"start_date\": \"2024-06-01\",\n  \"end_date\": \"2024-08-31\",\n  \"branchIds\": [\"{{branchId}}\"],\n  \"is_active\": true\n}"
-},
-"url": {
-"raw": "{{baseUrl}}/event-offer/create",
-"host": [
-"{{baseUrl}}"
-],
-"path": [
-"event-offer",
-"create"
-]
-},
-"description": "Create a new event offer (Shop Owner)."
-},
-"response": []
-},
-{
-"name": "Get Event Offers (Shop Owner)",
-"request": {
-"method": "GET",
-"header": [
-{
-"key": "Authorization",
-"value": "Bearer {{accessToken}}"
-}
-],
-"url": {
-"raw": "{{baseUrl}}/event-offer/shop",
-"host": [
-"{{baseUrl}}"
-],
-"path": [
-"event-offer",
-"shop"
-]
-},
-"description": "Get all event offers for the shop owner."
-},
-"response": []
-},
-{
-"name": "Update Event Offer (Shop Owner)",
-"request": {
-"method": "PATCH",
-"header": [
-{
-"key": "Content-Type",
-"value": "application/json"
-},
-{
-"key": "Authorization",
-"value": "Bearer {{accessToken}}"
-}
-],
-"body": {
-"mode": "raw",
-"raw": "{\n  \"title\": \"Updated Summer Special\",\n  \"discount_percentage\": 25\n}"
-},
-"url": {
-"raw": "{{baseUrl}}/event-offer/shop/{{eventOfferId}}",
-"host": [
-"{{baseUrl}}"
-],
-"path": [
-"event-offer",
-"shop",
-"{{eventOfferId}}"
-]
-},
-"description": "Update an event offer (Shop Owner)."
-},
-"response": []
-},
-{
-"name": "Toggle Event Offer Active",
-"request": {
-"method": "PATCH",
-"header": [
-{
-"key": "Content-Type",
-"value": "application/json"
-},
-{
-"key": "Authorization",
-"value": "Bearer {{accessToken}}"
-}
-],
-"body": {
-"mode": "raw",
-"raw": "{\n  \"is_active\": false\n}"
-},
-"url": {
-"raw": "{{baseUrl}}/event-offer/toggle/{{eventOfferId}}",
-"host": [
-"{{baseUrl}}"
-],
-"path": [
-"event-offer",
-"toggle",
-"{{eventOfferId}}"
-]
-},
-"description": "Toggle event offer active status."
-},
-"response": []
-},
-{
-"name": "Delete Event Offer (Shop Owner)",
-"request": {
-"method": "DELETE",
-"header": [
-{
-"key": "Authorization",
-"value": "Bearer {{accessToken}}"
-}
-],
-"url": {
-"raw": "{{baseUrl}}/event-offer/shop/{{eventOfferId}}",
-"host": [
-"{{baseUrl}}"
-],
-"path": [
-"event-offer",
-"shop",
-"{{eventOfferId}}"
-]
-},
-"description": "Delete an event offer (Shop Owner)."
-},
-"response": []
-},
-{
-"name": "Create Event Offer (Admin)",
-"request": {
-"method": "POST",
-"header": [
-{
-"key": "Content-Type",
-"value": "application/json"
-},
-{
-"key": "Authorization",
-"value": "Bearer {{accessToken}}"
-}
-],
-"body": {
-"mode": "raw",
-"raw": "{\n  \"title\": \"Admin Special Offer\",\n  \"description\": \"15% off for all customers\",\n  \"discount_percentage\": 15,\n  \"start_date\": \"2024-07-01\",\n  \"end_date\": \"2024-07-31\",\n  \"shopOwnerIds\": [\"{{shopOwnerId}}\"],\n  \"is_active\": true\n}"
-},
-"url": {
-"raw": "{{baseUrl}}/event-offer/admin/create",
-"host": [
-"{{baseUrl}}"
-],
-"path": [
-"event-offer",
-"admin",
-"create"
-]
-},
-"description": "Create a new event offer (Admin)."
-},
-"response": []
-},
-{
-"name": "Get Event Offers (Admin)",
-"request": {
-"method": "GET",
-"header": [
-{
-"key": "Authorization",
-"value": "Bearer {{accessToken}}"
-}
-],
-"url": {
-"raw": "{{baseUrl}}/event-offer/admin",
-"host": [
-"{{baseUrl}}"
-],
-"path": [
-"event-offer",
-"admin"
-]
-},
-"description": "Get all event offers (Admin)."
-},
-"response": []
-},
-{
-"name": "Update Event Offer (Admin)",
-"request": {
-"method": "PATCH",
-"header": [
-{
-"key": "Content-Type",
-"value": "application/json"
-},
-{
-"key": "Authorization",
-"value": "Bearer {{accessToken}}"
-}
-],
-"body": {
-"mode": "raw",
-"raw": "{\n  \"title\": \"Updated Admin Offer\",\n  \"discount_percentage\": 18\n}"
-},
-"url": {
-"raw": "{{baseUrl}}/event-offer/admin/{{eventOfferId}}",
-"host": [
-"{{baseUrl}}"
-],
-"path": [
-"event-offer",
-"admin",
-"{{eventOfferId}}"
-]
-},
-"description": "Update an event offer (Admin)."
-},
-"response": []
-},
-{
-"name": "Delete Event Offer (Admin)",
-"request": {
-"method": "DELETE",
-"header": [
-{
-"key": "Authorization",
-"value": "Bearer {{accessToken}}"
-}
-],
-"url": {
-"raw": "{{baseUrl}}/event-offer/admin/{{eventOfferId}}",
-"host": [
-"{{baseUrl}}"
-],
-"path": [
-"event-offer",
-"admin",
-"{{eventOfferId}}"
-]
-},
-"description": "Delete an event offer (Admin)."
-},
-"response": []
-},
-{
-"name": "Get Event Offer by ID",
-"request": {
-"method": "GET",
-"header": [
-{
-"key": "Authorization",
-"value": "Bearer {{accessToken}}"
-}
-],
-"url": {
-"raw": "{{baseUrl}}/event-offer/{{eventOfferId}}",
-"host": [
-"{{baseUrl}}"
-],
-"path": [
-"event-offer",
-"{{eventOfferId}}"
-]
-},
-"description": "Get event offer details by ID."
-},
-"response": []
-}
-]
-},
-{
-"name": "Customer",
-"item": [
-{
-"name": "Get My Profile",
-"request": {
-"method": "GET",
-"header": [
-{
-"key": "Authorization",
-"value": "Bearer {{accessToken}}"
-}
-],
-"url": {
-"raw": "{{baseUrl}}/customers/profile",
-"host": [
-"{{baseUrl}}"
-],
-"path": [
-"customers",
-"profile"
-]
-},
-"description": "Get customer profile."
-},
-"response": []
-},
-{
-"name": "Update Profile",
-"request": {
-"method": "PATCH",
-"header": [
-{
-"key": "Authorization",
-"value": "Bearer {{accessToken}}"
-}
-],
-"body": {
-"mode": "formdata",
-"formdata": [
-{
-"key": "name",
-"value": "Updated Name",
-"type": "text"
-},
-{
-"key": "profile_image",
-"type": "file",
-"src": []
-}
-]
-},
-"url": {
-"raw": "{{baseUrl}}/customers/profile",
-"host": [
-"{{baseUrl}}"
-],
-"path": [
-"customers",
-"profile"
-]
-},
-"description": "Update customer profile."
-},
-"response": []
-},
-{
-"name": "Save Location",
-"request": {
-"method": "PATCH",
-"header": [
-{
-"key": "Content-Type",
-"value": "application/json"
-},
-{
-"key": "Authorization",
-"value": "Bearer {{accessToken}}"
-}
-],
-"body": {
-"mode": "raw",
-"raw": "{\n  \"address\": \"Dubai, UAE\",\n  \"lat\": 25.2048,\n  \"lng\": 55.2708\n}"
-},
-"url": {
-"raw": "{{baseUrl}}/customers/location",
-"host": [
-"{{baseUrl}}"
-],
-"path": [
-"customers",
-"location"
-]
-},
-"description": "Save customer location."
-},
-"response": []
-},
-{
-"name": "Get Branches",
-"request": {
-"method": "GET",
-"header": [
-{
-"key": "Authorization",
-"value": "Bearer {{accessToken}}"
-}
-],
-"url": {
-"raw": "{{baseUrl}}/customers/branches",
-"host": [
-"{{baseUrl}}"
-],
-"path": [
-"customers",
-"branches"
-]
-},
-"description": "Get all branches."
-},
-"response": []
-},
-{
-"name": "Get Single Branch",
-"request": {
-"method": "GET",
-"header": [
-{
-"key": "Authorization",
-"value": "Bearer {{accessToken}}"
-}
-],
-"url": {
-"raw": "{{baseUrl}}/customers/branches/{{branchId}}",
-"host": [
-"{{baseUrl}}"
-],
-"path": [
-"customers",
-"branches",
-"{{branchId}}"
-]
-},
-"description": "Get details of a single branch."
-},
-"response": []
-}
-]
-},
-{
-"name": "Customer Stamps",
-"item": [
-{
-"name": "Check Stamp Eligibility",
-"request": {
-"method": "GET",
-"header": [
-{
-"key": "Authorization",
-"value": "Bearer {{accessToken}}"
-}
-],
-"url": {
-"raw": "{{baseUrl}}/customer-stamps/check-eligibility",
-"host": [
-"{{baseUrl}}"
-],
-"path": [
-"customer-stamps",
-"check-eligibility"
-]
-},
-"description": "Check if customer is eligible for stamp rewards."
-},
-"response": []
-},
-{
-"name": "Get Customer Stamps by Branch",
-"request": {
-"method": "GET",
-"header": [
-{
-"key": "Authorization",
-"value": "Bearer {{accessToken}}"
-}
-],
-"url": {
-"raw": "{{baseUrl}}/customer-stamps/branch/{{branchId}}",
-"host": [
-"{{baseUrl}}"
-],
-"path": [
-"customer-stamps",
-"branch",
-"{{branchId}}"
-]
-},
-"description": "Get customer's stamps for a specific branch."
-},
-"response": []
-},
-{
-"name": "Add Stamp",
-"request": {
-"method": "POST",
-"header": [
-{
-"key": "Content-Type",
-"value": "application/json"
-},
-{
-"key": "Authorization",
-"value": "Bearer {{accessToken}}"
-}
-],
-"body": {
-"mode": "raw",
-"raw": "{\n  \"branchId\": \"{{branchId}}\"\n}"
-},
-"url": {
-"raw": "{{baseUrl}}/customer-stamps/add",
-"host": [
-"{{baseUrl}}"
-],
-"path": [
-"customer-stamps",
-"add"
-]
-},
-"description": "Add a stamp for the customer."
-},
-"response": []
-}
-]
-},
-{
-"name": "Branches",
-"item": [
-{
-"name": "Get Branch Details",
-"request": {
-"method": "GET",
-"header": [
-{
-"key": "Authorization",
-"value": "Bearer {{accessToken}}"
-}
-],
-"url": {
-"raw": "{{baseUrl}}/branches/details/{{branchId}}",
-"host": [
-"{{baseUrl}}"
-],
-"path": [
-"branches",
-"details",
-"{{branchId}}"
-]
-},
-"description": "Get detailed branch information."
-},
-"response": []
-}
-]
-},
-{
-"name": "Promo Code",
-"item": [
-{
-"name": "Create Promo Code",
-"request": {
-"method": "POST",
-"header": [
-{
-"key": "Content-Type",
-"value": "application/json"
-},
-{
-"key": "Authorization",
-"value": "Bearer {{accessToken}}"
-}
-],
-"body": {
-"mode": "raw",
-"raw": "{\n  \"code\": \"SUMMER20\",\n  \"status\": \"active\",\n  \"branchIds\": \"all\"\n}"
-},
-"url": {
-"raw": "{{baseUrl}}/promo-code",
-"host": [
-"{{baseUrl}}"
-],
-"path": [
-"promo-code"
-]
-},
-"description": "Create a new promo code. branchIds can be either an array of branch IDs [\"id1\", \"id2\"] or \"all\" for all branches."
-},
-"response": []
-},
-{
-"name": "Create Multiple Promo Codes (Bulk)",
-"request": {
-"method": "POST",
-"header": [
-{
-"key": "Content-Type",
-"value": "application/json"
-},
-{
-"key": "Authorization",
-"value": "Bearer {{accessToken}}"
-}
-],
-"body": {
-"mode": "raw",
-"raw": "[\n  {\n    \"code\": \"SUMMER20\",\n    \"status\": \"active\",\n    \"branchIds\": [\"{{branchId}}\"]\n  },\n  {\n    \"code\": \"WINTER15\",\n    \"status\": \"active\",\n    \"branchIds\": \"all\"\n  },\n  {\n    \"code\": \"FLASH50\",\n    \"status\": \"inactive\",\n    \"branchIds\": [\"{{branchId}}\"]\n  }\n]"
-},
-"url": {
-"raw": "{{baseUrl}}/promo-code",
-"host": [
-"{{baseUrl}}"
-],
-"path": [
-"promo-code"
-]
-},
-"description": "Create multiple promo codes at once (bulk creation). Each promo code can have branchIds as either an array of branch IDs [\"id1\", \"id2\"] or \"all\" for all branches."
-},
-"response": []
-},
-{
-"name": "Update Promo Code",
-"request": {
-"method": "PATCH",
-"header": [
-{
-"key": "Content-Type",
-"value": "application/json"
-},
-{
-"key": "Authorization",
-"value": "Bearer {{accessToken}}"
-}
-],
-"body": {
-"mode": "raw",
-"raw": "{\n  \"code\": \"SUMMER25\",\n  \"status\": \"active\"\n}"
-},
-"url": {
-"raw": "{{baseUrl}}/promo-code/{{promoCodeId}}",
-"host": [
-"{{baseUrl}}"
-],
-"path": [
-"promo-code",
-"{{promoCodeId}}"
-]
-},
-"description": "Update a promo code."
-},
-"response": []
-},
-{
-"name": "Update Promo Code Status",
-"request": {
-"method": "PATCH",
-"header": [
-{
-"key": "Content-Type",
-"value": "application/json"
-},
-{
-"key": "Authorization",
-"value": "Bearer {{accessToken}}"
-}
-],
-"body": {
-"mode": "raw",
-"raw": "{\n  \"status\": \"inactive\"\n}"
-},
-"url": {
-"raw": "{{baseUrl}}/promo-code/{{promoCodeId}}/status",
-"host": [
-"{{baseUrl}}"
-],
-"path": [
-"promo-code",
-"{{promoCodeId}}",
-"status"
-]
-},
-"description": "Update promo code status."
-},
-"response": []
-},
-{
-"name": "Delete Promo Code",
-"request": {
-"method": "DELETE",
-"header": [
-{
-"key": "Authorization",
-"value": "Bearer {{accessToken}}"
-}
-],
-"url": {
-"raw": "{{baseUrl}}/promo-code/{{promoCodeId}}",
-"host": [
-"{{baseUrl}}"
-],
-"path": [
-"promo-code",
-"{{promoCodeId}}"
-]
-},
-"description": "Delete a promo code."
-},
-"response": []
-},
-{
-"name": "Get Promo Codes",
-"request": {
-"method": "GET",
-"header": [],
-"url": {
-"raw": "{{baseUrl}}/promo-code?shopOwnerId={{shopOwnerId}}&branchId={{branchId}}",
-"host": [
-"{{baseUrl}}"
-],
-"path": [
-"promo-code"
-],
-"query": [
-{
-"key": "shopOwnerId",
-"value": "{{shopOwnerId}}"
-},
-{
-"key": "branchId",
-"value": "{{branchId}}"
-},
-{
-"key": "code",
-"value": "",
-"disabled": true
-},
-{
-"key": "status",
-"value": "active",
-"disabled": true
-}
-]
-},
-"description": "Get promo codes by shop owner or branch (public API). Can filter by code and status using query parameters."
-},
-"response": []
-},
-{
-"name": "Get Promo Codes Customer",
-"request": {
-"method": "POST",
-"header": [
-{
-"key": "Content-Type",
-"value": "application/json"
-}
-],
-"body": {
-"mode": "raw",
-"raw": "{\n  \"branchId\": \"{{branchId}}\"\n}"
-},
-"url": {
-"raw": "{{baseUrl}}/promo-code/customer",
-"host": [
-"{{baseUrl}}"
-],
-"path": [
-"promo-code",
-"customer"
-]
-},
-"description": "Get available promo codes for a specific branch (customer endpoint)."
-},
-"response": []
-},
-{
-"name": "Validate Promo Code",
-"request": {
-"method": "POST",
-"header": [
-{
-"key": "Content-Type",
-"value": "application/json"
-}
-],
-"body": {
-"mode": "raw",
-"raw": "{\n  \"code\": \"SUMMER206\",\n  \"shopOwnerId\": \"69abd78b7cd774b6e0a41acd\",\n  \"cartId\": \"69d5f102f11015b5775a9501\"\n}"
-},
-"url": {
-"raw": "{{baseUrl}}/promo-code/validate",
-"host": [
-"{{baseUrl}}"
-],
-"path": [
-"promo-code",
-"validate"
-]
-},
-"description": "Validate a promo code for a specific branch. Returns whether the code is valid and active."
-},
-"response": []
-}
-]
-},
-{
-"name": "Upcoming Events",
-"item": [
-{
-"name": "Create Upcoming Event",
-"request": {
-"method": "POST",
-"header": [
-{
-"key": "Authorization",
-"value": "Bearer {{accessToken}}"
-}
-],
-"body": {
-"mode": "formdata",
-"formdata": [
-{
-"key": "name",
-"value": "Coffee Festival 2024",
-"type": "text"
-},
-{
-"key": "startDate",
-"value": "2024-05-01",
-"type": "text"
-},
-{
-"key": "endDate",
-"value": "2024-05-15",
-"type": "text"
-},
-{
-"key": "image",
-"type": "file",
-"src": []
-}
-]
-},
-"url": {
-"raw": "{{baseUrl}}/upcoming-events/create",
-"host": [
-"{{baseUrl}}"
-],
-"path": [
-"upcoming-events",
-"create"
-]
-},
-"description": "Create a new upcoming event (Admin only). Supports multiple icon uploads via 'image' field."
-},
-"response": []
-},
-{
-"name": "Get All Upcoming Events",
-"request": {
-"method": "GET",
-"header": [],
-"url": {
-"raw": "{{baseUrl}}/upcoming-events",
-"host": [
-"{{baseUrl}}"
-],
-"path": [
-"upcoming-events"
-]
-},
-"description": "Get all upcoming events (Public)."
-},
-"response": []
-},
-{
-"name": "Get Upcoming Event by ID",
-"request": {
-"method": "GET",
-"header": [],
-"url": {
-"raw": "{{baseUrl}}/upcoming-events/{{upcomingEventId}}",
-"host": [
-"{{baseUrl}}"
-],
-"path": [
-"upcoming-events",
-"{{upcomingEventId}}"
-]
-},
-"description": "Get upcoming event details by ID (Public)."
-},
-"response": []
-},
-{
-"name": "Update Upcoming Event",
-"request": {
-"method": "PATCH",
-"header": [
-{
-"key": "Authorization",
-"value": "Bearer {{accessToken}}"
-}
-],
-"body": {
-"mode": "formdata",
-"formdata": [
-{
-"key": "name",
-"value": "Updated Coffee Festival 2024",
-"type": "text"
-},
-{
-"key": "image",
-"type": "file",
-"src": []
-}
-]
-},
-"url": {
-"raw": "{{baseUrl}}/upcoming-events/{{upcomingEventId}}",
-"host": [
-"{{baseUrl}}"
-],
-"path": [
-"upcoming-events",
-"{{upcomingEventId}}"
-]
-},
-"description": "Update an upcoming event (Admin only). Supports updating fields and icons."
-},
-"response": []
-},
-{
-"name": "Delete Upcoming Event",
-"request": {
-"method": "DELETE",
-"header": [
-{
-"key": "Authorization",
-"value": "Bearer {{accessToken}}"
-}
-],
-"url": {
-"raw": "{{baseUrl}}/upcoming-events/{{upcomingEventId}}",
-"host": [
-"{{baseUrl}}"
-],
-"path": [
-"upcoming-events",
-"{{upcomingEventId}}"
-]
-},
-"description": "Delete an upcoming event (Admin only)."
-},
-"response": []
-}
-]
-}
-,
-{
-"name": "Car Plates",
-"item": [
-{
-"name": "Create Car Plate",
-"request": {
-"method": "POST",
-"header": [
-{
-"key": "Content-Type",
-"value": "application/json"
-},
-{
-"key": "Authorization",
-"value": "Bearer {{accessToken}}"
-}
-],
-"body": {
-"mode": "raw",
-"raw": "{\n  \"carNumberSource\": \"Dubai\",\n  \"plateCode\": \"ABC123\"\n}"
-},
-"url": {
-"raw": "{{baseUrl}}/car-plates",
-"host": [
-"{{baseUrl}}"
-],
-"path": [
-"car-plates"
-]
-},
-"description": "Create a new car plate for the authenticated customer."
-},
-"response": []
-},
-{
-"name": "Get All Car Plates",
-"request": {
-"method": "GET",
-"header": [
-{
-"key": "Authorization",
-"value": "Bearer {{accessToken}}"
-}
-],
-"url": {
-"raw": "{{baseUrl}}/car-plates",
-"host": [
-"{{baseUrl}}"
-],
-"path": [
-"car-plates"
-]
-},
-"description": "Get all car plates for the authenticated customer."
-},
-"response": []
-},
-{
-"name": "Get Car Plate by ID",
-"request": {
-"method": "GET",
-"header": [
-{
-"key": "Authorization",
-"value": "Bearer {{accessToken}}"
-}
-],
-"url": {
-"raw": "{{baseUrl}}/car-plates/{{carPlateId}}",
-"host": [
-"{{baseUrl}}"
-],
-"path": [
-"car-plates",
-"{{carPlateId}}"
-]
-},
-"description": "Get a specific car plate by ID for the authenticated customer."
-},
-"response": []
-},
-{
-"name": "Update Car Plate",
-"request": {
-"method": "PATCH",
-"header": [
-{
-"key": "Content-Type",
-"value": "application/json"
-},
-{
-"key": "Authorization",
-"value": "Bearer {{accessToken}}"
-}
-],
-"body": {
-"mode": "raw",
-"raw": "{\n  \"carNumberSource\": \"Abu Dhabi\",\n  \"plateCode\": \"XYZ789\"\n}"
-},
-"url": {
-"raw": "{{baseUrl}}/car-plates/{{carPlateId}}",
-"host": [
-"{{baseUrl}}"
-],
-"path": [
-"car-plates",
-"{{carPlateId}}"
-]
-},
-"description": "Update a car plate for the authenticated customer."
-},
-"response": []
-},
-{
-"name": "Delete Car Plate",
-"request": {
-"method": "DELETE",
-"header": [
-{
-"key": "Authorization",
-"value": "Bearer {{accessToken}}"
-}
-],
-"url": {
-"raw": "{{baseUrl}}/car-plates/{{carPlateId}}",
-"host": [
-"{{baseUrl}}"
-],
-"path": [
-"car-plates",
-"{{carPlateId}}"
-]
-},
-"description": "Delete a car plate for the authenticated customer."
-},
-"response": []
-}
-]
-},
-{
-"name": "Cart",
-"item": [
-{
-"name": "Add to Cart",
-"request": {
-"method": "POST",
-"header": [
-{
-"key": "Authorization",
-"value": "Bearer {{accessToken}}"
-},
-{
-"key": "Content-Type",
-"value": "application/json"
-}
-],
-"body": {
-"mode": "raw",
-"raw": "{\n  \"branchId\": \"{{branchId}}\",\n  \"productId\": \"{{menuId}}\",\n  \"productType\": \"menu\",\n  \"menuName\": \"Cappuccino Deluxe\",\n  \"menuPrice\": 22,\n  \"menuImage\": \"/images/image/cappuccino.png\",\n  \"quantity\": 1,\n  \"additionalItems\": [\n    {\n      \"itemId\": \"addon_id_1\",\n      \"name\": \"Whipped Cream\",\n      \"price\": 2.5,\n      \"image\": \"/images/image/whipped.png\",\n      \"quantity\": 1\n    }\n  ]\n}"
-},
-"url": {
-"raw": "{{baseUrl}}/cart/add",
-"host": [
-"{{baseUrl}}"
-],
-"path": [
-"cart",
-"add"
-]
-},
-"description": "Add a menu item to the customer's cart with optional additional items. Validates stamp requirements for free items."
-},
-"response": []
-},
-{
-"name": "Add Additional Item to Cart",
-"request": {
-"method": "POST",
-"header": [
-{
-"key": "Authorization",
-"value": "Bearer {{accessToken}}"
-},
-{
-"key": "Content-Type",
-"value": "application/json"
-}
-],
-"body": {
-"mode": "raw",
-"raw": "{\n  \"branchId\": \"{{branchId}}\",\n  \"productId\": \"{{menuId}}\",\n  \"productType\": \"additional_item\",\n  \"menuName\": \"Extra Cheese\",\n  \"menuPrice\": 2.5,\n  \"menuImage\": \"/images/image/cheese.png\",\n  \"quantity\": 1,\n  \"additionalItems\": []\n}"
-},
-"url": {
-"raw": "{{baseUrl}}/cart/add",
-"host": [
-"{{baseUrl}}"
-],
-"path": [
-"cart",
-"add"
-]
-},
-"description": "Add an additional item as a separate cart item. No stamp validation required."
-},
-"response": []
-},
-{
-"name": "Update Cart Item",
-"request": {
-"method": "PATCH",
-"header": [
-{
-"key": "Authorization",
-"value": "Bearer {{accessToken}}"
-},
-{
-"key": "Content-Type",
-"value": "application/json"
-}
-],
-"body": {
-"mode": "raw",
-"raw": "{\n  \"quantity\": 2,\n  \"additionalItems\": [\n    {\n      \"itemId\": \"addon_id_1\",\n      \"name\": \"Extra Milk\",\n      \"price\": 3,\n      \"image\": \"/images/image/milk.png\",\n      \"quantity\": 1\n    }\n  ]\n}"
-},
-"url": {
-"raw": "{{baseUrl}}/cart/item/{{cartItemId}}",
-"host": [
-"{{baseUrl}}"
-],
-"path": [
-"cart",
-"item",
-"{{cartItemId}}"
-]
-},
-"description": "Update quantity and additional items for a cart item (menu or additional item). Handles stamp adjustments automatically for free menu items."
-},
-"response": []
-},
-{
-"name": "Remove from Cart",
-"request": {
-"method": "DELETE",
-"header": [
-{
-"key": "Authorization",
-"value": "Bearer {{accessToken}}"
-}
-],
-"url": {
-"raw": "{{baseUrl}}/cart/item/{{cartItemId}}",
-"host": [
-"{{baseUrl}}"
-],
-"path": [
-"cart",
-"item",
-"{{cartItemId}}"
-]
-},
-"description": "Remove a menu item or additional item from the cart. Refunds stamps if the removed item was a free menu item."
-},
-"response": []
-},
-{
-"name": "Get Cart",
-"request": {
-"method": "GET",
-"header": [
-{
-"key": "Authorization",
-"value": "Bearer {{accessToken}}"
-}
-],
-"url": {
-"raw": "{{baseUrl}}/cart?branchId={{branchId}}",
-"host": [
-"{{baseUrl}}"
-],
-"path": [
-"cart"
-],
-"query": [
-{
-"key": "branchId",
-"value": "{{branchId}}",
-"disabled": false
-}
-]
-},
-"description": "Retrieve the customer's cart (including menu items and additional items) for a specific branch or all branches."
-},
-"response": []
-},
-{
-"name": "Clear Cart",
-"request": {
-"method": "DELETE",
-"header": [
-{
-"key": "Authorization",
-"value": "Bearer {{accessToken}}"
-},
-{
-"key": "Content-Type",
-"value": "application/json"
-}
-],
-"body": {
-"mode": "raw",
-"raw": "{\n  \"branchId\": \"{{branchId}}\"\n}"
-},
-"url": {
-"raw": "{{baseUrl}}/cart/clear",
-"host": [
-"{{baseUrl}}"
-],
-"path": [
-"cart",
-"clear"
-]
-},
-"description": "Clear the customer's cart (including all menu items and additional items) for a specific branch or all branches."
-},
-"response": []
-},
-{
-"name": "Get Cart Summary",
-"request": {
-"method": "GET",
-"header": [
-{
-"key": "Authorization",
-"value": "Bearer {{accessToken}}"
-}
-],
-"url": {
-"raw": "{{baseUrl}}/cart/summary?branchId={{branchId}}",
-"host": [
-"{{baseUrl}}"
-],
-"path": [
-"cart",
-"summary"
-],
-"query": [
-{
-"key": "branchId",
-"value": "{{branchId}}",
-"disabled": false
-}
-]
-},
-"description": "Get a summary of the customer's cart including menu items and additional items, with total items and amount."
-},
-      }
-    ]
+  "info": {
+    "name": "Ayah Almheiri Backend API",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "description": "Complete API collection for Ayah Almheiri mobile caf\u00e9 ordering platform."
   },
-  {
-    "name": "Order",
-    "item": [
-      {
-        "name": "Create Order",
-        "request": {
-          "method": "POST",
-          "header": [
-            {
-              "key": "Authorization",
-              "value": "Bearer {{accessToken}}"
-            },
-            {
-              "key": "Content-Type",
-              "value": "application/json"
-            }
-          ],
-          "body": {
-            "mode": "raw",
-            "raw": "{\n  \"branchId\": \"{{branchId}}\",\n  \"items\": [\n    {\n      \"productId\": \"{{menuId}}\",\n      \"menuName\": \"Cappuccino Deluxe\",\n      \"menuPrice\": 22,\n      \"menuImage\": \"/images/image/cappuccino.png\",\n      \"quantity\": 1,\n      \"additionalItems\": [\n        {\n          \"itemId\": \"69abda42ddcc21dbd181cca9\",\n          \"name\": \"Whipped Cream\",\n          \"price\": 2.5,\n          \"quantity\": 1\n        }\n      ],\n      \"totalPrice\": 24.5\n    }\n  ],\n  \"pickupType\": \"carPickup\",\n  \"applyGrabbyCredit\": 0,\n  \"applyPromoCode\": 0,\n  \"totalAmount\": 24.5,\n  \"paymentMethod\": \"Credit Card\",\n  \"carPlates\": \"DXB 12345\",\n  \"transactionId\": \"6478ytwefgfwe456743654\"\n}"
-          },
-          "url": {
-            "raw": "{{baseUrl}}/orders",
-            "host": [
-              "{{baseUrl}}"
-            ],
-            "path": [
-              "orders"
-            ]
-          },
-          "description": "Create a new order from cart items. Defaults payment status to paid."
-        },
-        "response": []
-      },
-      {
-        "name": "Get My Orders",
-        "request": {
-          "method": "GET",
-          "header": [
-            {
-              "key": "Authorization",
-              "value": "Bearer {{accessToken}}"
-            }
-          ],
-          "url": {
-            "raw": "{{baseUrl}}/orders/my-orders?status=placed&page=1&limit=10",
-            "host": [
-              "{{baseUrl}}"
-            ],
-            "path": [
-              "orders",
-              "my-orders"
-            ],
-            "query": [
+  "variable": [
+    {
+      "key": "baseUrl",
+      "value": "http://localhost:5001",
+      "type": "string"
+    },
+    {
+      "key": "accessToken",
+      "value": "",
+      "type": "string"
+    },
+    {
+      "key": "shopOwnerId",
+      "value": "",
+      "type": "string"
+    },
+    {
+      "key": "branchId",
+      "value": "",
+      "type": "string"
+    },
+    {
+      "key": "adminId",
+      "value": "",
+      "type": "string"
+    },
+    {
+      "key": "customerId",
+      "value": "",
+      "type": "string"
+    },
+    {
+      "key": "menuId",
+      "value": "",
+      "type": "string"
+    },
+    {
+      "key": "menuCategoryId",
+      "value": "",
+      "type": "string"
+    },
+    {
+      "key": "eventOfferId",
+      "value": "",
+      "type": "string"
+    },
+    {
+      "key": "promoCodeId",
+      "value": "",
+      "type": "string"
+    },
+    {
+      "key": "orderId",
+      "value": "",
+      "type": "string"
+    },
+    {
+      "key": "carPlateId",
+      "value": "",
+      "type": "string"
+    },
+    {
+      "key": "cartItemId",
+      "value": "",
+      "type": "string"
+    },
+    {
+      "key": "cartId",
+      "value": "",
+      "type": "string"
+    },
+    {
+      "key": "upcomingEventId",
+      "value": "",
+      "type": "string"
+    }
+  ],
+  "item": [
+    {
+      "name": "Auth",
+      "item": [
+        {
+          "name": "Register Customer",
+          "request": {
+            "method": "POST",
+            "header": [
               {
-                "key": "status",
-                "value": "placed",
-                "disabled": false
-              },
-              {
-                "key": "page",
-                "value": "1",
-                "disabled": false
-              },
-              {
-                "key": "limit",
-                "value": "10",
-                "disabled": false
+                "key": "Content-Type",
+                "value": "application/json"
               }
-            ]
-          },
-          "description": "Get all orders for the current customer."
-        },
-        "response": []
-      },
-      {
-        "name": "Get Branch Orders",
-        "request": {
-          "method": "GET",
-          "header": [
-            {
-              "key": "Authorization",
-              "value": "Bearer {{accessToken}}"
-            }
-          ],
-          "url": {
-            "raw": "{{baseUrl}}/orders/branch/{{branchId}}?status=placed&page=1&limit=10",
-            "host": [
-              "{{baseUrl}}"
             ],
-            "path": [
-              "orders",
-              "branch",
-              "{{branchId}}"
-            ],
-            "query": [
-              {
-                "key": "status",
-                "value": "placed",
-                "disabled": false
-              },
-              {
-                "key": "page",
-                "value": "1",
-                "disabled": false
-              },
-              {
-                "key": "limit",
-                "value": "10",
-                "disabled": false
-              }
-            ]
-          },
-          "description": "Get all orders for a specific branch (Shop Owner/Admin)."
-        },
-        "response": []
-      },
-      {
-        "name": "Get Order Details",
-        "request": {
-          "method": "GET",
-          "header": [
-            {
-              "key": "Authorization",
-              "value": "Bearer {{accessToken}}"
-            }
-          ],
-          "url": {
-            "raw": "{{baseUrl}}/orders/{{orderId}}",
-            "host": [
-              "{{baseUrl}}"
-            ],
-            "path": [
-              "orders",
-              "{{orderId}}"
-            ]
-          },
-          "description": "Get details of a specific order."
-        },
-        "response": []
-      },
-      {
-        "name": "Update Order Status",
-        "request": {
-          "method": "PATCH",
-          "header": [
-            {
-              "key": "Authorization",
-              "value": "Bearer {{accessToken}}"
+            "url": {
+              "raw": "{{baseUrl}}/auth/customer/register",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "auth",
+                "customer",
+                "register"
+              ]
             },
-            {
-              "key": "Content-Type",
-              "value": "application/json"
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"John Doe\",\n  \"email\": \"customer@example.com\",\n  \"phone_number\": \"+971501234567\",\n  \"password\": \"password123\",\n  \"confirmPassword\": \"password123\",\n  \"termsAccepted\": true\n}"
             }
-          ],
-          "body": {
-            "mode": "raw",
-            "raw": "{\n  \"status\": \"preparing\"\n}"
           },
-          "url": {
-            "raw": "{{baseUrl}}/orders/{{orderId}}/status",
-            "host": [
-              "{{baseUrl}}"
-            ],
-            "path": [
-              "orders",
-              "{{orderId}}",
-              "status"
-            ]
-          },
-          "description": "Update the status of an order."
+          "response": []
         },
-        "response": []
-      }
-    ]
-  }
-]
+        {
+          "name": "Register Shop Owner",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/auth/shop-owner/register",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "auth",
+                "shop-owner",
+                "register"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Shop Owner\",\n  \"email\": \"shopowner@example.com\",\n  \"phone_number\": \"+971501234567\",\n  \"password\": \"password123\",\n  \"confirmPassword\": \"password123\",\n  \"termsAccepted\": true\n}"
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Verify OTP",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/auth/verify-otp",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "auth",
+                "verify-otp"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"user@example.com\",\n  \"activation_code\": \"123456\"\n}"
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Resend OTP",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/auth/resend-otp",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "auth",
+                "resend-otp"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"user@example.com\"\n}"
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Login",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/auth/login",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "auth",
+                "login"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"user@example.com\",\n  \"password\": \"password123\"\n}"
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Forgot Password",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/auth/forgot-password",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "auth",
+                "forgot-password"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"user@example.com\"\n}"
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Verify Forgot OTP",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/auth/verify-forgot-otp",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "auth",
+                "verify-forgot-otp"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"user@example.com\",\n  \"activation_code\": \"123456\"\n}"
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Resend Forgot Code",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/auth/resend-forgot-code",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "auth",
+                "resend-forgot-code"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"user@example.com\"\n}"
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Reset Password",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/auth/reset-password",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "auth",
+                "reset-password"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"newPassword\": \"newpassword123\",\n  \"confirmPassword\": \"newpassword123\"\n}"
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Change Password",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{accessToken}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/auth/change-password",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "auth",
+                "change-password"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"oldPassword\": \"oldpassword123\",\n  \"newPassword\": \"newpassword123\"\n}"
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get My Profile",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{accessToken}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/auth/profile",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "auth",
+                "profile"
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Shop Owner",
+      "item": [
+        {
+          "name": "Save Location",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{accessToken}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/shop-owner/location",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "shop-owner",
+                "location"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"address\": \"Dubai, UAE\",\n  \"lat\": 25.2048,\n  \"lng\": 55.2708\n}"
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Save Business Info",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{accessToken}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/shop-owner/business/info",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "shop-owner",
+                "business",
+                "info"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"shop_name\": \"My Shop\",\n  \"shop_license_number\": \"LIC123\",\n  \"contact_email\": \"shop@example.com\",\n  \"contact_phone\": \"+971501234567\"\n}"
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Save Branches",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{accessToken}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/shop-owner/business/branches",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "shop-owner",
+                "business",
+                "branches"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"branches\": [\n    {\n      \"branch_name\": \"Main\",\n      \"address\": \"Dubai\",\n      \"lat\": 25.2048,\n      \"lng\": 55.2708,\n      \"phone_number\": \"+971501234567\",\n      \"availability\": [\n        {\n          \"day\": \"Monday\",\n          \"open\": \"8:00 AM\",\n          \"close\": \"10:00 PM\",\n          \"isClosed\": false\n        }\n      ],\n      \"applyMenuForAll\": false\n    }\n  ]\n}"
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Upload Documents",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{accessToken}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/shop-owner/business/documents",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "shop-owner",
+                "business",
+                "documents"
+              ]
+            },
+            "body": {
+              "mode": "formdata",
+              "formdata": [
+                {
+                  "key": "business_license",
+                  "type": "file",
+                  "src": []
+                },
+                {
+                  "key": "shop_logo",
+                  "type": "file",
+                  "src": []
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Update Profile",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{accessToken}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/shop-owner/profile",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "shop-owner",
+                "profile"
+              ]
+            },
+            "body": {
+              "mode": "formdata",
+              "formdata": [
+                {
+                  "key": "name",
+                  "value": "Updated Name",
+                  "type": "text"
+                },
+                {
+                  "key": "profile_image",
+                  "type": "file",
+                  "src": []
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Toggle Reward Points",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{accessToken}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/shop-owner/reward-points/toggle",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "shop-owner",
+                "reward-points",
+                "toggle"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Create Branch",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{accessToken}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/shop-owner/branch",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "shop-owner",
+                "branch"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"branch_name\": \"New Branch\",\n  \"address\": \"Location\",\n  \"lat\": 25.2048,\n  \"lng\": 55.2708,\n  \"phone_number\": \"+971501234567\"\n}"
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get All Branches",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{accessToken}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/shop-owner/branch",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "shop-owner",
+                "branch"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get Branch Details",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{accessToken}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/shop-owner/branch/{{branchId}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "shop-owner",
+                "branch",
+                "{{branchId}}"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Update Branch",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{accessToken}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/shop-owner/branch/{{branchId}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "shop-owner",
+                "branch",
+                "{{branchId}}"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"branch_name\": \"Updated Name\"\n}"
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Update Branch Availability",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{accessToken}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/shop-owner/branch/{{branchId}}/availability",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "shop-owner",
+                "branch",
+                "{{branchId}}",
+                "availability"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"availability\": [\n    {\n      \"day\": \"Monday\",\n      \"open\": \"9:00 AM\",\n      \"close\": \"11:00 PM\"\n    }\n  ]\n}"
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Delete Branch",
+          "request": {
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{accessToken}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/shop-owner/branch/{{branchId}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "shop-owner",
+                "branch",
+                "{{branchId}}"
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Admin",
+      "item": [
+        {
+          "name": "Get Shop Owner Requests",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{accessToken}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/admin/shop_owner/request",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "admin",
+                "shop_owner",
+                "request"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Accept Shop Owner",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{accessToken}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/admin/shop_owner/accept",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "admin",
+                "shop_owner",
+                "accept"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"shopOwnerId\": \"{{shopOwnerId}}\"\n}"
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Block Shop Owner",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{accessToken}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/admin/shop_owner/blocked",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "admin",
+                "shop_owner",
+                "blocked"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"shopOwnerId\": \"{{shopOwnerId}}\"\n}"
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Update Shop Owner Details",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{accessToken}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/admin/shop_owner/details/{{shopOwnerId}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "admin",
+                "shop_owner",
+                "details",
+                "{{shopOwnerId}}"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"shop_name\": \"Admin Updated Shop\"\n}"
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get All Customers",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{accessToken}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/admin/customers",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "admin",
+                "customers"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Block Customer",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{accessToken}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/admin/customer/blocked",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "admin",
+                "customer",
+                "blocked"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"customerId\": \"{{customerId}}\"\n}"
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get Customer Overview",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{accessToken}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/admin/customer/overview",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "admin",
+                "customer",
+                "overview"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get Customer Details",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{accessToken}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/admin/customer/{{customerId}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "admin",
+                "customer",
+                "{{customerId}}"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Create Admin",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{accessToken}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/admin/create",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "admin",
+                "create"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"New Admin\",\n  \"email\": \"admin@example.com\",\n  \"password\": \"password123\"\n}"
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Update Admin Profile",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{accessToken}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/admin/profile/{{adminId}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "admin",
+                "profile",
+                "{{adminId}}"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Updated Admin\"\n}"
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Delete Admin",
+          "request": {
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{accessToken}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/admin/{{adminId}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "admin",
+                "{{adminId}}"
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Menu Category",
+      "item": [
+        {
+          "name": "Create Category",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{accessToken}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/menu-category/create",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "menu-category",
+                "create"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Beverages\",\n  \"description\": \"Hot and cold drinks\"\n}"
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get by Shop",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{accessToken}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/menu-category/shop",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "menu-category",
+                "shop"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get by Branch",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/menu-category/branch/{{branchId}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "menu-category",
+                "branch",
+                "{{branchId}}"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Update Category",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{accessToken}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/menu-category/{{menuCategoryId}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "menu-category",
+                "{{menuCategoryId}}"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Updated Beverages\"\n}"
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Delete Category",
+          "request": {
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{accessToken}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/menu-category/{{menuCategoryId}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "menu-category",
+                "{{menuCategoryId}}"
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Menu",
+      "item": [
+        {
+          "name": "Upload Image",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{accessToken}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/menu/upload-image",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "menu",
+                "upload-image"
+              ]
+            },
+            "body": {
+              "mode": "formdata",
+              "formdata": [
+                {
+                  "key": "image",
+                  "type": "file",
+                  "src": []
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Create Menu Item",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{accessToken}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/menu/create",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "menu",
+                "create"
+              ]
+            },
+            "body": {
+              "mode": "formdata",
+              "formdata": [
+                {
+                  "key": "name",
+                  "value": "Latte",
+                  "type": "text"
+                },
+                {
+                  "key": "price",
+                  "value": "25",
+                  "type": "text"
+                },
+                {
+                  "key": "category",
+                  "value": "{{menuCategoryId}}",
+                  "type": "text"
+                },
+                {
+                  "key": "branchIds",
+                  "value": "['{{branchId}}']",
+                  "type": "text"
+                },
+                {
+                  "key": "image",
+                  "type": "file",
+                  "src": []
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get All (Shop)",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{accessToken}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/menu/shop",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "menu",
+                "shop"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Update Menu Item",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{accessToken}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/menu/{{menuId}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "menu",
+                "{{menuId}}"
+              ]
+            },
+            "body": {
+              "mode": "formdata",
+              "formdata": [
+                {
+                  "key": "name",
+                  "value": "Updated Latte",
+                  "type": "text"
+                },
+                {
+                  "key": "image",
+                  "type": "file",
+                  "src": []
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Delete Menu Item",
+          "request": {
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{accessToken}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/menu/{{menuId}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "menu",
+                "{{menuId}}"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get by Category",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/menu/category/{{branchId}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "menu",
+                "category",
+                "{{branchId}}"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get by ID",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/menu/{{menuId}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "menu",
+                "{{menuId}}"
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Event Offer",
+      "item": [
+        {
+          "name": "Create Offer (Shop)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{accessToken}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/event-offer/create",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "event-offer",
+                "create"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"title\": \"Summer\",\n  \"discount_percentage\": 20,\n  \"branchIds\": [\n    \"{{branchId}}\"\n  ]\n}"
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get Offers (Shop)",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{accessToken}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/event-offer/shop",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "event-offer",
+                "shop"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Update Offer (Shop)",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{accessToken}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/event-offer/shop/{{eventOfferId}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "event-offer",
+                "shop",
+                "{{eventOfferId}}"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"title\": \"Updated Summer\"\n}"
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Toggle Active",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{accessToken}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/event-offer/toggle/{{eventOfferId}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "event-offer",
+                "toggle",
+                "{{eventOfferId}}"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Delete Offer (Shop)",
+          "request": {
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{accessToken}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/event-offer/shop/{{eventOfferId}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "event-offer",
+                "shop",
+                "{{eventOfferId}}"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Create Offer (Admin)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{accessToken}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/event-offer/admin/create",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "event-offer",
+                "admin",
+                "create"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"title\": \"Admin Promo\",\n  \"discount_percentage\": 15,\n  \"shopOwnerIds\": [\n    \"{{shopOwnerId}}\"\n  ]\n}"
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get Offers (Admin)",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{accessToken}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/event-offer/admin",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "event-offer",
+                "admin"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Update Offer (Admin)",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{accessToken}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/event-offer/admin/{{eventOfferId}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "event-offer",
+                "admin",
+                "{{eventOfferId}}"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"title\": \"Updated Admin Promo\"\n}"
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Delete Offer (Admin)",
+          "request": {
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{accessToken}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/event-offer/admin/{{eventOfferId}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "event-offer",
+                "admin",
+                "{{eventOfferId}}"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get Offer by ID",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{accessToken}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/event-offer/{{eventOfferId}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "event-offer",
+                "{{eventOfferId}}"
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Customer",
+      "item": [
+        {
+          "name": "Get My Profile",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{accessToken}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/customers/profile",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "customers",
+                "profile"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Update Profile",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{accessToken}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/customers/profile",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "customers",
+                "profile"
+              ]
+            },
+            "body": {
+              "mode": "formdata",
+              "formdata": [
+                {
+                  "key": "name",
+                  "value": "John Updated",
+                  "type": "text"
+                },
+                {
+                  "key": "profile_image",
+                  "type": "file",
+                  "src": []
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Save Location",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{accessToken}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/customers/location",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "customers",
+                "location"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"address\": \"New Dubai\",\n  \"lat\": 25.2048,\n  \"lng\": 55.2708\n}"
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get Branches",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{accessToken}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/customers/branches",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "customers",
+                "branches"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get Single Branch",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{accessToken}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/customers/branches/{{branchId}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "customers",
+                "branches",
+                "{{branchId}}"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Convert Points",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{accessToken}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/customers/convert-points",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "customers",
+                "convert-points"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"points\": 100\n}"
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get Wallet",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{accessToken}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/customers/wallet",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "customers",
+                "wallet"
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Customer Stamps",
+      "item": [
+        {
+          "name": "Check Eligibility",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{accessToken}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/customer-stamps/check-eligibility",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "customer-stamps",
+                "check-eligibility"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get by Branch",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{accessToken}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/customer-stamps/branch/{{branchId}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "customer-stamps",
+                "branch",
+                "{{branchId}}"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Add Stamp",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{accessToken}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/customer-stamps/add",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "customer-stamps",
+                "add"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"branchId\": \"{{branchId}}\"\n}"
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Branches",
+      "item": [
+        {
+          "name": "Get Branch Details",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{accessToken}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/branches/details/{{branchId}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "branches",
+                "details",
+                "{{branchId}}"
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Promo Code",
+      "item": [
+        {
+          "name": "Create Promo Code",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{accessToken}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/promo-code",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "promo-code"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"code\": \"SUMMER20\",\n  \"shopOwnerId\": \"{{shopOwnerId}}\",\n  \"discountPercent\": 20,\n  \"branchIds\": \"all\"\n}"
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get All",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/promo-code?shopOwnerId={{shopOwnerId}}&branchId={{branchId}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "promo-code"
+              ],
+              "query": [
+                {
+                  "key": "shopOwnerId",
+                  "value": "{{shopOwnerId}}"
+                },
+                {
+                  "key": "branchId",
+                  "value": "{{branchId}}"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get Customer",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/promo-code/customer?branchId={{branchId}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "promo-code",
+                "customer"
+              ],
+              "query": [
+                {
+                  "key": "branchId",
+                  "value": "{{branchId}}"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Update Promo Code",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{accessToken}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/promo-code/{{promoCodeId}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "promo-code",
+                "{{promoCodeId}}"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"code\": \"SUMMER25\"\n}"
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Update Status",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{accessToken}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/promo-code/{{promoCodeId}}/status",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "promo-code",
+                "{{promoCodeId}}",
+                "status"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"status\": \"inactive\"\n}"
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Delete Promo Code",
+          "request": {
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{accessToken}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/promo-code/{{promoCodeId}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "promo-code",
+                "{{promoCodeId}}"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Validate Promo Code",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/promo-code/validate",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "promo-code",
+                "validate"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"code\": \"SUMMER206\",\n  \"shopOwnerId\": \"{{shopOwnerId}}\",\n  \"cartId\": \"{{cartId}}\"\n}"
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Upcoming Events",
+      "item": [
+        {
+          "name": "Create Event",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{accessToken}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/upcoming-events/create",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "upcoming-events",
+                "create"
+              ]
+            },
+            "body": {
+              "mode": "formdata",
+              "formdata": [
+                {
+                  "key": "name",
+                  "value": "Festival",
+                  "type": "text"
+                },
+                {
+                  "key": "startDate",
+                  "value": "2024-05-01",
+                  "type": "text"
+                },
+                {
+                  "key": "endDate",
+                  "value": "2024-05-15",
+                  "type": "text"
+                },
+                {
+                  "key": "image",
+                  "type": "file",
+                  "src": []
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get All",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/upcoming-events",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "upcoming-events"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get by ID",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/upcoming-events/{{upcomingEventId}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "upcoming-events",
+                "{{upcomingEventId}}"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Update Event",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{accessToken}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/upcoming-events/{{upcomingEventId}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "upcoming-events",
+                "{{upcomingEventId}}"
+              ]
+            },
+            "body": {
+              "mode": "formdata",
+              "formdata": [
+                {
+                  "key": "name",
+                  "value": "Updated Festival",
+                  "type": "text"
+                },
+                {
+                  "key": "image",
+                  "type": "file",
+                  "src": []
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Delete Event",
+          "request": {
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{accessToken}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/upcoming-events/{{upcomingEventId}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "upcoming-events",
+                "{{upcomingEventId}}"
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Car Plates",
+      "item": [
+        {
+          "name": "Create Plate",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{accessToken}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/car-plates",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "car-plates"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"carNumberSource\": \"Dubai\",\n  \"plateCode\": \"ABC123\"\n}"
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get All",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{accessToken}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/car-plates",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "car-plates"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get by ID",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{accessToken}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/car-plates/{{carPlateId}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "car-plates",
+                "{{carPlateId}}"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Update Plate",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{accessToken}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/car-plates/{{carPlateId}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "car-plates",
+                "{{carPlateId}}"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"carNumberSource\": \"Abu Dhabi\"\n}"
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Delete Plate",
+          "request": {
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{accessToken}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/car-plates/{{carPlateId}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "car-plates",
+                "{{carPlateId}}"
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Cart",
+      "item": [
+        {
+          "name": "Add to Cart",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{accessToken}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/cart/add",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "cart",
+                "add"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"branchId\": \"{{branchId}}\",\n  \"productId\": \"{{menuId}}\",\n  \"productType\": \"menu\",\n  \"menuName\": \"Latte\",\n  \"menuPrice\": 25,\n  \"quantity\": 1,\n  \"additionalItems\": []\n}"
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Update Cart Item",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{accessToken}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/cart/item/{{cartItemId}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "cart",
+                "item",
+                "{{cartItemId}}"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"quantity\": 2\n}"
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Remove from Cart",
+          "request": {
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{accessToken}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/cart/item/{{cartItemId}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "cart",
+                "item",
+                "{{cartItemId}}"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get Cart",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{accessToken}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/cart?branchId={{branchId}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "cart"
+              ],
+              "query": [
+                {
+                  "key": "branchId",
+                  "value": "{{branchId}}"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Clear Cart",
+          "request": {
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{accessToken}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/cart/clear",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "cart",
+                "clear"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"branchId\": \"{{branchId}}\"\n}"
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get Cart Summary",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{accessToken}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/cart/summary?branchId={{branchId}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "cart",
+                "summary"
+              ],
+              "query": [
+                {
+                  "key": "branchId",
+                  "value": "{{branchId}}"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Apply Credit",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{accessToken}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/cart/apply-credit",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "cart",
+                "apply-credit"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"cartId\": \"{{cartId}}\"\n}"
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Order",
+      "item": [
+        {
+          "name": "Create Order",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{accessToken}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/orders",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "orders"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"branchId\": \"{{branchId}}\",\n  \"items\": [\n    {\n      \"productId\": \"{{menuId}}\",\n      \"quantity\": 1,\n      \"totalPrice\": 25\n    }\n  ],\n  \"pickupType\": \"carPickup\",\n  \"totalAmount\": 25,\n  \"carPlates\": \"DXB 12345\"\n}"
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get My Orders",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{accessToken}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/orders/my-orders?status=placed&page=1&limit=10",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "orders",
+                "my-orders"
+              ],
+              "query": [
+                {
+                  "key": "status",
+                  "value": "placed"
+                },
+                {
+                  "key": "page",
+                  "value": "1"
+                },
+                {
+                  "key": "limit",
+                  "value": "10"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get Branch Orders",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{accessToken}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/orders/branch/{{branchId}}?status=placed&page=1&limit=10",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "orders",
+                "branch",
+                "{{branchId}}"
+              ],
+              "query": [
+                {
+                  "key": "status",
+                  "value": "placed"
+                },
+                {
+                  "key": "page",
+                  "value": "1"
+                },
+                {
+                  "key": "limit",
+                  "value": "10"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get Single Order",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{accessToken}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/orders/{{orderId}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "orders",
+                "{{orderId}}"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Update Order Status",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{accessToken}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/orders/{{orderId}}/status",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "orders",
+                "{{orderId}}",
+                "status"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"status\": \"preparing\"\n}"
+            }
+          },
+          "response": []
+        }
+      ]
+    }
+  ]
 }

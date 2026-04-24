@@ -34,6 +34,7 @@ const cartSchema = new Schema<ICart, CartModel>(
     items: { type: [cartItemSchema], default: [] },
     totalItems: { type: Number, default: 0 },
     totalAmount: { type: Number, default: 0 },
+    appliedCredit: { type: Number, default: 0 },
   },
   { timestamps: true }
 );

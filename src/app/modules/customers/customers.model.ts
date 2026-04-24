@@ -41,6 +41,14 @@ const CustomerSchema = new Schema<ICustomer>(
       type: Number,
       default: null,
     },
+    pointWallet: {
+      type: Number,
+      default: 0,
+    },
+    credWallet: {
+      type: Number,
+      default: 0,
+    },
   },
   {
     timestamps: true,

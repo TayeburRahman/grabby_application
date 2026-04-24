@@ -11,6 +11,8 @@ export type ICustomer = Document & {
   addressName?: string;
   lat?: number;
   lon?: number;
+  pointWallet: number;
+  credWallet: number;
   createdAt?: Date;
   updatedAt?: Date;
 };

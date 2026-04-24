@@ -41,4 +41,16 @@ router.get(
   CustomerController.getSingleBranch
 );
 
+router.post(
+  "/convert-points",
+  auth(ENUM_USER_ROLE.CUSTOMER),
+  CustomerController.convertPoints
+);
+
+router.get(
+  "/wallet",
+  auth(ENUM_USER_ROLE.CUSTOMER),
+  CustomerController.getWallet
+);
+
 export const CustomerRoutes = router;

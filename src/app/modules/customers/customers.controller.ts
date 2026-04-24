@@ -115,6 +115,41 @@ const getBranchDetails = catchAsync(async (req, res) => {
   });
 });
 
+const convertPoints = catchAsync(async (req, res) => {
+  const userId = req.user?.userId as string;
+  const { points } = req.body;
+
+  if (!points) {
+    return sendResponse(res, {
+      statusCode: httpStatus.BAD_REQUEST,
+      success: false,
+      message: "Please provide the points to convert",
+      data: null,
+    });
+  }
+
+  const result = await CustomerService.convertPoints(userId, Number(points));
+
+  sendResponse(res, {
+    statusCode: httpStatus.OK,
+    success: true,
+    message: "Points converted to credit successfully",
+    data: result,
+  });
+});
+
+const getWallet = catchAsync(async (req, res) => {
+  const userId = req.user?.userId as string;
+  const result = await CustomerService.getWallet(userId);
+
+  sendResponse(res, {
+    statusCode: httpStatus.OK,
+    success: true,
+    message: "Wallet data retrieved successfully",
+    data: result,
+  });
+});
+
 export const CustomerController = {
   getMyProfile,
   updateProfile,
@@ -122,4 +157,6 @@ export const CustomerController = {
   getBranches,
   getSingleBranch,
   getBranchDetails,
+  convertPoints,
+  getWallet,
 };

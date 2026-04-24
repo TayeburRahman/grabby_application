@@ -5,6 +5,7 @@ const createPromoCodeSchema = z.object({
     // Single promo code
     z.object({
       code: z.string({ required_error: 'Code is required' }).min(1, 'Code cannot be empty'),
+      shopOwnerId: z.string().regex(/^[0-9a-fA-F]{24}$/, 'Invalid ObjectId').optional(),
       status: z.enum(['active', 'inactive']).optional().default('active'),
       discountPercent: z.number().min(0).max(100).optional().default(0),
       branchIds: z.union([
@@ -15,6 +16,7 @@ const createPromoCodeSchema = z.object({
     // Bulk promo codes
     z.array(z.object({
       code: z.string({ required_error: 'Code is required' }).min(1, 'Code cannot be empty'),
+      shopOwnerId: z.string().regex(/^[0-9a-fA-F]{24}$/, 'Invalid ObjectId').optional(),
       status: z.enum(['active', 'inactive']).optional().default('active'),
       discountPercent: z.number().min(0).max(100).optional().default(0),
       branchIds: z.union([

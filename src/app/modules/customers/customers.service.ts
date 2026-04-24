@@ -262,6 +262,38 @@ const saveLocation = async (
   return updatedCustomer;
 };
 
+const convertPoints = async (userId: string, pointsToConvert: number) => {
+  if (![500, 1000, 1500, 2000].includes(pointsToConvert)) {
+    throw new ApiError(httpStatus.BAD_REQUEST, "Invalid points amount. Must be 500, 1000, 1500, or 2000.");
+  }
+
+  const customer = await Customer.findById(userId);
+  if (!customer) {
+    throw new ApiError(httpStatus.NOT_FOUND, "Customer not found");
+  }
+
+  if (customer.pointWallet < pointsToConvert) {
+    throw new ApiError(httpStatus.BAD_REQUEST, "Insufficient points in wallet");
+  }
+
+  const creditToAdd = pointsToConvert / 100;
+
+  customer.pointWallet -= pointsToConvert;
+  customer.credWallet += creditToAdd;
+
+  await customer.save();
+
+  return customer;
+};
+
+const getWallet = async (userId: string) => {
+  const customer = await Customer.findById(userId).select('pointWallet credWallet');
+  if (!customer) {
+    throw new ApiError(httpStatus.NOT_FOUND, "Customer not found");
+  }
+  return customer;
+};
+
 export const CustomerService = {
   updateProfile,
   getMyProfile,
@@ -269,5 +301,7 @@ export const CustomerService = {
   getBranchesForCustomer,
   getSingleBranch,
   getBranchDetailsBrief,
+  convertPoints,
+  getWallet,
 };
 

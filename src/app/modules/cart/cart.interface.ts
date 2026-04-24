@@ -30,6 +30,7 @@ export interface ICart extends Document {
   items: ICartItem[];
   totalItems: number;
   totalAmount: number;
+  appliedCredit?: number;
   createdAt?: Date;
   updatedAt?: Date;
 }

@@ -81,6 +81,20 @@ const getCartSummary = catchAsync(async (req: Request, res: Response) => {
   });
 });
 
+const applyCredit = catchAsync(async (req: Request, res: Response) => {
+  const { userId } = req.user as IReqUser;
+  const { cartId } = req.body;
+  
+  const result = await CartService.applyCredit(userId, cartId);
+
+  sendResponse(res, {
+    statusCode: 200,
+    success: true,
+    message: 'Credit applied successfully',
+    data: result,
+  });
+});
+
 export const CartController = {
   addToCart,
   updateCartItem,
@@ -88,4 +102,5 @@ export const CartController = {
   getCart,
   clearCart,
   getCartSummary,
+  applyCredit,
 };

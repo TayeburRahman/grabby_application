@@ -93,7 +93,7 @@ const addToCart = async (customerId: string, cartData: any) => {
       if (menuName) existingItem.menuName = menuName;
       if (menuPrice !== undefined) existingItem.menuPrice = menuPrice;
       if (menuImage) existingItem.menuImage = menuImage;
-      
+
       // Update quantity
       existingItem.quantity = (existingItem.quantity || 0) + (quantity || 0);
 
@@ -122,7 +122,7 @@ const addToCart = async (customerId: string, cartData: any) => {
         updatedItemTotalPrice += (addon.price || 0) * (addon.quantity || 0);
       }
       existingItem.totalPrice = updatedItemTotalPrice;
-      
+
       // Mark items array as modified to ensure Mongoose saves changes to subdocuments
       cart.markModified('items');
     } else {
@@ -152,7 +152,20 @@ const addToCart = async (customerId: string, cartData: any) => {
 
     // Update cart totals
     cart.totalItems = cart.items.reduce((sum, item) => sum + (item.quantity || 0) + (item.additionalItems?.length || 0), 0);
-    cart.totalAmount = cart.items.reduce((sum, item) => sum + item.totalPrice, 0);
+    const grossTotal = cart.items.reduce((sum, item) => sum + item.totalPrice, 0);
+
+    if (cart.appliedCredit && cart.appliedCredit > 0) {
+      if (grossTotal < cart.appliedCredit) {
+        const differenceToRefund = cart.appliedCredit - grossTotal;
+        const cartCustomer = await Customer.findById(cart.customerId);
+        if (cartCustomer) {
+          cartCustomer.credWallet += differenceToRefund;
+          await cartCustomer.save();
+        }
+        cart.appliedCredit = grossTotal;
+      }
+    }
+    cart.totalAmount = grossTotal - (cart.appliedCredit || 0);
 
     await cart.save();
     lastCart = cart;
@@ -250,7 +263,20 @@ const updateCartItem = async (customerId: string, itemId: string, updateData: an
 
   // Update cart totals
   cart.totalItems = cart.items.reduce((sum, item) => sum + (item.quantity || 0) + (item.additionalItems?.length || 0), 0);
-  cart.totalAmount = cart.items.reduce((sum, item) => sum + item.totalPrice, 0);
+  const grossTotal = cart.items.reduce((sum, item) => sum + item.totalPrice, 0);
+
+  if (cart.appliedCredit && cart.appliedCredit > 0) {
+    if (grossTotal < cart.appliedCredit) {
+      const differenceToRefund = cart.appliedCredit - grossTotal;
+      const cartCustomer = await Customer.findById(cart.customerId);
+      if (cartCustomer) {
+        cartCustomer.credWallet += differenceToRefund;
+        await cartCustomer.save();
+      }
+      cart.appliedCredit = grossTotal;
+    }
+  }
+  cart.totalAmount = grossTotal - (cart.appliedCredit || 0);
 
   await cart.save();
   return cart;
@@ -286,7 +312,20 @@ const removeFromCart = async (customerId: string, itemId: string) => {
 
   // Update cart totals
   cart.totalItems = cart.items.reduce((sum, item) => sum + (item.quantity || 0) + (item.additionalItems?.length || 0), 0);
-  cart.totalAmount = cart.items.reduce((sum, item) => sum + item.totalPrice, 0);
+  const grossTotal = cart.items.reduce((sum, item) => sum + item.totalPrice, 0);
+
+  if (cart.appliedCredit && cart.appliedCredit > 0) {
+    if (grossTotal < cart.appliedCredit) {
+      const differenceToRefund = cart.appliedCredit - grossTotal;
+      const cartCustomer = await Customer.findById(cart.customerId);
+      if (cartCustomer) {
+        cartCustomer.credWallet += differenceToRefund;
+        await cartCustomer.save();
+      }
+      cart.appliedCredit = grossTotal;
+    }
+  }
+  cart.totalAmount = grossTotal - (cart.appliedCredit || 0);
 
   await cart.save();
   return cart;
@@ -311,6 +350,19 @@ const clearCart = async (customerId: string, branchId?: string) => {
     filter.branchId = branchId;
   }
 
+  const cartsToClear = await Cart.find(filter);
+  const customer = await Customer.findById(customerId);
+
+  // Refund any applied credit before clearing carts
+  if (customer) {
+    for (const c of cartsToClear) {
+      if (c.appliedCredit && c.appliedCredit > 0) {
+        customer.credWallet += c.appliedCredit;
+      }
+    }
+    await customer.save();
+  }
+
   const result = await Cart.deleteMany(filter);
   return { message: 'Cart cleared successfully', deletedCount: result.deletedCount };
 };
@@ -324,10 +376,13 @@ const getCartSummary = async (customerId: string, branchId?: string) => {
   const carts = await Cart.find(filter);
 
   const summary = carts.map(cart => ({
+    cartId: cart._id,
     branchId: cart.branchId,
     totalItems: cart.totalItems,
     totalAmount: cart.totalAmount,
+    appliedCredit: cart.appliedCredit,
     items: cart.items.map(item => ({
+      itemId: item._id,
       productId: item.productId,
       menuName: item.menuName,
       quantity: item.quantity,
@@ -339,6 +394,44 @@ const getCartSummary = async (customerId: string, branchId?: string) => {
   return summary;
 };
 
+const applyCredit = async (customerId: string, cartId: string) => {
+  const customer = await Customer.findById(customerId);
+  const cart = await Cart.findById(cartId);
+
+  if (!cart) throw new ApiError(httpStatus.NOT_FOUND, 'Cart not found');
+  if (cart.customerId.toString() !== customerId) throw new ApiError(httpStatus.FORBIDDEN, 'Not your cart');
+  if (!customer) throw new ApiError(httpStatus.NOT_FOUND, 'Customer not found');
+
+  // Revert previously applied credit to get the base totalAmount
+  if (cart.appliedCredit && cart.appliedCredit > 0) {
+    customer.credWallet += cart.appliedCredit;
+    cart.totalAmount += cart.appliedCredit;
+    cart.appliedCredit = 0;
+  }
+
+  const baseTotal = cart.totalAmount;
+  const maxCreditCanApply = Math.min(baseTotal, customer.credWallet);
+
+  if (maxCreditCanApply <= 0) {
+    throw new ApiError(httpStatus.BAD_REQUEST, 'No credit available to apply or cart is empty');
+  }
+
+  cart.appliedCredit = maxCreditCanApply;
+  cart.totalAmount = baseTotal - maxCreditCanApply;
+  customer.credWallet -= maxCreditCanApply;
+
+  await customer.save();
+  await cart.save();
+
+  return {
+    totalAmount: cart.totalAmount,
+    details: {
+      grossTotal: baseTotal,
+      appliedCredit: cart.appliedCredit,
+    },
+  };
+};
+
 export const CartService = {
   addToCart,
   updateCartItem,
@@ -346,4 +439,5 @@ export const CartService = {
   getCart,
   clearCart,
   getCartSummary,
+  applyCredit,
 };

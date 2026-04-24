@@ -13,20 +13,21 @@ const createPromoCode = async (userId: string, payload: any) => {
     const promoCodesToCreate = [];
 
     for (const promoCodeData of payload) {
-      const { code, status, discountPercent, branchIds } = promoCodeData;
+      const { code, status, discountPercent, branchIds, shopOwnerId: itemShopOwnerId } = promoCodeData;
+      const finalShopOwnerId = itemShopOwnerId;
 
       console.log("discountPercent", discountPercent)
 
       // If branchIds is 'all', get all branch IDs for the shop owner
       let finalBranchIds = branchIds;
       if (branchIds === 'all') {
-        const branches = await Branch.find({ shopOwnerId: userId }).select('_id');
+        const branches = await Branch.find({ shopOwnerId: finalShopOwnerId }).select('_id');
         finalBranchIds = branches.map(b => b._id);
       }
 
       promoCodesToCreate.push({
         code,
-        shopOwnerId: userId,
+        shopOwnerId: finalShopOwnerId,
         status: status || 'active',
         discountPercent: discountPercent,
         branchIds: finalBranchIds,
@@ -37,18 +38,19 @@ const createPromoCode = async (userId: string, payload: any) => {
     return promoCodes;
   } else {
     // Single creation
-    const { code, status, discountPercent, branchIds } = payload;
+    const { code, status, discountPercent, branchIds, shopOwnerId } = payload;
+    const finalShopOwnerId = shopOwnerId || userId;
 
     // If branchIds is 'all', get all branch IDs for the shop owner
     let finalBranchIds = branchIds;
     if (branchIds === 'all') {
-      const branches = await Branch.find({ shopOwnerId: userId }).select('_id');
+      const branches = await Branch.find({ shopOwnerId: finalShopOwnerId }).select('_id');
       finalBranchIds = branches.map(b => b._id);
     }
 
     const promoCode = await PromoCode.create({
       code,
-      shopOwnerId: userId,
+      shopOwnerId: finalShopOwnerId,
       status,
       discountPercent,
       branchIds: finalBranchIds,

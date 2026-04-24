@@ -47,4 +47,10 @@ router.get(
   CartController.getCartSummary
 );
 
+router.post(
+  '/apply-credit',
+  auth(ENUM_USER_ROLE.CUSTOMER),
+  CartController.applyCredit
+);
+
 export const CartRoutes = router;
