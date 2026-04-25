@@ -20,6 +20,7 @@ import { PricingPlanRoutes } from '../modules/pricing_plan/pricing_plan.routes';
 import { ShopOwnerPlanRoutes } from '../modules/shop_owner_plan/shop_owner_plan.routes';
 import { HelpCenterRoutes } from '../modules/help_center/help_center.routes';
 import { TermsAndConditionsRoutes } from '../modules/terms_and_conditions/terms_and_conditions.routes';
+import { NotificationRoutes } from '../modules/notification/notification.routes';
 
 const router = express.Router();
 
@@ -107,6 +108,10 @@ const moduleRoutes = [
   {
     path: '/terms-and-conditions',
     route: TermsAndConditionsRoutes,
+  },
+  {
+    path: '/notifications',
+    route: NotificationRoutes,
   },
 ];
 moduleRoutes.forEach(route => router.use(route.path, route.route));

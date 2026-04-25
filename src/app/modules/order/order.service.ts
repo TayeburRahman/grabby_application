@@ -1,4 +1,5 @@
 import httpStatus from 'http-status';
+import { Types } from 'mongoose';
 import ApiError from '../../../errors/ApiError';
 import { IOrder } from './order.interface';
 import { Order } from './order.model';
@@ -6,6 +7,7 @@ import { Cart } from '../cart/cart.model';
 import Customer from '../customers/customers.model';
 import { Branch, ShopOwner } from '../shop_owner/shop_owner.model';
 import QueryBuilder from '../../../builder/QueryBuilder';
+import { NotificationService } from '../notification/notification.service';
 
 const generateOrderId = async (): Promise<string> => {
   const date = new Date();
@@ -51,7 +53,28 @@ const createOrder = async (customerId: string, payload: Partial<IOrder>) => {
           customerId,
           { $inc: { pointWallet: earnedPoints } }
         );
+
+        // Create notification for Customer: Points earned
+        await NotificationService.createNotification({
+          title: 'Points Earned',
+          message: `You earned ${earnedPoints} points from order ${orderId}`,
+          recipient: new Types.ObjectId(customerId) as any,
+          role: 'customer',
+          orderId: result._id as any,
+        });
       }
+    }
+
+    // Create notification for Shop Owner: New Order
+    const branch = await Branch.findById(payload.branchId);
+    if (branch) {
+      await NotificationService.createNotification({
+        title: 'New Order',
+        message: `You have a new order: ${orderId}`,
+        recipient: branch.shopOwnerId as any,
+        role: 'shop_owner',
+        orderId: result._id as any,
+      });
     }
   }
 
@@ -98,6 +121,30 @@ const updateOrderStatus = async (orderId: string, status: string) => {
   if (!result) {
     throw new ApiError(httpStatus.NOT_FOUND, 'Order not found');
   }
+
+  // Create notification for Customer: Status Update
+  await NotificationService.createNotification({
+    title: 'Order Status Updated',
+    message: `Your order ${result.orderId} is now ${status}`,
+    recipient: result.customerId as any,
+    role: 'customer',
+    orderId: result._id as any,
+  });
+
+  // Create notification for Shop Owner: Order Completed
+  if (status === 'completed') {
+    const branch = await Branch.findById(result.branchId);
+    if (branch) {
+      await NotificationService.createNotification({
+        title: 'Order Completed',
+        message: `Order ${result.orderId} has been completed`,
+        recipient: branch.shopOwnerId as any,
+        role: 'shop_owner',
+        orderId: result._id as any,
+      });
+    }
+  }
+
   return result;
 };
 
@@ -199,6 +246,20 @@ const updateOrderNearbyStatus = async (orderId: string, customerId: string) => {
     { nearByShop: true },
     { new: true }
   );
+
+  if (result) {
+    // Create notification for Shop Owner: Customer Nearby
+    const branch = await Branch.findById(result.branchId);
+    if (branch) {
+      await NotificationService.createNotification({
+        title: 'Customer Nearby',
+        message: `Customer is nearby for order ${result.orderId}`,
+        recipient: branch.shopOwnerId as any,
+        role: 'shop_owner',
+        orderId: result._id as any,
+      });
+    }
+  }
 
   return result;
 };
