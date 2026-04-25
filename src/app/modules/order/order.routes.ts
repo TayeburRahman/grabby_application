@@ -51,4 +51,10 @@ router.patch(
   OrderController.updateOrderLocation
 );
 
+router.patch(
+  '/:id/nearby',
+  auth(ENUM_USER_ROLE.CUSTOMER),
+  OrderController.updateOrderNearbyStatus
+);
+
 export const OrderRoutes = router;

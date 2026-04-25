@@ -45,6 +45,7 @@ const orderSchema = new Schema<IOrder>(
     },
     paymentMethod: { type: String, required: true },
     transactionId: { type: String, required: true },
+    nearByShop: { type: Boolean, default: false },
   },
   {
     timestamps: true,

@@ -187,6 +187,22 @@ const updateOrderLocation = async (id: string, payload: { lat: number; lon: numb
   return { message: 'Location updated and notified successfully' };
 };
 
+const updateOrderNearbyStatus = async (orderId: string, customerId: string) => {
+  const order = await Order.findOne({ _id: orderId, customerId });
+
+  if (!order) {
+    throw new ApiError(httpStatus.NOT_FOUND, 'Order not found');
+  }
+
+  const result = await Order.findByIdAndUpdate(
+    orderId,
+    { nearByShop: true },
+    { new: true }
+  );
+
+  return result;
+};
+
 export const OrderService = {
   createOrder,
   getMyOrders,
@@ -195,4 +211,5 @@ export const OrderService = {
   updateOrderStatus,
   cancelOrder,
   updateOrderLocation,
+  updateOrderNearbyStatus,
 };

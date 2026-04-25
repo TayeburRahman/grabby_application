@@ -93,6 +93,19 @@ const updateOrderLocation = catchAsync(async (req: Request, res: Response) => {
   });
 });
 
+const updateOrderNearbyStatus = catchAsync(async (req: Request, res: Response) => {
+  const { userId } = req.user as IReqUser;
+  const { id } = req.params;
+  const result = await OrderService.updateOrderNearbyStatus(id, userId);
+
+  sendResponse(res, {
+    statusCode: httpStatus.OK,
+    success: true,
+    message: 'Order nearby status updated successfully',
+    data: result,
+  });
+});
+
 export const OrderController = {
   createOrder,
   getMyOrders,
@@ -101,4 +114,5 @@ export const OrderController = {
   updateOrderStatus,
   cancelOrder,
   updateOrderLocation,
+  updateOrderNearbyStatus,
 };

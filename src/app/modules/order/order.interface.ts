@@ -33,6 +33,7 @@ export interface IOrder extends Document {
   paymentStatus: IPaymentStatus;
   paymentMethod: string;
   transactionId: string;
+  nearByShop: boolean;
   createdAt?: Date;
   updatedAt?: Date;
 }
