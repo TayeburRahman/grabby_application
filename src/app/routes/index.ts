@@ -13,6 +13,7 @@ import { UpcomingEventsRoutes } from '../modules/upcoming_events/upcoming_events
 import { CarPlateRoutes } from '../modules/car_plates/car_plates.routes';
 import { CartRoutes } from '../modules/cart/cart.routes';
 import { OrderRoutes } from '../modules/order/order.routes';
+import { DashboardRoutes } from '../modules/dashboard/dashboard.routes';
 
 const router = express.Router();
 
@@ -72,6 +73,10 @@ const moduleRoutes = [
   {
     path: '/orders',
     route: OrderRoutes,
+  },
+  {
+    path: '/dashboard',
+    route: DashboardRoutes,
   },
 ];
 moduleRoutes.forEach(route => router.use(route.path, route.route));
