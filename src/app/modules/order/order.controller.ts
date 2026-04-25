@@ -68,10 +68,24 @@ const getBranchOrders = catchAsync(async (req: Request, res: Response) => {
   });
 });
 
+const cancelOrder = catchAsync(async (req: Request, res: Response) => {
+  const { userId } = req.user as IReqUser;
+  const { id } = req.params;
+  const result = await OrderService.cancelOrder(id, userId);
+
+  sendResponse(res, {
+    statusCode: httpStatus.OK,
+    success: true,
+    message: 'Order cancelled successfully',
+    data: result,
+  });
+});
+
 export const OrderController = {
   createOrder,
   getMyOrders,
   getSingleOrder,
   getBranchOrders,
   updateOrderStatus,
+  cancelOrder,
 };

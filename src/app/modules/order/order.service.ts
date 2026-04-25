@@ -59,6 +59,7 @@ const createOrder = async (customerId: string, payload: Partial<IOrder>) => {
 };
 
 const getMyOrders = async (customerId: string, query: Record<string, unknown>) => {
+
   const orderQuery = new QueryBuilder(
     Order.find({ customerId }).populate('branchId', 'branch_name address'),
     query
@@ -79,8 +80,8 @@ const getMyOrders = async (customerId: string, query: Record<string, unknown>) =
 
 const getSingleOrder = async (orderId: string) => {
   const result = await Order.findById(orderId)
-    .populate('branchId', 'branch_name address')
-    .populate('customerId', 'name email phone_number');
+    .populate('branchId')
+    .populate('customerId');
 
   if (!result) {
     throw new ApiError(httpStatus.NOT_FOUND, 'Order not found');
@@ -119,10 +120,52 @@ const getBranchOrders = async (branchId: string, query: Record<string, unknown>)
   };
 };
 
+const cancelOrder = async (orderId: string, customerId: string) => {
+  const order = await Order.findOne({ _id: orderId, customerId });
+
+  if (!order) {
+    throw new ApiError(httpStatus.NOT_FOUND, 'Order not found or you are not authorized to cancel this order');
+  }
+
+  if (order.status === 'cancelled') {
+    throw new ApiError(httpStatus.BAD_REQUEST, 'Order is already cancelled');
+  }
+
+  if (order.status === 'completed') {
+    throw new ApiError(httpStatus.BAD_REQUEST, 'Cannot cancel a completed order');
+  }
+
+  const result = await Order.findByIdAndUpdate(
+    orderId,
+    { status: 'cancelled' },
+    { new: true }
+  );
+
+  // Deduct points if the order was cancelled
+  if (result) {
+    const earnedPoints = Math.floor((order.totalAmount || 0) / 5) * 2;
+    if (earnedPoints > 0) {
+      // Check if reward points were enabled for this shop
+      const branch = await Branch.findById(order.branchId).populate('shopOwnerId');
+      const isRewardEnabled = branch && (branch.shopOwnerId as any)?.isRewardPointEnabled !== false;
+
+      if (isRewardEnabled) {
+        await Customer.findByIdAndUpdate(
+          customerId,
+          { $inc: { pointWallet: -earnedPoints } }
+        );
+      }
+    }
+  }
+
+  return result;
+};
+
 export const OrderService = {
   createOrder,
   getMyOrders,
   getSingleOrder,
   getBranchOrders,
   updateOrderStatus,
+  cancelOrder,
 };

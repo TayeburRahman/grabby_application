@@ -39,4 +39,10 @@ router.patch(
   OrderController.updateOrderStatus
 );
 
+router.patch(
+  '/:id/cancel',
+  auth(ENUM_USER_ROLE.CUSTOMER),
+  OrderController.cancelOrder
+);
+
 export const OrderRoutes = router;

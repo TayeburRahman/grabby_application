@@ -33,6 +33,16 @@ class QueryBuilder<T> {
 
     excludeFields.forEach(el => delete queryObj[el]);
 
+    // Handle multiple values for a field (comma-separated or array)
+    Object.keys(queryObj).forEach(key => {
+      const value = queryObj[key];
+      if (typeof value === 'string' && value.includes(',')) {
+        queryObj[key] = { $in: value.split(',') };
+      } else if (Array.isArray(value)) {
+        queryObj[key] = { $in: value };
+      }
+    });
+
     this.modelQuery = this.modelQuery.find(queryObj as FilterQuery<T>);
 
     return this;
