@@ -79,6 +79,31 @@
       "key": "upcomingEventId",
       "value": "",
       "type": "string"
+    },
+    {
+      "key": "faqId",
+      "value": "",
+      "type": "string"
+    },
+    {
+      "key": "freeStructureId",
+      "value": "",
+      "type": "string"
+    },
+    {
+      "key": "pricingPlanId",
+      "value": "",
+      "type": "string"
+    },
+    {
+      "key": "helpCenterId",
+      "value": "",
+      "type": "string"
+    },
+    {
+      "key": "termsAndConditionsId",
+      "value": "",
+      "type": "string"
     }
   ],
   "item": [
@@ -2848,6 +2873,418 @@
             "body": {
               "mode": "raw",
               "raw": "{\n  \"status\": \"preparing\"\n}"
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Cancel Order",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{accessToken}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/orders/{{orderId}}/cancel",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "orders",
+                "{{orderId}}",
+                "cancel"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Update Order Location",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{accessToken}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/orders/{{orderId}}/location",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "orders",
+                "{{orderId}}",
+                "location"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"lat\": 23.8103,\n  \"lon\": 90.4125\n}"
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Dashboard",
+      "item": [
+        {
+          "name": "Shop Owner Dashboard Stats",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{accessToken}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/dashboard/shop-owner",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "dashboard",
+                "shop-owner"
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "FAQ",
+      "item": [
+        {
+          "name": "Get All FAQs",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/faq",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "faq"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Create FAQ (Admin)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{accessToken}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/faq",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "faq"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"question\": \"How to earn points?\",\n  \"answer\": \"Order more!\"\n}"
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Free Structure",
+      "item": [
+        {
+          "name": "Get Free Structure",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/free-structure",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "free-structure"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Create Free Structure (Admin)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{accessToken}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/free-structure",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "free-structure"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"content\": \"Free structure content...\"\n}"
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Help Center",
+      "item": [
+        {
+          "name": "Get All Help Numbers",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/help-center",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "help-center"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Create Help Number (Admin)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{accessToken}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/help-center",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "help-center"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"phone\": \"+1234567890\"\n}"
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Terms and Conditions",
+      "item": [
+        {
+          "name": "Get All Terms",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/terms-and-conditions",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "terms-and-conditions"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Create Terms (Admin)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{accessToken}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/terms-and-conditions",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "terms-and-conditions"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"content\": \"Terms and conditions content...\"\n}"
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Pricing Plan",
+      "item": [
+        {
+          "name": "Get All Pricing Plans",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/pricing-plan",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "pricing-plan"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Create Pricing Plan (Admin)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{accessToken}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/pricing-plan",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "pricing-plan"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"icon\": \"https://example.com/icon.png\",\n  \"name\": \"Premium Plan\",\n  \"details\": \"Full access\",\n  \"price\": 99,\n  \"perDay\": 30\n}"
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Shop Owner Plans & Ads",
+      "item": [
+        {
+          "name": "Get Nearby Ads (Customer Side)",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/shop-owner-plan/ads?lat=23.8&lon=90.4",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "shop-owner-plan",
+                "ads"
+              ],
+              "query": [
+                {
+                  "key": "lat",
+                  "value": "23.8"
+                },
+                {
+                  "key": "lon",
+                  "value": "90.4"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Purchase Plan (Shop Owner)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{accessToken}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/shop-owner-plan/purchase",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "shop-owner-plan",
+                "purchase"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"planId\": \"{{pricingPlanId}}\"\n}"
             }
           },
           "response": []

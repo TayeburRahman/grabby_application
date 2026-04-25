@@ -16,6 +16,10 @@ import { OrderRoutes } from '../modules/order/order.routes';
 import { DashboardRoutes } from '../modules/dashboard/dashboard.routes';
 import { FaqRoutes } from '../modules/faq/faq.routes';
 import { FreeStructureRoutes } from '../modules/free_structure/free_structure.routes';
+import { PricingPlanRoutes } from '../modules/pricing_plan/pricing_plan.routes';
+import { ShopOwnerPlanRoutes } from '../modules/shop_owner_plan/shop_owner_plan.routes';
+import { HelpCenterRoutes } from '../modules/help_center/help_center.routes';
+import { TermsAndConditionsRoutes } from '../modules/terms_and_conditions/terms_and_conditions.routes';
 
 const router = express.Router();
 
@@ -87,6 +91,22 @@ const moduleRoutes = [
   {
     path: '/free-structure',
     route: FreeStructureRoutes,
+  },
+  {
+    path: '/pricing-plan',
+    route: PricingPlanRoutes,
+  },
+  {
+    path: '/shop-owner-plan',
+    route: ShopOwnerPlanRoutes,
+  },
+  {
+    path: '/help-center',
+    route: HelpCenterRoutes,
+  },
+  {
+    path: '/terms-and-conditions',
+    route: TermsAndConditionsRoutes,
   },
 ];
 moduleRoutes.forEach(route => router.use(route.path, route.route));

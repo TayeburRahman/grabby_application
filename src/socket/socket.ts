@@ -32,35 +32,40 @@ const socket = (io: Server) => {
     // await handlePartnerData(currentUserId, role, socket, io);
 
     // Handle location update for orders
-    socket.on('updateLocation', async (data: { orderId: string; lat: number; lon: number }) => {
+    socket.on('updateLocation', async (data: { lat: number; lon: number }) => {
       try {
-        const { orderId, lat, lon } = data;
+        const { lat, lon } = data;
 
-        console.log("data", data)
+        // 1. Update Customer location in DB
+        await Customer.findByIdAndUpdate(currentUserId, { lat, lon });
 
-        // 1. Find the order
-        const order = await Order.findOne({ orderId });
-        if (!order) {
-          console.log(`Order not found: ${orderId}`);
+        // 2. Find all active orders for this customer
+        const activeOrders = await Order.find({
+          customerId: currentUserId,
+          status: { $in: ['placed', 'preparing', 'ready'] }
+        });
+
+        if (activeOrders.length === 0) {
+          // No active orders, no need to notify any shop owner
           return;
         }
 
-        // 2. Update Customer location
-        await Customer.findByIdAndUpdate(order.customerId, { lat, lon });
-
-        // 3. Find shop owner to notify
-        const branch = await Branch.findById(order.branchId);
-        if (branch) {
-          const shopOwner = await ShopOwner.findById(branch.shopOwnerId);
-          if (shopOwner) {
-            // Notify shop owner room (authId)
-            io.to(shopOwner._id.toString()).emit(`locationUpdate/${orderId}`, {
-              orderId,
-              lat,
-              lon,
-              customerId: order.customerId,
-            });
-            console.log(`Location update sent to shop owner: ${shopOwner.authId}`);
+        // 3. Notify shop owners for each active order
+        for (const order of activeOrders) {
+          const branch = await Branch.findById(order.branchId);
+          if (branch) {
+            const shopOwner = await ShopOwner.findById(branch.shopOwnerId);
+            if (shopOwner) {
+              const orderId = order.orderId;
+              // Notify shop owner room
+              io.to(shopOwner._id.toString()).emit(`locationUpdate/${orderId}`, {
+                orderId,
+                lat,
+                lon,
+                customerId: currentUserId,
+              });
+              console.log(`Location update sent to shop owner: ${shopOwner._id} for order: ${orderId}`);
+            }
           }
         }
       } catch (error) {
