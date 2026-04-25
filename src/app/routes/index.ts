@@ -14,6 +14,8 @@ import { CarPlateRoutes } from '../modules/car_plates/car_plates.routes';
 import { CartRoutes } from '../modules/cart/cart.routes';
 import { OrderRoutes } from '../modules/order/order.routes';
 import { DashboardRoutes } from '../modules/dashboard/dashboard.routes';
+import { FaqRoutes } from '../modules/faq/faq.routes';
+import { FreeStructureRoutes } from '../modules/free_structure/free_structure.routes';
 
 const router = express.Router();
 
@@ -77,6 +79,14 @@ const moduleRoutes = [
   {
     path: '/dashboard',
     route: DashboardRoutes,
+  },
+  {
+    path: '/faq',
+    route: FaqRoutes,
+  },
+  {
+    path: '/free-structure',
+    route: FreeStructureRoutes,
   },
 ];
 moduleRoutes.forEach(route => router.use(route.path, route.route));

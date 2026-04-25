@@ -385,6 +385,7 @@ const getCartSummary = async (customerId: string, branchId?: string) => {
       itemId: item._id,
       productId: item.productId,
       menuName: item.menuName,
+      menuImage: item.menuImage,
       quantity: item.quantity,
       totalPrice: item.totalPrice,
       additionalItems: item.additionalItems,

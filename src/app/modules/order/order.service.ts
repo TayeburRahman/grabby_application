@@ -4,7 +4,7 @@ import { IOrder } from './order.interface';
 import { Order } from './order.model';
 import { Cart } from '../cart/cart.model';
 import Customer from '../customers/customers.model';
-import { Branch } from '../shop_owner/shop_owner.model';
+import { Branch, ShopOwner } from '../shop_owner/shop_owner.model';
 import QueryBuilder from '../../../builder/QueryBuilder';
 
 const generateOrderId = async (): Promise<string> => {
@@ -161,6 +161,32 @@ const cancelOrder = async (orderId: string, customerId: string) => {
   return result;
 };
 
+const updateOrderLocation = async (id: string, payload: { lat: number; lon: number }) => {
+  const order = await Order.findById(id);
+  if (!order) {
+    throw new ApiError(httpStatus.NOT_FOUND, 'Order not found');
+  }
+
+  // Update Customer location
+  await Customer.findByIdAndUpdate(order.customerId, payload);
+
+  // Notify Shop Owner via Socket
+  const branch = await Branch.findById(order.branchId).populate('shopOwnerId');
+  if (branch && branch.shopOwnerId) {
+    const shopOwner = await ShopOwner.findById(branch.shopOwnerId);
+    if (shopOwner && (global as any).io) {
+      (global as any).io.to(shopOwner.authId.toString()).emit(`locationUpdate::${order.orderId}`, {
+        orderId: order.orderId,
+        lat: payload.lat,
+        lon: payload.lon,
+        customerId: order.customerId,
+      });
+    }
+  }
+
+  return { message: 'Location updated and notified successfully' };
+};
+
 export const OrderService = {
   createOrder,
   getMyOrders,
@@ -168,4 +194,5 @@ export const OrderService = {
   getBranchOrders,
   updateOrderStatus,
   cancelOrder,
+  updateOrderLocation,
 };

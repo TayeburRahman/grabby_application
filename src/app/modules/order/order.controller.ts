@@ -81,6 +81,18 @@ const cancelOrder = catchAsync(async (req: Request, res: Response) => {
   });
 });
 
+const updateOrderLocation = catchAsync(async (req: Request, res: Response) => {
+  const { id } = req.params;
+  const result = await OrderService.updateOrderLocation(id, req.body);
+
+  sendResponse(res, {
+    statusCode: httpStatus.OK,
+    success: true,
+    message: 'Location updated successfully',
+    data: result,
+  });
+});
+
 export const OrderController = {
   createOrder,
   getMyOrders,
@@ -88,4 +100,5 @@ export const OrderController = {
   getBranchOrders,
   updateOrderStatus,
   cancelOrder,
+  updateOrderLocation,
 };

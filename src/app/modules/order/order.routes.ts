@@ -45,4 +45,10 @@ router.patch(
   OrderController.cancelOrder
 );
 
+router.patch(
+  '/:id/location',
+  auth(ENUM_USER_ROLE.CUSTOMER),
+  OrderController.updateOrderLocation
+);
+
 export const OrderRoutes = router;
