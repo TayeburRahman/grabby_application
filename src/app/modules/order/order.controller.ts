@@ -68,6 +68,18 @@ const getBranchOrders = catchAsync(async (req: Request, res: Response) => {
   });
 });
 
+const getAllOrders = catchAsync(async (req: Request, res: Response) => {
+  const result = await OrderService.getAllOrders(req.query);
+
+  sendResponse(res, {
+    statusCode: httpStatus.OK,
+    success: true,
+    message: 'All orders retrieved successfully',
+    meta: result.meta,
+    data: result.data,
+  });
+});
+
 const cancelOrder = catchAsync(async (req: Request, res: Response) => {
   const { userId } = req.user as IReqUser;
   const { id } = req.params;
@@ -111,6 +123,7 @@ export const OrderController = {
   getMyOrders,
   getSingleOrder,
   getBranchOrders,
+  getAllOrders,
   updateOrderStatus,
   cancelOrder,
   updateOrderLocation,

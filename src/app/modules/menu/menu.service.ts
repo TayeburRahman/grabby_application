@@ -1,3 +1,4 @@
+import mongoose from 'mongoose';
 import { IMenu } from './menu.interface';
 import { Menu } from './menu.model';
 import QueryBuilder from '../../../builder/QueryBuilder';
@@ -84,14 +85,23 @@ const create = async (payload: Partial<IMenu>): Promise<IMenu> => {
 
 const getAll = async (query: Record<string, unknown>, shopOwnerId?: string, categoryId?: string) => {
   const filter: Record<string, unknown> = {};
-  if (shopOwnerId) {
+  if (shopOwnerId && shopOwnerId !== 'all' && mongoose.Types.ObjectId.isValid(shopOwnerId)) {
     filter.shopOwnerId = shopOwnerId;
   }
-  if (categoryId) {
+  if (categoryId && categoryId !== 'all' && mongoose.Types.ObjectId.isValid(categoryId)) {
     filter.category = categoryId;
   }
 
-  const menuQuery = new QueryBuilder(Menu.find(filter), query)
+  // Clean the query object to prevent QueryBuilder from adding 'all' filters
+  const cleanQuery = { ...query };
+  const fieldsToClean = ['category', 'shopOwnerId', 'branch'];
+  fieldsToClean.forEach(field => {
+    if (cleanQuery[field] === 'all') {
+      delete cleanQuery[field];
+    }
+  });
+
+  const menuQuery = new QueryBuilder(Menu.find(filter), cleanQuery)
     .search(['itemName', 'description'])
     .filter()
     .sort()
@@ -100,10 +110,16 @@ const getAll = async (query: Record<string, unknown>, shopOwnerId?: string, cate
 
   menuQuery.modelQuery = menuQuery.modelQuery
     .populate('category', 'name')
-    .populate('shopOwnerId', 'name');
+    .populate('shopOwnerId', 'name shop_name');
 
   const result = await menuQuery.modelQuery;
   const meta = await menuQuery.countTotal();
+
+  // Get stats for all items matching the current branch/category filter (not just current page)
+  const [totalAvailable, totalUnavailable] = await Promise.all([
+    Menu.countDocuments({ ...filter, isAvailable: true }),
+    Menu.countDocuments({ ...filter, isAvailable: false }),
+  ]);
 
   // Attach active events if shopOwnerId is known (either from filter or items)
   let processedResult = result;
@@ -112,7 +128,14 @@ const getAll = async (query: Record<string, unknown>, shopOwnerId?: string, cate
     processedResult = await attachActiveEvents(result, sId);
   }
 
-  return { result: processedResult, meta };
+  return { 
+    result: processedResult, 
+    meta: {
+      ...meta,
+      totalAvailable,
+      totalUnavailable
+    } 
+  };
 };
 
 const getById = async (id: string) => {
@@ -144,7 +167,12 @@ const getByCategory = async (
     }
   }
 
-  const menuQuery = new QueryBuilder(Menu.find(filter), query)
+  // Clean the query object to prevent QueryBuilder from adding 'all' filters
+  const cleanQuery = { ...query };
+  if (cleanQuery.menuCategoryId === 'all') delete cleanQuery.menuCategoryId;
+  if (cleanQuery.category === 'all') delete cleanQuery.category;
+
+  const menuQuery = new QueryBuilder(Menu.find(filter), cleanQuery)
     .search(['itemName', 'description'])
     .sort()
     .paginate()
@@ -155,13 +183,26 @@ const getByCategory = async (
   const result = await menuQuery.modelQuery;
   const meta = await menuQuery.countTotal();
 
+  // Get stats for all items matching the current branch/category filter (not just current page)
+  const [totalAvailable, totalUnavailable] = await Promise.all([
+    Menu.countDocuments({ ...filter, isAvailable: true }),
+    Menu.countDocuments({ ...filter, isAvailable: false }),
+  ]);
+
   let processedResult = result;
   if (result.length > 0) {
     const sId = (result[0] as any).shopOwnerId?._id?.toString() || (result[0] as any).shopOwnerId?.toString();
     processedResult = await attachActiveEvents(result, sId);
   }
 
-  return { result: processedResult, meta };
+  return { 
+    result: processedResult, 
+    meta: {
+      ...meta,
+      totalAvailable,
+      totalUnavailable,
+    } 
+  };
 };
 
 const updateById = async (id: string, payload: Partial<IMenu>) => {

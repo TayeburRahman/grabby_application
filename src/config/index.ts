@@ -31,6 +31,11 @@ export default {
   stripe: {
     stripe_secret_key: process.env.STRIPE_SECRET_KEY,
   },
+  onesignal: {
+    app_id: process.env.ONESIGNAL_APP_ID,
+    api_key: process.env.ONESIGNAL_API_KEY,
+    onesignal_url: process.env.ONESIGNAL_URL || 'https://onesignal.com',
+  },
   super_admin: {
     email: process.env.SUPER_ADMIN_EMAIL || 'superadmin@ayah.com',
     password: process.env.SUPER_ADMIN_PASSWORD || 'superadmin123',

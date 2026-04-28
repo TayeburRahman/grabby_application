@@ -23,6 +23,10 @@ const AuthSchema: Schema<IAuth> = new Schema(
       type: String,
       required: [true, "Phone number is required"],
     },
+    playerIds: {
+      type: [String],
+      default: [],
+    },
     password: {
       type: String,
       required: [true, "Password is required"],

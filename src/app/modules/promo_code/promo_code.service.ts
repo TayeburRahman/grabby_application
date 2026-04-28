@@ -5,6 +5,10 @@ import { Branch } from '../shop_owner/shop_owner.model';
 import { Menu } from '../menu/menu.model';
 import mongoose from 'mongoose';
 import { Cart } from '../cart/cart.model';
+import QueryBuilder from '../../../builder/QueryBuilder';
+import { ShopOwner } from '../shop_owner/shop_owner.model';
+import { ENUM_USER_ROLE } from '../../../enums/user';
+import { IReqUser } from '../auth/auth.interface';
 
 const createPromoCode = async (userId: string, payload: any) => {
   if (Array.isArray(payload)) {
@@ -60,8 +64,15 @@ const createPromoCode = async (userId: string, payload: any) => {
   }
 };
 
-const updatePromoCode = async (userId: string, id: string, payload: any) => {
-  const promoCode = await PromoCode.findOne({ _id: id, shopOwnerId: userId });
+const updatePromoCode = async (user: IReqUser, id: string, payload: any) => {
+  const isAdmin = user.role === ENUM_USER_ROLE.ADMIN || user.role === ENUM_USER_ROLE.SUPER_ADMIN;
+
+  const filter: any = { _id: id };
+  if (!isAdmin) {
+    filter.shopOwnerId = user.userId;
+  }
+
+  const promoCode = await PromoCode.findOne(filter);
   if (!promoCode) {
     throw new ApiError(httpStatus.NOT_FOUND, 'Promo code not found');
   }
@@ -69,7 +80,7 @@ const updatePromoCode = async (userId: string, id: string, payload: any) => {
   const { branchIds } = payload;
   let finalBranchIds = branchIds;
   if (branchIds === 'all') {
-    const branches = await Branch.find({ shopOwnerId: userId }).select('_id');
+    const branches = await Branch.find({ shopOwnerId: promoCode.shopOwnerId }).select('_id');
     finalBranchIds = branches.map(b => b._id);
   }
 
@@ -81,8 +92,15 @@ const updatePromoCode = async (userId: string, id: string, payload: any) => {
   return updatedPromoCode;
 };
 
-const updatePromoCodeStatus = async (userId: string, id: string, status: string) => {
-  const promoCode = await PromoCode.findOne({ _id: id, shopOwnerId: userId });
+const updatePromoCodeStatus = async (user: IReqUser, id: string, status: string) => {
+  const isAdmin = user.role === ENUM_USER_ROLE.ADMIN || user.role === ENUM_USER_ROLE.SUPER_ADMIN;
+
+  const filter: any = { _id: id };
+  if (!isAdmin) {
+    filter.shopOwnerId = user.userId;
+  }
+
+  const promoCode = await PromoCode.findOne(filter);
   if (!promoCode) {
     throw new ApiError(httpStatus.NOT_FOUND, 'Promo code not found');
   }
@@ -95,8 +113,15 @@ const updatePromoCodeStatus = async (userId: string, id: string, status: string)
   return updatedPromoCode;
 };
 
-const deletePromoCode = async (userId: string, id: string) => {
-  const promoCode = await PromoCode.findOne({ _id: id, shopOwnerId: userId });
+const deletePromoCode = async (user: IReqUser, id: string) => {
+  const isAdmin = user.role === ENUM_USER_ROLE.ADMIN || user.role === ENUM_USER_ROLE.SUPER_ADMIN;
+
+  const filter: any = { _id: id };
+  if (!isAdmin) {
+    filter.shopOwnerId = user.userId;
+  }
+
+  const promoCode = await PromoCode.findOne(filter);
   if (!promoCode) {
     throw new ApiError(httpStatus.NOT_FOUND, 'Promo code not found');
   }
@@ -190,6 +215,43 @@ const getPromoCodesCustomer = async (query: any) => {
   return promoCodes;
 };
 
+const getAllForAdmin = async (query: Record<string, unknown>) => {
+  const { shopName, ...restQuery } = query;
+
+  let filter: any = {};
+
+  // If shopName is provided, we need to find shopOwnerIds matching that name
+  if (shopName) {
+    const shopOwners = await ShopOwner.find({
+      $or: [
+        { shop_name: { $regex: shopName, $options: 'i' } },
+        { name: { $regex: shopName, $options: 'i' } }
+      ]
+    }).select('_id');
+
+    const ownerIds = shopOwners.map(o => o._id);
+    filter.shopOwnerId = { $in: ownerIds };
+  }
+
+  const promoCodeQuery = new QueryBuilder(
+    PromoCode.find(filter).populate('shopOwnerId', 'name shop_name'),
+    restQuery
+  )
+    .search(['code'])
+    .filter()
+    .sort()
+    .paginate()
+    .fields();
+
+  const result = await promoCodeQuery.modelQuery;
+  const meta = await promoCodeQuery.countTotal();
+
+  return {
+    result,
+    meta,
+  };
+};
+
 export const PromoCodeService = {
   createPromoCode,
   updatePromoCode,
@@ -197,5 +259,6 @@ export const PromoCodeService = {
   deletePromoCode,
   getPromoCodes,
   validatePromoCode,
-  getPromoCodesCustomer
+  getPromoCodesCustomer,
+  getAllForAdmin,
 };

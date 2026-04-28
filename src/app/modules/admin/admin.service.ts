@@ -18,8 +18,11 @@ const getShopOwnerRequests = async (
 
   const conditions: Record<string, any> = {};
 
-  // Default to pending if no approval_status filter provided
-  conditions.approval_status = query.approval_status || "pending";
+  if (query.approval_status && query.approval_status !== "all") {
+    conditions.approval_status = query.approval_status;
+  } else if (!query.approval_status) {
+    conditions.approval_status = "pending";
+  }
 
   if (query.searchTerm) {
     const regex = new RegExp(query.searchTerm, "i");
@@ -85,10 +88,21 @@ const blockedShopOwner = async (payload: { id: string }) => {
   shopOwner.status = auth.is_block ? "deactivate" : "active";
   await shopOwner.save();
 
-  return {
-    ...shopOwner.toObject(),
-    is_block: auth.is_block,
-  };
+  return auth;
+};
+
+// ─── REJECT SHOP OWNER ─────────────────────────────────────────────
+const rejectShopOwner = async (payload: { id: string }) => {
+  const shopOwner = await ShopOwner.findById(payload.id);
+  if (!shopOwner) {
+    throw new ApiError(httpStatus.NOT_FOUND, "Shop owner not found");
+  }
+
+  shopOwner.approval_status = "rejected";
+  shopOwner.status = "deactivate";
+  await shopOwner.save();
+
+  return shopOwner;
 };
 
 // ─── UPDATE SHOP OWNER DETAILS ─────────────────────────────────────
@@ -285,9 +299,33 @@ const getCustomerOverview = async () => {
   };
 };
 
+// ─── GET ALL ADMINS (Only Super Admin) ──────────────────────────────
+const getAllAdmins = async (
+  paginationOptions: IOptions
+) => {
+  const { page, limit, skip, sortBy, sortOrder } =
+    paginationHelpers.calculatePagination(paginationOptions);
+
+  const [data, total] = await Promise.all([
+    Admin.find()
+      .populate("authId", "name email phone_number is_block isActive role createdAt")
+      .sort({ [sortBy]: sortOrder })
+      .skip(skip)
+      .limit(limit)
+      .lean(),
+    Admin.countDocuments(),
+  ]);
+
+  return {
+    meta: { page, limit, total },
+    data,
+  };
+};
+
 export const AdminService = {
   getShopOwnerRequests,
   acceptShopOwner,
+  rejectShopOwner,
   blockedShopOwner,
   updateShopOwnerDetails,
   createAdmin,
@@ -297,4 +335,5 @@ export const AdminService = {
   blockedCustomer,
   getCustomerDetails,
   getCustomerOverview,
+  getAllAdmins,
 };

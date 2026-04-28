@@ -73,10 +73,21 @@ const getByBranch = catchAsync(async (req: Request, res: Response) => {
   });
 });
 
+const getAll = catchAsync(async (req: Request, res: Response) => {
+  const result = await MenuCategoryService.findAll();
+  sendResponse(res, {
+    statusCode: 200,
+    success: true,
+    message: 'Menu categories fetched successfully',
+    data: result,
+  });
+});
+
 export const MenuCategoryController = {
   create,
   getByShopOwner,
   getByBranch,
+  getAll,
   update,
   remove,
 };

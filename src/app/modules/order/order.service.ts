@@ -167,6 +167,27 @@ const getBranchOrders = async (branchId: string, query: Record<string, unknown>)
   };
 };
 
+const getAllOrders = async (query: Record<string, unknown>) => {
+  const orderQuery = new QueryBuilder(
+    Order.find()
+      .populate('customerId', 'name email phone_number')
+      .populate('branchId', 'branch_name address'),
+    query
+  )
+    .filter()
+    .sort()
+    .paginate()
+    .fields();
+
+  const result = await orderQuery.modelQuery;
+  const meta = await orderQuery.countTotal();
+
+  return {
+    meta,
+    data: result,
+  };
+};
+
 const cancelOrder = async (orderId: string, customerId: string) => {
   const order = await Order.findOne({ _id: orderId, customerId });
 
@@ -269,6 +290,7 @@ export const OrderService = {
   getMyOrders,
   getSingleOrder,
   getBranchOrders,
+  getAllOrders,
   updateOrderStatus,
   cancelOrder,
   updateOrderLocation,

@@ -17,6 +17,18 @@ const getShopOwnerDashboardStats = catchAsync(async (req: Request, res: Response
   });
 });
 
+const getAdminDashboardStats = catchAsync(async (req: Request, res: Response) => {
+  const result = await DashboardService.getAdminDashboardStats();
+
+  sendResponse(res, {
+    statusCode: httpStatus.OK,
+    success: true,
+    message: 'Admin dashboard stats retrieved successfully',
+    data: result,
+  });
+});
+
 export const DashboardController = {
   getShopOwnerDashboardStats,
+  getAdminDashboardStats,
 };

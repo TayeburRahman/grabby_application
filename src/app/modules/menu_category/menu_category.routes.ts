@@ -16,6 +16,8 @@ router.post(
 
 router.get('/shop', auth(ENUM_USER_ROLE.SHOP_OWNER), MenuCategoryController.getByShopOwner);
 
+router.get('/all', auth(ENUM_USER_ROLE.ADMIN, ENUM_USER_ROLE.SUPER_ADMIN), MenuCategoryController.getAll);
+
 router.get('/branch/:branchId', MenuCategoryController.getByBranch);
 
 router.put('/:id', auth(ENUM_USER_ROLE.SHOP_OWNER), validateRequest(MenuCategoryValidation.createSchema), MenuCategoryController.update);

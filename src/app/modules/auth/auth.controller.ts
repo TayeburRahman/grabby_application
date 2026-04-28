@@ -134,6 +134,18 @@ const getMyProfile = catchAsync(async (req: Request, res: Response) => {
   });
 });
 
+// ─── UPDATE MY PROFILE ──────────────────────────────────────────────
+const updateMyProfile = catchAsync(async (req: Request, res: Response) => {
+  const user = req.user as IReqUser;
+  const result = await AuthService.updateMyProfile(user, req.body);
+  sendResponse(res, {
+    statusCode: 200,
+    success: true,
+    message: "Profile updated successfully",
+    data: result,
+  });
+});
+
 export const AuthController = {
   registerCustomer,
   registerShopOwner,
@@ -146,4 +158,5 @@ export const AuthController = {
   resetPassword,
   changePassword,
   getMyProfile,
+  updateMyProfile,
 };

@@ -1,6 +1,8 @@
 import httpStatus from "http-status";
 import ApiError from "../../../errors/ApiError";
 import { ShopOwner, Branch } from "./shop_owner.model";
+import { ENUM_USER_ROLE } from "../../../enums/user";
+import { IReqUser } from "../auth/auth.interface";
 
 // Default UAE working hours (Sun–Thu: full day, Fri: after Jumu'ah prayer, Sat: regular)
 const DEFAULT_UAE_AVAILABILITY = [
@@ -264,14 +266,24 @@ const updateBranchAvailability = async (
   return branch;
 };
 
-const getAllBranches = async (userId: string) => {
-  const shopOwner = await ShopOwner.findById(userId);
+const getAllBranches = async (user: IReqUser) => {
+  if (user.role === ENUM_USER_ROLE.ADMIN || user.role === ENUM_USER_ROLE.SUPER_ADMIN) {
+    const branches = await Branch.find().populate('shopOwnerId', 'shop_name');
+    return branches;
+  }
+
+  const shopOwner = await ShopOwner.findById(user.userId);
   if (!shopOwner) {
     throw new ApiError(httpStatus.NOT_FOUND, "Shop owner not found");
   }
 
   const branches = await Branch.find({ shopOwnerId: shopOwner._id });
   return branches;
+};
+
+const getAllShopOwners = async () => {
+  const shopOwners = await ShopOwner.find({ approval_status: 'approved' }).select('name shop_name email profile_image');
+  return shopOwners;
 };
 
 const getBranchDetails = async (userId: string, branchId: string) => {
@@ -315,6 +327,7 @@ export const ShopOwnerService = {
   updateBranch,
   updateBranchAvailability,
   getAllBranches,
+  getAllShopOwners,
   getBranchDetails,
   toggleRewardPoints,
 };

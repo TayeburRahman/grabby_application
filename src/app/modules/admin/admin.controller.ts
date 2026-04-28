@@ -33,6 +33,17 @@ const acceptShopOwner = catchAsync(async (req: Request, res: Response) => {
   });
 });
 
+// ─── REJECT SHOP OWNER ─────────────────────────────────────────────
+const rejectShopOwner = catchAsync(async (req: Request, res: Response) => {
+  const result = await AdminService.rejectShopOwner(req.body);
+  sendResponse(res, {
+    statusCode: 200,
+    success: true,
+    message: "Shop owner rejected successfully",
+    data: result,
+  });
+});
+
 // ─── BLOCK/UNBLOCK SHOP OWNER ──────────────────────────────────────
 const blockedShopOwner = catchAsync(async (req: Request, res: Response) => {
   const result = await AdminService.blockedShopOwner(req.body);
@@ -148,9 +159,29 @@ const getCustomerOverview = catchAsync(async (req: Request, res: Response) => {
   });
 });
 
+// ─── GET ALL ADMINS ───────────────────────────────────────────────
+const getAllAdmins = catchAsync(async (req: Request, res: Response) => {
+  const { page, limit, sortBy, sortOrder } = req.query as Record<string, string>;
+  const result = await AdminService.getAllAdmins({
+    page: Number(page),
+    limit: Number(limit),
+    sortBy,
+    sortOrder: sortOrder as any,
+  });
+
+  sendResponse(res, {
+    statusCode: 200,
+    success: true,
+    message: "Admins retrieved successfully",
+    meta: result.meta,
+    data: result.data,
+  });
+});
+
 export const AdminController = {
   getShopOwnerRequests,
   acceptShopOwner,
+  rejectShopOwner,
   blockedShopOwner,
   updateShopOwnerDetails,
   createAdmin,
@@ -160,4 +191,5 @@ export const AdminController = {
   blockedCustomer,
   getCustomerDetails,
   getCustomerOverview,
+  getAllAdmins,
 };

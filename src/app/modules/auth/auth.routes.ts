@@ -77,4 +77,10 @@ router.get(
   AuthController.getMyProfile
 );
 
+router.patch(
+  "/profile",
+  auth(ENUM_USER_ROLE.CUSTOMER, ENUM_USER_ROLE.SHOP_OWNER, ENUM_USER_ROLE.ADMIN, ENUM_USER_ROLE.SUPER_ADMIN),
+  AuthController.updateMyProfile
+);
+
 export const AuthRoutes = router;

@@ -52,4 +52,10 @@ router.post(
   PromoCodeController.validatePromoCode
 );
 
+router.get(
+  '/admin/all',
+  auth(ENUM_USER_ROLE.ADMIN, ENUM_USER_ROLE.SUPER_ADMIN),
+  PromoCodeController.getAllForAdmin
+);
+
 export const PromoCodeRoutes = router;

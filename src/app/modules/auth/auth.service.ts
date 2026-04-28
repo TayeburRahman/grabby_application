@@ -24,8 +24,8 @@ import { ShopOwner } from "../shop_owner/shop_owner.model";
 import Admin from "../admin/admin.model";
 
 // ─── CUSTOMER REGISTRATION ──────────────────────────────────────────
-const registerCustomer = async (payload: IAuth & { confirmPassword: string }) => {
-  const { password, confirmPassword, email, name, phone_number, termsAccepted } = payload;
+const registerCustomer = async (payload: IAuth & { confirmPassword: string; playerId?: string }) => {
+  const { password, confirmPassword, email, name, phone_number, termsAccepted, playerId } = payload;
 
   if (password !== confirmPassword) {
     throw new ApiError(httpStatus.BAD_REQUEST, "Password and Confirm Password didn't match");
@@ -54,6 +54,7 @@ const registerCustomer = async (payload: IAuth & { confirmPassword: string }) =>
     role: ENUM_USER_ROLE.CUSTOMER,
     activationCode,
     termsAccepted,
+    playerIds: playerId ? [playerId] : [],
     expirationTime: Date.now() + 3 * 60 * 1000,
   });
 
@@ -82,8 +83,8 @@ const registerCustomer = async (payload: IAuth & { confirmPassword: string }) =>
 };
 
 // ─── SHOP OWNER REGISTRATION ────────────────────────────────────────
-const registerShopOwner = async (payload: IAuth & { confirmPassword: string }) => {
-  const { password, confirmPassword, email, name, phone_number, termsAccepted } = payload;
+const registerShopOwner = async (payload: IAuth & { confirmPassword: string; playerId?: string }) => {
+  const { password, confirmPassword, email, name, phone_number, termsAccepted, playerId } = payload;
 
   if (password !== confirmPassword) {
     throw new ApiError(httpStatus.BAD_REQUEST, "Password and Confirm Password didn't match");
@@ -111,6 +112,7 @@ const registerShopOwner = async (payload: IAuth & { confirmPassword: string }) =
     role: ENUM_USER_ROLE.SHOP_OWNER,
     activationCode,
     termsAccepted,
+    playerIds: playerId ? [playerId] : [],
     expirationTime: Date.now() + 3 * 60 * 1000,
   });
 
@@ -228,7 +230,7 @@ const resendOtp = async (payload: { email: string }) => {
 
 // ─── LOGIN ──────────────────────────────────────────────────────────
 const loginAccount = async (payload: LoginPayload) => {
-  const { email, password } = payload;
+  const { email, password, playerId } = payload;
 
   const isAuth = await Auth.isAuthExist(email);
   if (!isAuth) {
@@ -271,6 +273,13 @@ const loginAccount = async (payload: LoginPayload) => {
 
   if (!userDetails) {
     throw new ApiError(404, "User profile not found");
+  }
+
+  if (playerId) {
+    await Auth.updateOne(
+      { _id: isAuth._id },
+      { $addToSet: { playerIds: playerId } }
+    );
   }
 
   const tokenPayload = {
@@ -434,6 +443,46 @@ const myProfile = async (user: { userId: string; role: string }) => {
   }
 };
 
+// ─── UPDATE MY PROFILE ──────────────────────────────────────────────
+const updateMyProfile = async (
+  user: { userId: string; role: string },
+  payload: { name?: string; email?: string; phone_number?: string; profile_image?: string }
+) => {
+  const { userId, role } = user;
+
+  let result;
+  switch (role) {
+    case ENUM_USER_ROLE.CUSTOMER:
+      result = await Customer.findByIdAndUpdate(userId, payload, { new: true, runValidators: true });
+      break;
+    case ENUM_USER_ROLE.SHOP_OWNER:
+      result = await ShopOwner.findByIdAndUpdate(userId, payload, { new: true, runValidators: true });
+      break;
+    case ENUM_USER_ROLE.ADMIN:
+    case ENUM_USER_ROLE.SUPER_ADMIN:
+      // Using existing Admin profile update logic but adapted for self-update
+      const admin = await Admin.findById(userId);
+      if (!admin) throw new ApiError(httpStatus.NOT_FOUND, "Admin not found");
+      
+      result = await Admin.findByIdAndUpdate(userId, payload, { new: true, runValidators: true })
+        .populate("authId", "name email phone_number is_block isActive role");
+      
+      // Sync with Auth
+      const authUpdate: Record<string, any> = {};
+      if (payload.name) authUpdate.name = payload.name;
+      if (payload.email) authUpdate.email = payload.email;
+      if (payload.phone_number) authUpdate.phone_number = payload.phone_number;
+      if (Object.keys(authUpdate).length > 0) {
+        await Auth.findByIdAndUpdate(admin.authId, authUpdate);
+      }
+      break;
+    default:
+      throw new ApiError(400, "Invalid role");
+  }
+
+  return result;
+};
+
 // ─── CRON: Clean expired activation codes ───────────────────────────
 cron.schedule("* * * * *", async () => {
   try {
@@ -466,4 +515,5 @@ export const AuthService = {
   changePassword,
   resendCodeForgotAccount,
   myProfile,
+  updateMyProfile,
 };

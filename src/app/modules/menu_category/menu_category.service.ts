@@ -36,10 +36,19 @@ const deleteById = async (id: string) => {
   return result;
 };
 
+const findAll = async () => {
+  // Return unique categories by name (or just all if preferred)
+  // The user said "filter by items need database to set all items and filter"
+  // So they probably want all distinct categories available.
+  const result = await MenuCategory.find().sort({ name: 1 });
+  return result;
+};
+
 export const MenuCategoryService = {
   create,
   findByShopOwner,
   findByBranch,
+  findAll,
   findById,
   updateById,
   deleteById,

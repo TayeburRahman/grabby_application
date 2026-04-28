@@ -20,6 +20,7 @@ const registerCustomer = z.object({
     termsAccepted: z.literal(true, {
       errorMap: () => ({ message: "You must accept the terms and conditions" }),
     }),
+    playerId: z.string().optional(),
   }),
 });
 
@@ -43,6 +44,7 @@ const registerShopOwner = z.object({
     termsAccepted: z.literal(true, {
       errorMap: () => ({ message: "You must accept the terms and conditions" }),
     }),
+    playerId: z.string().optional(),
   }),
 });
 
@@ -69,6 +71,7 @@ const loginZodSchema = z.object({
   body: z.object({
     email: z.string({ required_error: "Email is required" }).email("Invalid email format"),
     password: z.string({ required_error: "Password is required" }),
+    playerId: z.string().optional(),
   }),
 });
 

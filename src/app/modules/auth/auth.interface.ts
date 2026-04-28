@@ -21,6 +21,7 @@ export type IAuth = Document & {
   isActive?: boolean;
   profile_image: string | null;
   termsAccepted: boolean;
+  playerIds?: string[];
 };
 
 export interface IAuthModel extends Model<IAuth> {
@@ -42,6 +43,7 @@ export interface ActivationPayload {
 export interface LoginPayload {
   email: string;
   password: string;
+  playerId?: string;
 }
 
 export interface ForgotPasswordPayload {

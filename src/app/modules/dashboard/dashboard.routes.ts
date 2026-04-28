@@ -11,4 +11,10 @@ router.get(
   DashboardController.getShopOwnerDashboardStats
 );
 
+router.get(
+  '/admin',
+  auth(ENUM_USER_ROLE.ADMIN, ENUM_USER_ROLE.SUPER_ADMIN),
+  DashboardController.getAdminDashboardStats
+);
+
 export const DashboardRoutes = router;

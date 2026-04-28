@@ -80,8 +80,8 @@ const createBranch = catchAsync(async (req: Request, res: Response) => {
 
 // ─── Get All Branches ───────────────────────────────────────────────
 const getAllBranches = catchAsync(async (req: Request, res: Response) => {
-  const { userId } = req.user as IReqUser;
-  const result = await ShopOwnerService.getAllBranches(userId);
+  const user = req.user as IReqUser;
+  const result = await ShopOwnerService.getAllBranches(user);
   sendResponse(res, {
     statusCode: 200,
     success: true,
@@ -141,6 +141,17 @@ const updateBranchAvailability = catchAsync(async (req: Request, res: Response) 
   });
 });
 
+// ─── Get All Shop Owners (Admin) ───────────────────────────────────
+const getAllShopOwners = catchAsync(async (req: Request, res: Response) => {
+  const result = await ShopOwnerService.getAllShopOwners();
+  sendResponse(res, {
+    statusCode: 200,
+    success: true,
+    message: "Shop owners retrieved successfully.",
+    data: result,
+  });
+});
+
 // ─── Toggle Reward Points ──────────────────────────────────────────
 const toggleRewardPoints = catchAsync(async (req: Request, res: Response) => {
   const { userId } = req.user as IReqUser;
@@ -161,6 +172,7 @@ export const ShopOwnerController = {
   updateProfile,
   createBranch,
   getAllBranches,
+  getAllShopOwners,
   getBranchDetails,
   deleteBranch,
   updateBranch,

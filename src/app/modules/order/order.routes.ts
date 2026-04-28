@@ -15,6 +15,12 @@ router.post(
 );
 
 router.get(
+  '/',
+  auth(ENUM_USER_ROLE.SUPER_ADMIN, ENUM_USER_ROLE.ADMIN),
+  OrderController.getAllOrders
+);
+
+router.get(
   '/my-orders',
   auth(ENUM_USER_ROLE.CUSTOMER),
   OrderController.getMyOrders

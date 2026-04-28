@@ -1,8 +1,10 @@
+import mongoose from 'mongoose';
 import { Request, Response } from 'express';
 import catchAsync from '../../../shared/catchasync';
 import sendResponse from '../../../shared/sendResponse';
 import { MenuService } from './menu.service';
 import { IReqUser } from '../auth/auth.interface';
+import { Branch } from '../shop_owner/shop_owner.model';
 
 const create = catchAsync(async (req: Request, res: Response) => {
   const { userId } = req.user as IReqUser;
@@ -203,10 +205,37 @@ const uploadImage = catchAsync(async (req: Request, res: Response) => {
 
 
 
+const getAllForAdmin = catchAsync(async (req: Request, res: Response) => {
+  const categoryId = req.query.category as string | undefined;
+  const branchId = req.query.branch as string | undefined;
+  const shopId = req.query.shop as string | undefined;
+  
+  let shopOwnerId = undefined;
+  
+  if (shopId && shopId !== 'all' && mongoose.Types.ObjectId.isValid(shopId)) {
+    shopOwnerId = shopId;
+  } else if (branchId && branchId !== 'all' && mongoose.Types.ObjectId.isValid(branchId)) {
+    const branch = await Branch.findById(branchId);
+    if (branch) {
+      shopOwnerId = branch.shopOwnerId.toString();
+    }
+  }
+
+  const { result, meta } = await MenuService.getAll(req.query, shopOwnerId, categoryId);
+  sendResponse(res, {
+    statusCode: 200,
+    success: true,
+    message: 'All menu items fetched successfully',
+    meta,
+    data: result,
+  });
+});
+
 export const MenuController = {
   uploadImage,
   create,
   getAll,
+  getAllForAdmin,
   getById,
   getByCategory,
   update,

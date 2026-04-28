@@ -22,8 +22,8 @@ const createPromoCode = catchAsync(async (req: Request, res: Response) => {
 });
 
 const updatePromoCode = catchAsync(async (req: Request, res: Response) => {
-  const { userId } = req.user as IReqUser;
-  const result = await PromoCodeService.updatePromoCode(userId, req.params.id, req.body);
+  const user = req.user as IReqUser;
+  const result = await PromoCodeService.updatePromoCode(user, req.params.id, req.body);
   sendResponse(res, {
     statusCode: 200,
     success: true,
@@ -33,8 +33,8 @@ const updatePromoCode = catchAsync(async (req: Request, res: Response) => {
 });
 
 const updatePromoCodeStatus = catchAsync(async (req: Request, res: Response) => {
-  const { userId } = req.user as IReqUser;
-  const result = await PromoCodeService.updatePromoCodeStatus(userId, req.params.id, req.body.status);
+  const user = req.user as IReqUser;
+  const result = await PromoCodeService.updatePromoCodeStatus(user, req.params.id, req.body.status);
   sendResponse(res, {
     statusCode: 200,
     success: true,
@@ -44,8 +44,8 @@ const updatePromoCodeStatus = catchAsync(async (req: Request, res: Response) => 
 });
 
 const deletePromoCode = catchAsync(async (req: Request, res: Response) => {
-  const { userId } = req.user as IReqUser;
-  const result = await PromoCodeService.deletePromoCode(userId, req.params.id);
+  const user = req.user as IReqUser;
+  const result = await PromoCodeService.deletePromoCode(user, req.params.id);
   sendResponse(res, {
     statusCode: 200,
     success: true,
@@ -85,6 +85,17 @@ const validatePromoCode = catchAsync(async (req: Request, res: Response) => {
   });
 });
 
+const getAllForAdmin = catchAsync(async (req: Request, res: Response) => {
+  const result = await PromoCodeService.getAllForAdmin(req.query);
+  sendResponse(res, {
+    statusCode: 200,
+    success: true,
+    message: 'Promo codes fetched successfully',
+    meta: result.meta,
+    data: result.result,
+  });
+});
+
 export const PromoCodeController = {
   createPromoCode,
   updatePromoCode,
@@ -93,4 +104,5 @@ export const PromoCodeController = {
   getPromoCodes,
   getPromoCodesCustomer,
   validatePromoCode,
+  getAllForAdmin,
 };
