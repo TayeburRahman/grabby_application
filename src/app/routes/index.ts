@@ -21,6 +21,7 @@ import { ShopOwnerPlanRoutes } from '../modules/shop_owner_plan/shop_owner_plan.
 import { HelpCenterRoutes } from '../modules/help_center/help_center.routes';
 import { TermsAndConditionsRoutes } from '../modules/terms_and_conditions/terms_and_conditions.routes';
 import { NotificationRoutes } from '../modules/notification/notification.routes';
+import { PrivacyRoutes } from '../modules/privacy/privacy.routes';
 
 const router = express.Router();
 
@@ -112,6 +113,10 @@ const moduleRoutes = [
   {
     path: '/notifications',
     route: NotificationRoutes,
+  },
+  {
+    path: '/privacy',
+    route: PrivacyRoutes,
   },
 ];
 moduleRoutes.forEach(route => router.use(route.path, route.route));
