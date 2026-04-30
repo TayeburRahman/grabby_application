@@ -92,10 +92,16 @@ const getAll = async (query: Record<string, unknown>, shopOwnerId?: string, cate
     filter.category = categoryId;
   }
 
-  // Clean the query object to prevent QueryBuilder from adding 'all' filters
+  // Clean the query object to prevent QueryBuilder from adding incorrect filters
   const cleanQuery = { ...query };
-  const fieldsToClean = ['category', 'shopOwnerId', 'branch'];
-  fieldsToClean.forEach(field => {
+  
+  // Fields that are not in the Menu model but might be in the query
+  const nonModelFields = ['shop', 'branch'];
+  nonModelFields.forEach(field => delete cleanQuery[field]);
+
+  // Fields that might be 'all'
+  const allFields = ['category', 'shopOwnerId'];
+  allFields.forEach(field => {
     if (cleanQuery[field] === 'all') {
       delete cleanQuery[field];
     }
