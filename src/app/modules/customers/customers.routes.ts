@@ -18,7 +18,7 @@ router.patch(
   "/profile",
   auth(ENUM_USER_ROLE.CUSTOMER),
   uploadFile(),
-  validateRequest(CustomerValidation.updateCustomerSchema),
+  // validateRequest(CustomerValidation.updateCustomerSchema),
   CustomerController.updateProfile
 );
 
