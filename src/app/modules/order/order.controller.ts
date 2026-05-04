@@ -83,7 +83,8 @@ const getAllOrders = catchAsync(async (req: Request, res: Response) => {
 const cancelOrder = catchAsync(async (req: Request, res: Response) => {
   const { userId } = req.user as IReqUser;
   const { id } = req.params;
-  const result = await OrderService.cancelOrder(id, userId);
+  const { cancelNote } = req.body;
+  const result = await OrderService.cancelOrder(id, userId, cancelNote);
 
   sendResponse(res, {
     statusCode: httpStatus.OK,

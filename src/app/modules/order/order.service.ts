@@ -188,7 +188,7 @@ const getAllOrders = async (query: Record<string, unknown>) => {
   };
 };
 
-const cancelOrder = async (orderId: string, customerId: string) => {
+const cancelOrder = async (orderId: string, customerId: string, cancelNote: string) => {
   const order = await Order.findOne({ _id: orderId, customerId });
 
   if (!order) {
@@ -205,7 +205,7 @@ const cancelOrder = async (orderId: string, customerId: string) => {
 
   const result = await Order.findByIdAndUpdate(
     orderId,
-    { status: 'cancelled' },
+    { status: 'cancelled', cancelNote },
     { new: true }
   );
 

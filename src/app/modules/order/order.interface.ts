@@ -36,4 +36,5 @@ export interface IOrder extends Document {
   nearByShop: boolean;
   createdAt?: Date;
   updatedAt?: Date;
+  cancelNote?: string;
 }

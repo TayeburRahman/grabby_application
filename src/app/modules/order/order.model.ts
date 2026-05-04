@@ -23,6 +23,7 @@ const orderSchema = new Schema<IOrder>(
     orderId: { type: String, required: true, unique: true },
     customerId: { type: Schema.Types.ObjectId, ref: 'Customer', required: true },
     branchId: { type: Schema.Types.ObjectId, ref: 'Branch', required: true },
+    cancelNote: { type: String, default: '' },
     items: { type: [orderItemSchema], required: true },
     pickupType: {
       type: String,
