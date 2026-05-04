@@ -22,7 +22,6 @@ const create = catchAsync(async (req: Request, res: Response) => {
     });
   }
 
-  // Parse additionalItems from stringified JSON (multipart form)
   let additionalItems = [];
   if (req.body.additionalItems) {
     try {
@@ -35,13 +34,16 @@ const create = catchAsync(async (req: Request, res: Response) => {
     }
   }
 
+  const isStampActive = req.body.stampActive === 'true' || req.body.stampActive === true;
+
   const payload = {
     ...req.body,
     image,
     additionalItems,
     shopOwnerId: req.body.shopOwnerId || userId,
     price: Number(req.body.price),
-    stamp: req.body.stamp ? Number(req.body.stamp) : 0,
+    stampActive: isStampActive,
+    stamp: isStampActive ? (req.body.stamp ? Number(req.body.stamp) : 10) : 0,
   };
 
   const result = await MenuService.create(payload);
@@ -88,7 +90,7 @@ const getById = catchAsync(async (req: Request, res: Response) => {
 const getByCategory = catchAsync(async (req: Request, res: Response) => {
   const { branchId } = req.params;
   const menuCategoryId = req.query.menuCategoryId as string | undefined;
-  
+
   const { result, meta } = await MenuService.getByCategory(menuCategoryId, branchId, req.query);
   sendResponse(res, {
     statusCode: 200,
@@ -209,9 +211,9 @@ const getAllForAdmin = catchAsync(async (req: Request, res: Response) => {
   const categoryId = req.query.category as string | undefined;
   const branchId = req.query.branch as string | undefined;
   const shopId = req.query.shop as string | undefined;
-  
+
   let shopOwnerId = undefined;
-  
+
   if (shopId && shopId !== 'all' && mongoose.Types.ObjectId.isValid(shopId)) {
     shopOwnerId = shopId;
   } else if (branchId && branchId !== 'all' && mongoose.Types.ObjectId.isValid(branchId)) {

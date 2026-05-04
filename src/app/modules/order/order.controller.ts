@@ -83,13 +83,26 @@ const getAllOrders = catchAsync(async (req: Request, res: Response) => {
 const cancelOrder = catchAsync(async (req: Request, res: Response) => {
   const { userId } = req.user as IReqUser;
   const { id } = req.params;
-  const { cancelNote } = req.body;
-  const result = await OrderService.cancelOrder(id, userId, cancelNote);
+  const { cancelNote, cancelStatus } = req.body;
+  const result = await OrderService.cancelOrder(id, userId, cancelNote, cancelStatus);
 
   sendResponse(res, {
     statusCode: httpStatus.OK,
     success: true,
-    message: 'Order cancelled successfully',
+    message: 'Cancel request sent successfully',
+    data: result,
+  });
+});
+
+const respondCancelRequest = catchAsync(async (req: Request, res: Response) => {
+  const { id } = req.params;
+  const { action } = req.body;
+  const result = await OrderService.respondCancelRequest(id, action);
+
+  sendResponse(res, {
+    statusCode: httpStatus.OK,
+    success: true,
+    message: `Cancel request ${action}ed successfully`,
     data: result,
   });
 });
@@ -127,6 +140,7 @@ export const OrderController = {
   getAllOrders,
   updateOrderStatus,
   cancelOrder,
+  respondCancelRequest,
   updateOrderLocation,
   updateOrderNearbyStatus,
 };

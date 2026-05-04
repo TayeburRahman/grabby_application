@@ -8,6 +8,33 @@ import { MenuCategory } from "../menu_category/menu_category.model";
 import { MenuService } from "../menu/menu.service";
 import { CustomerStampService } from "../customer_stamps/customer_stamps.service";
 import QueryBuilder from "../../../builder/QueryBuilder";
+import { EventSubscription } from "../event_offer/event_subscription.model";
+
+const getActiveEventForShopOwner = async (shopOwnerId: string) => {
+  if (!shopOwnerId) return null;
+  const now = new Date();
+  const activeSubscriptions = await EventSubscription.find({
+    shopOwnerId,
+    isActive: true,
+  }).populate({
+    path: 'eventOfferId',
+    match: {
+      isActive: true,
+      startDate: { $lte: now },
+      endDate: { $gte: now },
+    }
+  });
+
+  const validSubscription = activeSubscriptions.find((sub: any) => sub.eventOfferId !== null);
+  if (!validSubscription) return null;
+
+  const template: any = validSubscription.eventOfferId;
+  return {
+    discountType: validSubscription.discountType || template.discountType,
+    discountValue: validSubscription.discountValue || template.discountValue,
+    endDate: template.endDate,
+  };
+};
 
 const updateProfile = async (
   userId: string,
@@ -153,7 +180,16 @@ const getBranchesForCustomer = async (lat?: number, lon?: number, searchTerm?: s
 
   const branches = await Branch.find(filter).populate("shopOwnerId", "shop_name shop_logo profile_image");
 
-  const processedBranches = branches.map((branch: any) => processBranchData(branch, lat, lon));
+  const processedBranches = await Promise.all(branches.map(async (branch: any) => {
+    const processed: any = processBranchData(branch, lat, lon);
+    const activeEvent = await getActiveEventForShopOwner((branch.shopOwnerId as any)?._id?.toString() || (branch.shopOwnerId as any)?.toString());
+    if (activeEvent) {
+      processed.discount = activeEvent.discountValue;
+      processed.discountType = activeEvent.discountType;
+      processed.endDate = activeEvent.endDate;
+    }
+    return processed;
+  }));
 
   if (lat && lon) {
     return processedBranches.sort((a, b) => (a.distance || 0) - (b.distance || 0));
@@ -176,6 +212,12 @@ const getSingleBranch = async (
   }
 
   const formattedBranch: any = processBranchData(branch, lat, lon);
+  const activeEvent = await getActiveEventForShopOwner((branch.shopOwnerId as any)?._id?.toString() || (branch.shopOwnerId as any)?.toString());
+  if (activeEvent) {
+    formattedBranch.discount = activeEvent.discountValue;
+    formattedBranch.discountType = activeEvent.discountType;
+    formattedBranch.endDate = activeEvent.endDate;
+  }
 
   const shopOwnerId = (branch.shopOwnerId as any)?._id;
 
@@ -242,7 +284,14 @@ const getBranchDetailsBrief = async (branchId: string, lat?: number, lon?: numbe
     throw new ApiError(httpStatus.NOT_FOUND, "Branch not found");
   }
 
-  return processBranchData(branch, lat, lon);
+  const processed: any = processBranchData(branch, lat, lon);
+  const activeEvent = await getActiveEventForShopOwner((branch.shopOwnerId as any)?._id?.toString() || (branch.shopOwnerId as any)?.toString());
+  if (activeEvent) {
+    processed.discount = activeEvent.discountValue;
+    processed.discountType = activeEvent.discountType;
+    processed.endDate = activeEvent.endDate;
+  }
+  return processed;
 };
 
 const saveLocation = async (

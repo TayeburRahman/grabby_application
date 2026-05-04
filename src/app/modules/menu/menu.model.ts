@@ -29,6 +29,7 @@ const menuSchema = new Schema<IMenu, MenuModel>(
     description: { type: String, default: '' },
     additionalItems: { type: [additionalGroupSchema], default: [] },
     stamp: { type: Number, default: 0 },
+    stampActive: { type: Boolean, default: false },
     isAvailable: { type: Boolean, default: true },
   },
   { timestamps: true }

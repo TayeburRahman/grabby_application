@@ -52,6 +52,12 @@ router.patch(
 );
 
 router.patch(
+  '/:id/cancel-respond',
+  auth(ENUM_USER_ROLE.SHOP_OWNER, ENUM_USER_ROLE.ADMIN, ENUM_USER_ROLE.SUPER_ADMIN),
+  OrderController.respondCancelRequest
+);
+
+router.patch(
   '/:id/location',
   auth(ENUM_USER_ROLE.CUSTOMER),
   OrderController.updateOrderLocation

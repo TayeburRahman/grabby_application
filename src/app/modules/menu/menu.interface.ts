@@ -21,6 +21,7 @@ export type IMenu = {
   description: string;
   additionalItems: IAdditionalGroup[];
   stamp: number;
+  stampActive?: boolean;
   isAvailable: boolean;
   eventOffer?: any;
 };

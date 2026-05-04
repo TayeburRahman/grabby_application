@@ -5,6 +5,7 @@ const menuCategorySchema = new Schema<IMenuCategory, MenuCategoryModel>(
   {
     name: { type: String, required: true },
     shopOwnerId: { type: Schema.Types.ObjectId, ref: 'ShopOwner', required: false },
+    stampActive: { type: Boolean, default: false },
   },
   { timestamps: true }
 );

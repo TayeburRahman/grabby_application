@@ -188,7 +188,7 @@ const getAllOrders = async (query: Record<string, unknown>) => {
   };
 };
 
-const cancelOrder = async (orderId: string, customerId: string, cancelNote: string) => {
+const cancelOrder = async (orderId: string, customerId: string, cancelNote: string, cancelStatus?: any) => {
   const order = await Order.findOne({ _id: orderId, customerId });
 
   if (!order) {
@@ -203,30 +203,97 @@ const cancelOrder = async (orderId: string, customerId: string, cancelNote: stri
     throw new ApiError(httpStatus.BAD_REQUEST, 'Cannot cancel a completed order');
   }
 
+  const cStatus = cancelStatus === true ? 'pending' : (cancelStatus || 'pending');
+
   const result = await Order.findByIdAndUpdate(
     orderId,
-    { status: 'cancelled', cancelNote },
+    { cancelNote, cancelStatus: cStatus },
     { new: true }
   );
 
-  // Deduct points if the order was cancelled
   if (result) {
-    const earnedPoints = Math.floor((order.totalAmount || 0) / 5) * 2;
-    if (earnedPoints > 0) {
-      // Check if reward points were enabled for this shop
-      const branch = await Branch.findById(order.branchId).populate('shopOwnerId');
-      const isRewardEnabled = branch && (branch.shopOwnerId as any)?.isRewardPointEnabled !== false;
-
-      if (isRewardEnabled) {
-        await Customer.findByIdAndUpdate(
-          customerId,
-          { $inc: { pointWallet: -earnedPoints } }
-        );
-      }
+    // Create notification for Shop Owner: Cancel Request
+    const branch = await Branch.findById(result.branchId);
+    if (branch) {
+      await NotificationService.createNotification({
+        title: 'Order Cancel Request',
+        message: `Customer requested to cancel order ${result.orderId}`,
+        recipient: branch.shopOwnerId as any,
+        role: 'shop_owner',
+        orderId: result._id as any,
+      });
     }
   }
 
   return result;
+};
+
+const respondCancelRequest = async (orderId: string, action: 'accept' | 'decline') => {
+  const order = await Order.findById(orderId);
+
+  if (!order) {
+    throw new ApiError(httpStatus.NOT_FOUND, 'Order not found');
+  }
+
+  if (order.cancelStatus !== 'pending') {
+    throw new ApiError(httpStatus.BAD_REQUEST, 'No pending cancel request found for this order');
+  }
+
+  if (action === 'accept') {
+    const result = await Order.findByIdAndUpdate(
+      orderId,
+      { status: 'cancelled', cancelStatus: 'accepted' },
+      { new: true }
+    );
+
+    if (result) {
+      // Deduct points since order is now officially cancelled
+      const earnedPoints = Math.floor((result.totalAmount || 0) / 5) * 2;
+      if (earnedPoints > 0) {
+        const branch = await Branch.findById(result.branchId).populate('shopOwnerId');
+        const isRewardEnabled = branch && (branch.shopOwnerId as any)?.isRewardPointEnabled !== false;
+
+        if (isRewardEnabled) {
+          await Customer.findByIdAndUpdate(
+            result.customerId,
+            { $inc: { pointWallet: -earnedPoints } }
+          );
+        }
+      }
+
+      // Notify customer
+      await NotificationService.createNotification({
+        title: 'Cancel Request Accepted',
+        message: `Your cancel request for order ${result.orderId} has been accepted.`,
+        recipient: result.customerId as any,
+        role: 'customer',
+        orderId: result._id as any,
+      });
+    }
+
+    return result;
+  } else if (action === 'decline') {
+    const result = await Order.findByIdAndUpdate(
+      orderId,
+      { cancelStatus: 'declined' },
+      { new: true }
+    );
+
+    if (result) {
+      // Notify customer
+      await NotificationService.createNotification({
+        title: 'Cancel Request Declined',
+        message: `Your cancel request for order ${result.orderId} has been declined.`,
+        recipient: result.customerId as any,
+        role: 'customer',
+        orderId: result._id as any,
+      });
+    }
+
+    return result;
+  } else {
+    throw new ApiError(httpStatus.BAD_REQUEST, 'Invalid action. Must be accept or decline');
+  }
 };
 
 const updateOrderLocation = async (id: string, payload: { lat: number; lon: number }) => {
@@ -293,6 +360,7 @@ export const OrderService = {
   getAllOrders,
   updateOrderStatus,
   cancelOrder,
+  respondCancelRequest,
   updateOrderLocation,
   updateOrderNearbyStatus,
 };

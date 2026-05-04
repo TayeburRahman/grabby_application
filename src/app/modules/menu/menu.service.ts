@@ -4,10 +4,18 @@ import { Menu } from './menu.model';
 import QueryBuilder from '../../../builder/QueryBuilder';
 import { EventSubscription } from '../event_offer/event_subscription.model';
 import { Branch } from '../shop_owner/shop_owner.model';
+import { MenuCategory } from '../menu_category/menu_category.model';
 
 const attachActiveEvents = async (items: any[], shopOwnerId?: string) => {
   if (!shopOwnerId) {
-    return items.map((item) => (item.toObject ? item.toObject() : item));
+    return items.map((item) => {
+      const itemObj = item.toObject ? item.toObject() : item;
+      itemObj.originalPrice = Number(itemObj.price);
+      itemObj.price = Number(itemObj.price);
+      itemObj.discount = false;
+      itemObj.discountParcent = 0;
+      return itemObj;
+    });
   }
 
   const now = new Date();
@@ -29,7 +37,15 @@ const attachActiveEvents = async (items: any[], shopOwnerId?: string) => {
   // 2. Filter out those where template didn't match (eventOfferId will be null)
   const validSubscriptions = activeSubscriptions.filter((sub: any) => sub.eventOfferId !== null);
 
-  if (validSubscriptions.length === 0) return plainItems;
+  if (validSubscriptions.length === 0) {
+    return plainItems.map(itemObj => {
+      itemObj.originalPrice = Number(itemObj.price);
+      itemObj.price = Number(itemObj.price);
+      itemObj.discount = false;
+      itemObj.discountParcent = 0;
+      return itemObj;
+    });
+  }
 
   return plainItems.map(itemObj => {
     // Find a valid subscription that applies to this item
@@ -52,11 +68,16 @@ const attachActiveEvents = async (items: any[], shopOwnerId?: string) => {
       // ── Calculate Discounted Price ──
       const originalPrice = Number(itemObj.price);
       let discountedPrice = originalPrice;
+      let discountParcentValue = 0;
 
       if (finalDiscountType === 'percentage') {
         discountedPrice = originalPrice - (originalPrice * finalDiscountValue) / 100;
+        discountParcentValue = finalDiscountValue;
       } else if (finalDiscountType === 'fixed') {
         discountedPrice = originalPrice - finalDiscountValue;
+        if (originalPrice > 0) {
+          discountParcentValue = Math.round((finalDiscountValue / originalPrice) * 100);
+        }
       }
 
       // Ensure price isn't negative
@@ -65,6 +86,8 @@ const attachActiveEvents = async (items: any[], shopOwnerId?: string) => {
       // Attach the template and the final settings
       itemObj.originalPrice = originalPrice;
       itemObj.price = Number(discountedPrice.toFixed(2));
+      itemObj.discount = true;
+      itemObj.discountParcent = discountParcentValue;
       itemObj.eventOffer = {
         discountName: tObj.discountName,
         eventName: tObj.eventName,
@@ -72,6 +95,11 @@ const attachActiveEvents = async (items: any[], shopOwnerId?: string) => {
         discountType: finalDiscountType,
         discountValue: finalDiscountValue,
       };
+    } else {
+      itemObj.originalPrice = Number(itemObj.price);
+      itemObj.price = Number(itemObj.price);
+      itemObj.discount = false;
+      itemObj.discountParcent = 0;
     }
 
     return itemObj;
@@ -79,6 +107,22 @@ const attachActiveEvents = async (items: any[], shopOwnerId?: string) => {
 };
 
 const create = async (payload: Partial<IMenu>): Promise<IMenu> => {
+  if (payload.category) {
+    if (payload.stampActive) {
+      await MenuCategory.findByIdAndUpdate(payload.category, { stampActive: true });
+      await Menu.updateMany(
+        { category: payload.category },
+        { stampActive: true, stamp: payload.stamp || 10 }
+      );
+    } else {
+      await MenuCategory.findByIdAndUpdate(payload.category, { stampActive: false });
+      await Menu.updateMany(
+        { category: payload.category },
+        { stampActive: false, stamp: 0 }
+      );
+    }
+  }
+
   const result = await Menu.create(payload);
   return result;
 };
