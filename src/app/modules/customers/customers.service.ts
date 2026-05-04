@@ -254,6 +254,7 @@ const getSingleBranch = async (
       return {
         _id: cat._id,
         name: cat.name,
+        stampActive: cat.stampActive,
         menus: menus
           .filter((m: any) => m.category?._id?.toString() === cat._id.toString())
           .map((menu: any) => {
@@ -268,7 +269,7 @@ const getSingleBranch = async (
       };
     });
 
-    formattedBranch.totalStamps= branchTotalStamps
+    formattedBranch.totalStamps = branchTotalStamps
     // Filter out categories that have no menus (especially important when paginating)
     formattedBranch.menu_categories = categoriesWithMenus.filter(cat => cat.menus.length > 0);
   } else {
