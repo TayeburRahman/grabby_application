@@ -73,8 +73,8 @@ const saveBranches = async (
       phone_number: string;
       availability?: Array<{
         day: string;
-        open: string;
-        close: string;
+        open?: string;
+        close?: string;
         isClosed: boolean;
       }>;
       applyMenuForAll: boolean;
@@ -163,8 +163,8 @@ const createBranch = async (
     phone_number: string;
     availability?: Array<{
       day: string;
-      open: string;
-      close: string;
+      open?: string;
+      close?: string;
       isClosed: boolean;
     }>;
     applyMenuForAll: boolean;
@@ -241,8 +241,8 @@ const updateBranchAvailability = async (
   payload: {
     availability: Array<{
       day: string;
-      open: string;
-      close: string;
+      open?: string;
+      close?: string;
       isClosed: boolean;
     }>;
   }
@@ -252,18 +252,17 @@ const updateBranchAvailability = async (
     throw new ApiError(httpStatus.NOT_FOUND, "Shop owner not found");
   }
 
-  const branch = await Branch.findOne({
-    _id: branchId,
-    shopOwnerId: shopOwner._id,
-  });
-  if (!branch) {
+  const updatedBranch = await Branch.findOneAndUpdate(
+    { _id: branchId, shopOwnerId: shopOwner._id },
+    { $set: { availability: payload.availability } },
+    { new: true, runValidators: true }
+  );
+
+  if (!updatedBranch) {
     throw new ApiError(httpStatus.NOT_FOUND, "Branch not found");
   }
 
-  branch.availability = payload.availability;
-  await branch.save();
-
-  return branch;
+  return updatedBranch;
 };
 
 const getAllBranches = async (user: IReqUser) => {

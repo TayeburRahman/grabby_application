@@ -70,8 +70,8 @@ const ShopOwnerSchema = new Schema<IShopOwner>(
 const DayHoursSchema = new Schema(
   {
     day: { type: String, required: true },
-    open: { type: String, required: true },
-    close: { type: String, required: true },
+    open: { type: String },
+    close: { type: String },
     isClosed: { type: Boolean, default: false },
   },
   { _id: false }

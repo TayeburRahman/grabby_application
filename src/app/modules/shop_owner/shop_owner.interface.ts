@@ -2,8 +2,8 @@ import mongoose, { Document } from "mongoose";
 
 export type IDayHours = {
   day: string;
-  open: string;
-  close: string;
+  open?: string;
+  close?: string;
   isClosed: boolean;
 };
 

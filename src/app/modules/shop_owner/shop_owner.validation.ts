@@ -27,8 +27,8 @@ const businessInfoSchema = z.object({
 
 const dayHoursSchema = z.object({
   day: z.string({ required_error: "Day is required" }),
-  open: z.string({ required_error: "Opening time is required" }),
-  close: z.string({ required_error: "Closing time is required" }),
+  open: z.string().optional(),
+  close: z.string().optional(),
   isClosed: z.boolean().optional().default(false),
 });
 
