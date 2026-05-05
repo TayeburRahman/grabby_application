@@ -80,7 +80,7 @@ const toggleActive = catchAsync(async (req: Request, res: Response) => {
   const eventOfferId = req.params.id;
 
   const result = await EventOfferService.upsertSubscription(userId, eventOfferId, req.body);
-  
+
   sendResponse(res, {
     statusCode: 200,
     success: true,
@@ -92,20 +92,14 @@ const toggleActive = catchAsync(async (req: Request, res: Response) => {
 // ──── Template Updates (Only for own templates) ────
 const updateByShopOwner = catchAsync(async (req: Request, res: Response) => {
   const { userId } = req.user as IReqUser;
-  const existing = await EventOfferService.getById(req.params.id);
+  const eventOfferId = req.params.id;
 
-  if (!existing) {
-    return sendResponse(res, { statusCode: 404, success: false, message: 'Event offer not found' });
-  }
-  if (existing.createdBy !== 'shop_owner' || (existing.shopOwnerId && existing.shopOwnerId?._id?.toString() !== userId)) {
-    return sendResponse(res, { statusCode: 403, success: false, message: 'Forbidden: You can only update the primary details of your own events' });
-  }
+  const result = await EventOfferService.upsertSubscription(userId, eventOfferId, req.body);
 
-  const result = await EventOfferService.updateById(req.params.id, req.body);
   sendResponse(res, {
     statusCode: 200,
     success: true,
-    message: 'Event offer template updated successfully',
+    message: 'Shop event settings updated successfully',
     data: result,
   });
 });

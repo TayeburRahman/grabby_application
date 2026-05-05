@@ -6,7 +6,7 @@ import QueryBuilder from '../../../builder/QueryBuilder';
 
 const create = async (payload: any): Promise<IEventOffer> => {
   const result = await EventOffer.create(payload);
-  
+
   // If a shop owner creates it personally, auto-subscribe them to it
   if (result.createdBy === 'shop_owner' && result.shopOwnerId) {
     // If activating new, deactivate all other subscriptions for this shop
@@ -25,7 +25,7 @@ const create = async (payload: any): Promise<IEventOffer> => {
       specificItems: payload.specificItems || [],
     });
   }
-  
+
   return result;
 };
 
@@ -116,6 +116,7 @@ const getById = async (id: string) => {
 };
 
 const updateById = async (id: string, payload: Partial<IEventOffer>) => {
+  console.log(payload);
   return await EventOffer.findByIdAndUpdate(id, payload, { new: true });
 };
 
@@ -152,7 +153,7 @@ const upsertSubscription = async (
     { $set: payload },
     { upsert: true, new: true, runValidators: true }
   ).populate('specificItems', 'itemName price');
-  
+
   return result;
 };
 
