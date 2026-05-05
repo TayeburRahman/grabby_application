@@ -13,7 +13,7 @@ const eventOfferSchema = new Schema<IEventOffer, EventOfferModel>(
       default: 'percentage',
     },
     discountValue: { type: Number, required: true },
-    isActive: { type: Boolean, default: true }, // Master switch
+    isActive: { type: Boolean, default: true },
     createdBy: {
       type: String,
       enum: ['shop_owner', 'admin'],
