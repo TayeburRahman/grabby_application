@@ -179,21 +179,32 @@ const getAdminDashboardStats = async () => {
     { $match: { status: { $ne: 'cancelled' } } },
     { $unwind: '$items' },
     {
+      $lookup: {
+        from: 'branches',
+        localField: 'branchId',
+        foreignField: '_id',
+        as: 'branchInfo'
+      }
+    },
+    { $unwind: '$branchInfo' },
+    {
       $group: {
         _id: '$items.productId',
         name: { $first: '$items.menuName' },
+        shopName: { $first: '$branchInfo.branch_name' },
         unitsSold: { $sum: '$items.quantity' },
         revenue: { $sum: '$items.totalPrice' }
       }
     },
     { $sort: { unitsSold: -1 } },
     { $limit: 5 }
-  ])) as { _id: string; name: string; unitsSold: number; revenue: number }[];
+  ])) as { _id: string; name: string; shopName: string; unitsSold: number; revenue: number }[];
 
   const maxUnits = topProducts.length > 0 ? topProducts[0].unitsSold : 1;
   const formattedTopProducts = topProducts.map((item, index) => ({
     rank: index + 1,
     name: item.name,
+    shopName: item.shopName,
     unitsSold: item.unitsSold,
     revenue: `AED ${item.revenue.toFixed(2)}`,
     performance: Math.round((item.unitsSold / maxUnits) * 100)

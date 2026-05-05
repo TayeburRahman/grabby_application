@@ -6,7 +6,6 @@ const PromoCodeSchema = new Schema<IPromoCode>(
     code: {
       type: String,
       required: true,
-      unique: true,
     },
     shopOwnerId: {
       type: mongoose.Schema.Types.ObjectId,
@@ -19,7 +18,7 @@ const PromoCodeSchema = new Schema<IPromoCode>(
       default: 'active',
     },
     branchIds: {
-      type: Schema.Types.Mixed, // Can be array of ObjectIds or 'all'
+      type: Schema.Types.Mixed,
       required: true,
       validate: {
         validator: function (value: any) {
