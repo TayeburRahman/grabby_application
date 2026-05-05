@@ -140,11 +140,26 @@ const update = catchAsync(async (req: Request, res: Response) => {
     }
   }
 
+  const isStampActive =
+    req.body.stampActive !== undefined
+      ? req.body.stampActive === 'true' || req.body.stampActive === true
+      : undefined;
+
   const payload: Record<string, any> = { ...req.body };
   if (image) payload.image = image;
   if (additionalItems !== undefined) payload.additionalItems = additionalItems;
   if (payload.price) payload.price = Number(payload.price);
-  if (payload.stamp) payload.stamp = Number(payload.stamp);
+
+  if (isStampActive !== undefined) {
+    payload.stampActive = isStampActive;
+    payload.stamp = isStampActive
+      ? req.body.stamp
+        ? Number(req.body.stamp)
+        : 10
+      : 0;
+  } else if (payload.stamp) {
+    payload.stamp = Number(payload.stamp);
+  }
 
   const result = await MenuService.updateById(req.params.id, payload);
   sendResponse(res, {

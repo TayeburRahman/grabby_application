@@ -256,8 +256,36 @@ const getByCategory = async (
 };
 
 const updateById = async (id: string, payload: Partial<IMenu>) => {
-  const result = await Menu.findByIdAndUpdate(id, payload, { new: true })
-    .populate('category', 'name');
+  if (payload.stampActive !== undefined) {
+    let categoryId = payload.category;
+    if (!categoryId) {
+      const menu = await Menu.findById(id);
+      if (menu) {
+        categoryId = menu.category;
+      }
+    }
+
+    if (categoryId) {
+      if (payload.stampActive) {
+        await MenuCategory.findByIdAndUpdate(categoryId, { stampActive: true });
+        await Menu.updateMany(
+          { category: categoryId },
+          { stampActive: true, stamp: payload.stamp || 10 }
+        );
+      } else {
+        await MenuCategory.findByIdAndUpdate(categoryId, { stampActive: false });
+        await Menu.updateMany(
+          { category: categoryId },
+          { stampActive: false, stamp: 0 }
+        );
+      }
+    }
+  }
+
+  const result = await Menu.findByIdAndUpdate(id, payload, { new: true }).populate(
+    'category',
+    'name'
+  );
   return result;
 };
 
