@@ -8,6 +8,7 @@ import Customer from '../customers/customers.model';
 import { Branch, ShopOwner } from '../shop_owner/shop_owner.model';
 import QueryBuilder from '../../../builder/QueryBuilder';
 import { NotificationService } from '../notification/notification.service';
+import { CustomerStampService } from '../customer_stamps/customer_stamps.service';
 
 const generateOrderId = async (): Promise<string> => {
   const date = new Date();
@@ -21,7 +22,7 @@ const generateOrderId = async (): Promise<string> => {
   return `ORD-${year}${month}${day}-${nextNumber}`;
 };
 
-const createOrder = async (customerId: string, payload: Partial<IOrder>) => {
+const createOrder = async (customerId: string, authId: string, payload: Partial<IOrder>) => {
   const orderId = await generateOrderId();
 
   // Default values as per user request
@@ -39,6 +40,11 @@ const createOrder = async (customerId: string, payload: Partial<IOrder>) => {
   // Clear cart after successful order
   if (result) {
     await Cart.deleteMany({ customerId, branchId: payload.branchId });
+
+    // Add 1 stamp for the branch
+    if (payload.branchId) {
+      await CustomerStampService.addStamp(authId, payload.branchId.toString(), 1);
+    }
 
     // Calculate and add earned points (stamps) for the shop
     // 2 points for every 5 total price

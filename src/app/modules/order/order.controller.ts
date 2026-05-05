@@ -6,8 +6,8 @@ import { OrderService } from './order.service';
 import { IReqUser } from '../auth/auth.interface';
 
 const createOrder = catchAsync(async (req: Request, res: Response) => {
-  const { userId } = req.user as IReqUser;
-  const result = await OrderService.createOrder(userId, req.body);
+  const { userId, authId } = req.user as IReqUser;
+  const result = await OrderService.createOrder(userId, authId, req.body);
 
   sendResponse(res, {
     statusCode: httpStatus.CREATED,
