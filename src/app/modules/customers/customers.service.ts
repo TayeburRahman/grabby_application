@@ -109,33 +109,24 @@ const getBranchStatusAndTiming = (availability: any[]) => {
   let statusText = "Closed";
   let timing = "Closed Today";
 
-  if (todayAvail && !todayAvail.isClosed && todayAvail.open && todayAvail.close) {
-    timing = `Open: ${formatTimeAMPM(todayAvail.open)} - ${formatTimeAMPM(todayAvail.close)}`;
+  if (todayAvail) {
+    if (todayAvail.open && todayAvail.close) {
+      timing = `Open: ${formatTimeAMPM(todayAvail.open)} - ${formatTimeAMPM(todayAvail.close)}`;
+    }
 
-    const now = new Date();
-    const currentTime = now.getHours() * 60 + now.getMinutes();
-
-    const parseTime = (timeStr: string) => {
-      if (!timeStr) return 0;
-      const parts = timeStr.split(':');
-      const h = parseInt(parts[0]);
-      const m = parseInt(parts[1]);
-      return (isNaN(h) ? 0 : h) * 60 + (isNaN(m) ? 0 : m);
-    };
-
-    const openTime = parseTime(todayAvail.open);
-    const closeTime = parseTime(todayAvail.close);
-
-    if (currentTime >= openTime && currentTime <= closeTime) {
+    if (!todayAvail.isClosed) {
       isOpen = true;
-      statusText = "Open Now";
+      statusText = "Open";
     } else {
       isOpen = false;
       statusText = "Closed";
+      timing = "Closed Today";
     }
   }
 
-  return { isOpen, statusText, timing };
+  const isClosed = todayAvail ? todayAvail.isClosed : true;
+
+  return { isOpen, statusText, timing, isClosed };
 };
 
 const processBranchData = (branch: any, lat?: number, lon?: number) => {
@@ -146,7 +137,7 @@ const processBranchData = (branch: any, lat?: number, lon?: number) => {
     distanceText = `${distanceKm.toFixed(1)} km`;
   }
 
-  const { isOpen, statusText, timing } = getBranchStatusAndTiming(branch.availability);
+  const { isOpen, statusText, timing, isClosed } = getBranchStatusAndTiming(branch.availability);
 
   return {
     _id: branch._id,
@@ -159,6 +150,7 @@ const processBranchData = (branch: any, lat?: number, lon?: number) => {
     isOpen,
     statusText,
     timing,
+    isClosed,
     tags: ["Car", "Counter"],
     lat: branch.lat,
     lng: branch.lng,
