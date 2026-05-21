@@ -69,4 +69,16 @@ router.patch(
   OrderController.updateOrderNearbyStatus
 );
 
+// Foloosi Payment Verification and Webhook routes
+router.post(
+  '/payment-webhook',
+  OrderController.handlePaymentWebhook
+);
+
+router.get(
+  '/verify-payment/:orderId',
+  auth(ENUM_USER_ROLE.CUSTOMER),
+  OrderController.verifyPayment
+);
+
 export const OrderRoutes = router;

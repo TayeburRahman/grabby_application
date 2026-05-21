@@ -3,6 +3,7 @@ import httpStatus from 'http-status';
 import catchAsync from '../../../shared/catchasync';
 import sendResponse from '../../../shared/sendResponse';
 import { OrderService } from './order.service';
+import { Order } from './order.model';
 import { IReqUser } from '../auth/auth.interface';
 
 const createOrder = catchAsync(async (req: Request, res: Response) => {
@@ -132,6 +133,54 @@ const updateOrderNearbyStatus = catchAsync(async (req: Request, res: Response) =
   });
 });
 
+const handlePaymentWebhook = catchAsync(async (req: Request, res: Response) => {
+  const payload = req.body;
+  const transfer = payload?.data?.transfer;
+
+  if (transfer) {
+    const orderId = transfer.api?.optional1;
+    const transactionStatus = transfer.transaction_status;
+    const transactionNo = transfer.transaction_no;
+
+    if (orderId && transactionStatus === 'success') {
+      await OrderService.confirmPayment(orderId, transactionNo, transfer);
+    }
+  }
+
+  sendResponse(res, {
+    statusCode: httpStatus.OK,
+    success: true,
+    message: 'Webhook processed successfully',
+    data: null,
+  });
+});
+
+const verifyPayment = catchAsync(async (req: Request, res: Response) => {
+  const { orderId } = req.params;
+  const result = await Order.findOne({ orderId });
+
+  if (!result) {
+    return sendResponse(res, {
+      statusCode: httpStatus.NOT_FOUND,
+      success: false,
+      message: 'Order not found',
+      data: null,
+    });
+  }
+
+  sendResponse(res, {
+    statusCode: httpStatus.OK,
+    success: true,
+    message: 'Payment verification status retrieved successfully',
+    data: {
+      orderId: result.orderId,
+      paymentStatus: result.paymentStatus,
+      transactionId: result.transactionId,
+      referenceToken: result.referenceToken,
+    },
+  });
+});
+
 export const OrderController = {
   createOrder,
   getMyOrders,
@@ -143,4 +192,6 @@ export const OrderController = {
   respondCancelRequest,
   updateOrderLocation,
   updateOrderNearbyStatus,
+  handlePaymentWebhook,
+  verifyPayment,
 };

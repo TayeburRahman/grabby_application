@@ -43,10 +43,12 @@ const orderSchema = new Schema<IOrder>(
     paymentStatus: {
       type: String,
       enum: ['paid', 'unpaid'],
-      default: 'paid',
+      default: 'unpaid',
     },
     paymentMethod: { type: String, required: true },
-    transactionId: { type: String, required: true },
+    transactionId: { type: String, default: '' },
+    referenceToken: { type: String, default: null },
+    paymentDetails: { type: Schema.Types.Mixed, default: null },
     nearByShop: { type: Boolean, default: false },
   },
   {

@@ -1,5 +1,5 @@
 {
-  "name":"ayah_almheiri_backend",
+  "name": "ayah_almheiri_backend",
   "version": "1.0.0",
   "description": "",
   "main": "server.js",
@@ -46,6 +46,7 @@
     "@types/jsonwebtoken": "^9.0.3",
     "@types/multer": "^1.4.11",
     "@types/nodemailer": "^6.4.14",
+    "axios": "^1.16.1",
     "bcrypt": "^5.1.1",
     "body-parser": "^1.20.2",
     "bull": "^4.12.2",

@@ -9,6 +9,7 @@ import { Branch, ShopOwner } from '../shop_owner/shop_owner.model';
 import QueryBuilder from '../../../builder/QueryBuilder';
 import { NotificationService } from '../notification/notification.service';
 import { CustomerStampService } from '../customer_stamps/customer_stamps.service';
+import { initializeFoloosiPayment } from '../../../utils/foloosi';
 
 const generateOrderId = async (): Promise<string> => {
   const date = new Date();
@@ -25,38 +26,134 @@ const generateOrderId = async (): Promise<string> => {
 const createOrder = async (customerId: string, authId: string, payload: Partial<IOrder>) => {
   const orderId = await generateOrderId();
 
+  const isCardPayment = payload.paymentMethod === 'card' || payload.paymentMethod === 'foloosi';
+
   // Default values as per user request
-  const orderData = {
+  const orderData: any = {
     ...payload,
     customerId,
     orderId,
-    paymentStatus: 'paid',
-    transactionId: payload.transactionId || '6478ytwefgfwe456743654',
+    paymentStatus: isCardPayment ? 'unpaid' : 'paid',
+    transactionId: isCardPayment ? '' : (payload.transactionId || '6478ytwefgfwe456743654'),
     status: 'placed',
+    referenceToken: null,
   };
+
+  // If card payment, initialize Foloosi Payment Setup to get reference token
+  if (isCardPayment) {
+    const customer = await Customer.findById(customerId);
+    const foloosiResult = await initializeFoloosiPayment({
+      amount: payload.totalAmount || 0,
+      customerName: customer?.name || 'Customer',
+      email: customer?.email || 'customer@example.com',
+      phone: customer?.phone_number || '0000000000',
+      orderId,
+    });
+
+    if (!foloosiResult.success) {
+      throw new ApiError(httpStatus.BAD_REQUEST, foloosiResult.error || 'Failed to initialize Foloosi payment');
+    }
+
+    orderData.referenceToken = foloosiResult.reference_token;
+  }
 
   const result = await Order.create(orderData);
 
-  // Clear cart after successful order
+  // Clear cart after creating the order
   if (result) {
     await Cart.deleteMany({ customerId, branchId: payload.branchId });
 
+    // For non-card payments (e.g. cash), award stamps/points and send notifications immediately
+    if (!isCardPayment) {
+      // Add 1 stamp for the branch
+      if (payload.branchId) {
+        await CustomerStampService.addStamp(authId, payload.branchId.toString(), 1);
+      }
+
+      // Calculate and add earned points (stamps) for the shop
+      // 2 points for every 5 total price
+      const earnedPoints = Math.floor((payload.totalAmount || 0) / 5) * 2;
+      if (earnedPoints > 0) {
+        // Check if the shop owner has reward points enabled
+        const branch = await Branch.findById(payload.branchId).populate('shopOwnerId');
+        const isRewardEnabled = branch && (branch.shopOwnerId as any)?.isRewardPointEnabled !== false;
+
+        if (isRewardEnabled) {
+          await Customer.findByIdAndUpdate(
+            customerId,
+            { $inc: { pointWallet: earnedPoints } }
+          );
+
+          // Create notification for Customer: Points earned
+          await NotificationService.createNotification({
+            title: 'Points Earned',
+            message: `You earned ${earnedPoints} points from order ${orderId}`,
+            recipient: new Types.ObjectId(customerId) as any,
+            role: 'customer',
+            orderId: result._id as any,
+          });
+        }
+      }
+
+      // Create notification for Shop Owner: New Order
+      const branch = await Branch.findById(payload.branchId);
+      if (branch) {
+        await NotificationService.createNotification({
+          title: 'New Order',
+          message: `You have a new order: ${orderId}`,
+          recipient: branch.shopOwnerId as any,
+          role: 'shop_owner',
+          orderId: result._id as any,
+        });
+      }
+    }
+  }
+
+  return result;
+};
+
+const confirmPayment = async (orderId: string, transactionNo: string, paymentDetails: any) => {
+  const order = await Order.findOne({ orderId });
+  if (!order) {
+    throw new ApiError(httpStatus.NOT_FOUND, 'Order not found');
+  }
+
+  // If already paid, return early to prevent duplicate processing
+  if (order.paymentStatus === 'paid') {
+    return order;
+  }
+
+  const result = await Order.findOneAndUpdate(
+    { orderId },
+    {
+      paymentStatus: 'paid',
+      transactionId: transactionNo,
+      paymentDetails,
+      status: 'placed',
+    },
+    { new: true }
+  );
+
+  if (result) {
+    const customer = await Customer.findById(result.customerId);
+    const authId = customer?.authId?.toString();
+
     // Add 1 stamp for the branch
-    if (payload.branchId) {
-      await CustomerStampService.addStamp(authId, payload.branchId.toString(), 1);
+    if (result.branchId && authId) {
+      await CustomerStampService.addStamp(authId, result.branchId.toString(), 1);
     }
 
     // Calculate and add earned points (stamps) for the shop
     // 2 points for every 5 total price
-    const earnedPoints = Math.floor((payload.totalAmount || 0) / 5) * 2;
-    if (earnedPoints > 0) {
+    const earnedPoints = Math.floor((result.totalAmount || 0) / 5) * 2;
+    if (earnedPoints > 0 && authId) {
       // Check if the shop owner has reward points enabled
-      const branch = await Branch.findById(payload.branchId).populate('shopOwnerId');
+      const branch = await Branch.findById(result.branchId).populate('shopOwnerId');
       const isRewardEnabled = branch && (branch.shopOwnerId as any)?.isRewardPointEnabled !== false;
 
       if (isRewardEnabled) {
         await Customer.findByIdAndUpdate(
-          customerId,
+          result.customerId,
           { $inc: { pointWallet: earnedPoints } }
         );
 
@@ -64,7 +161,7 @@ const createOrder = async (customerId: string, authId: string, payload: Partial<
         await NotificationService.createNotification({
           title: 'Points Earned',
           message: `You earned ${earnedPoints} points from order ${orderId}`,
-          recipient: new Types.ObjectId(customerId) as any,
+          recipient: result.customerId as any,
           role: 'customer',
           orderId: result._id as any,
         });
@@ -72,7 +169,7 @@ const createOrder = async (customerId: string, authId: string, payload: Partial<
     }
 
     // Create notification for Shop Owner: New Order
-    const branch = await Branch.findById(payload.branchId);
+    const branch = await Branch.findById(result.branchId);
     if (branch) {
       await NotificationService.createNotification({
         title: 'New Order',
@@ -360,6 +457,7 @@ const updateOrderNearbyStatus = async (orderId: string, customerId: string) => {
 
 export const OrderService = {
   createOrder,
+  confirmPayment,
   getMyOrders,
   getSingleOrder,
   getBranchOrders,

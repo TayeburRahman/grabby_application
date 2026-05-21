@@ -157,10 +157,6 @@ const processBranchData = (branch: any, lat?: number, lon?: number) => {
   };
 };
 
-/*** Get branches based on customer address (lat, lon) 
- * Sorts branches by proximity to the customer if coordinates are provided 
- */
-
 const getBranchesForCustomer = async (lat?: number, lon?: number, searchTerm?: string) => {
   let filter: any = {};
   if (searchTerm) {

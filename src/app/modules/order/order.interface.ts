@@ -34,6 +34,8 @@ export interface IOrder extends Document {
   paymentMethod: string;
   transactionId: string;
   nearByShop: boolean;
+  referenceToken?: string | null;
+  paymentDetails?: any;
   createdAt?: Date;
   updatedAt?: Date;
   cancelNote?: string;
