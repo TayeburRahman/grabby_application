@@ -28,7 +28,7 @@ const createOrderSchema = z.object({
     applyPromoCode: z.number().optional().nullable(),
     totalAmount: z.number({ required_error: 'Total amount is required' }),
     carPlates: z.string().optional(),
-    paymentMethod: z.string({ required_error: 'Payment method is required' }),
+    paymentMethod: z.string().optional().default('stripe'),
     transactionId: z.string().optional(),
   }),
 });

@@ -135,15 +135,14 @@ const updateOrderNearbyStatus = catchAsync(async (req: Request, res: Response) =
 
 const handlePaymentWebhook = catchAsync(async (req: Request, res: Response) => {
   const payload = req.body;
-  const transfer = payload?.data?.transfer;
 
-  if (transfer) {
-    const orderId = transfer.api?.optional1;
-    const transactionStatus = transfer.transaction_status;
-    const transactionNo = transfer.transaction_no;
+  if (payload.type === 'checkout.session.completed') {
+    const session = payload.data.object;
+    const orderId = session.client_reference_id || session.metadata?.orderId;
+    const transactionNo = session.payment_intent || session.id;
 
-    if (orderId && transactionStatus === 'success') {
-      await OrderService.confirmPayment(orderId, transactionNo, transfer);
+    if (orderId) {
+      await OrderService.confirmPayment(orderId, transactionNo, session);
     }
   }
 

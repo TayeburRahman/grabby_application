@@ -9,7 +9,7 @@ import { Branch, ShopOwner } from '../shop_owner/shop_owner.model';
 import QueryBuilder from '../../../builder/QueryBuilder';
 import { NotificationService } from '../notification/notification.service';
 import { CustomerStampService } from '../customer_stamps/customer_stamps.service';
-import { initializeFoloosiPayment } from '../../../utils/foloosi';
+import { initializeStripePayment } from '../../../utils/stripe';
 
 const generateOrderId = async (): Promise<string> => {
   const date = new Date();
@@ -26,23 +26,25 @@ const generateOrderId = async (): Promise<string> => {
 const createOrder = async (customerId: string, authId: string, payload: Partial<IOrder>) => {
   const orderId = await generateOrderId();
 
-  const isCardPayment = payload.paymentMethod === 'card' || payload.paymentMethod === 'foloosi';
+  const paymentMethod = payload.paymentMethod || 'stripe';
+  const isCardPayment = paymentMethod === 'card' || paymentMethod === 'stripe';
 
   // Default values as per user request
   const orderData: any = {
     ...payload,
     customerId,
     orderId,
+    paymentMethod,
     paymentStatus: isCardPayment ? 'unpaid' : 'paid',
     transactionId: isCardPayment ? '' : (payload.transactionId || '6478ytwefgfwe456743654'),
     status: 'placed',
     referenceToken: null,
   };
 
-  // If card payment, initialize Foloosi Payment Setup to get reference token
+  // If card payment, initialize Stripe Payment to get reference token
   if (isCardPayment) {
     const customer = await Customer.findById(customerId);
-    const foloosiResult = await initializeFoloosiPayment({
+    const stripeResult = await initializeStripePayment({
       amount: payload.totalAmount || 0,
       customerName: customer?.name || 'Customer',
       email: customer?.email || 'customer@example.com',
@@ -50,11 +52,11 @@ const createOrder = async (customerId: string, authId: string, payload: Partial<
       orderId,
     });
 
-    if (!foloosiResult.success) {
-      throw new ApiError(httpStatus.BAD_REQUEST, foloosiResult.error || 'Failed to initialize Foloosi payment');
+    if (!stripeResult.success) {
+      throw new ApiError(httpStatus.BAD_REQUEST, stripeResult.error || 'Failed to initialize Stripe payment');
     }
 
-    orderData.referenceToken = foloosiResult.reference_token;
+    orderData.referenceToken = stripeResult.reference_token;
   }
 
   const result = await Order.create(orderData);
