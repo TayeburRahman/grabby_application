@@ -69,7 +69,7 @@ router.patch(
   OrderController.updateOrderNearbyStatus
 );
 
-// Foloosi Payment Verification and Webhook routes
+// Stripe Payment Verification and Webhook routes
 router.post(
   '/payment-webhook',
   OrderController.handlePaymentWebhook

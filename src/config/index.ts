@@ -30,15 +30,13 @@ export default {
   },
   stripe: {
     stripe_secret_key: process.env.STRIPE_SECRET_KEY,
+    stripe_publishable_key: process.env.STRIPE_PUBLISHABLE_KEY,
+    stripe_webhook_secret: process.env.STRIPE_WEBHOOK_SECRET,
   },
   onesignal: {
     app_id: process.env.ONESIGNAL_APP_ID,
     api_key: process.env.ONESIGNAL_API_KEY,
     onesignal_url: process.env.ONESIGNAL_URL || 'https://onesignal.com',
-  },
-  foloosi: {
-    merchant_key: process.env.FOLOOSI_MERCHANT_KEY || 'live_$2y$10$6O0mhc6Iq.KtV2xyGFLaw.FEdhsn64OR7a9jV9zxvJ9ugSjck14IS',
-    secret_key: process.env.FOLOOSI_SECRET_KEY || 'live_$2y$10$SjduEr4p1XrNVU-7sbGr.14vIFC..FjUDV9SXzmLb0cLThn79BjW',
   },
   super_admin: {
     email: process.env.SUPER_ADMIN_EMAIL || 'superadmin@ayah.com',
