@@ -1,0 +1,10 @@
+export 'presentation/presentation_export.dart';
+export 'data/models/cart_model.dart';
+export 'data/models/car_plate_model.dart';
+export 'data/models/promo_code_model.dart';
+export 'data/datasources/cart_remote_data_source.dart';
+export 'data/datasources/car_plate_remote_data_source.dart';
+export 'domain/repositories/cart_repository.dart';
+export 'domain/repositories/car_plate_repository.dart';
+export 'presentation/bloc/cart_bloc.dart';
+export 'presentation/bloc/car_plate_bloc.dart';
