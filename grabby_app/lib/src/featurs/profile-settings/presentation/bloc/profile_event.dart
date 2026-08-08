@@ -25,3 +25,6 @@ class UpdateProfileEvent extends ProfileEvent {
     this.contactPhone,
   });
 }
+
+class GetStripeConnectOnboardingLinkEvent extends ProfileEvent {}
+

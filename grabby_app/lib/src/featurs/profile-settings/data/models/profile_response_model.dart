@@ -40,6 +40,10 @@ class ProfileData {
   final String? shopLicenseNumber;
   final String? shopName;
   final String status;
+  final String? stripeAccountId;
+  final bool? stripeAccountConnected;
+  final String? stripeAccountStatus;
+  final BankDetails? bankDetails;
   final DateTime createdAt;
   final DateTime updatedAt;
 
@@ -62,6 +66,10 @@ class ProfileData {
     this.shopLicenseNumber,
     this.shopName,
     required this.status,
+    this.stripeAccountId,
+    this.stripeAccountConnected,
+    this.stripeAccountStatus,
+    this.bankDetails,
     required this.createdAt,
     required this.updatedAt,
   });
@@ -89,8 +97,41 @@ class ProfileData {
       shopLicenseNumber: json['shop_license_number'],
       shopName: json['shop_name'],
       status: json['status'] ?? 'inactive',
+      stripeAccountId: json['stripeAccountId'],
+      stripeAccountConnected: json['stripeAccountConnected'],
+      stripeAccountStatus: json['stripeAccountStatus'],
+      bankDetails: json['bankDetails'] != null
+          ? BankDetails.fromJson(json['bankDetails'])
+          : null,
       createdAt: json['createdAt'] != null ? DateTime.parse(json['createdAt']) : DateTime.now(),
       updatedAt: json['updatedAt'] != null ? DateTime.parse(json['updatedAt']) : DateTime.now(),
+    );
+  }
+}
+
+class BankDetails {
+  final String? bankName;
+  final String? routingNumber;
+  final String? accountNumberLast4;
+  final String? accountHolderName;
+  final String? currency;
+
+  BankDetails({
+    this.bankName,
+    this.routingNumber,
+    this.accountNumberLast4,
+    this.accountHolderName,
+    this.currency,
+  });
+
+  factory BankDetails.fromJson(Map<String, dynamic>? json) {
+    if (json == null) return BankDetails();
+    return BankDetails(
+      bankName: json['bankName'],
+      routingNumber: json['routingNumber'],
+      accountNumberLast4: json['accountNumberLast4'],
+      accountHolderName: json['accountHolderName'],
+      currency: json['currency'],
     );
   }
 }
@@ -109,3 +150,4 @@ class AuthId {
     );
   }
 }
+

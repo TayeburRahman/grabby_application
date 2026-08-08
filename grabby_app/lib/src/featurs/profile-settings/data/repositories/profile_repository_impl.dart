@@ -21,6 +21,8 @@ abstract class ProfileRepository {
     required double lat,
     required double lon,
   });
+  Future<ApiResponse<Map<String, dynamic>>> getStripeConnectOnboardingLink();
+  Future<ApiResponse<Map<String, dynamic>>> getStripeConnectStatus();
 }
 
 class ProfileRepositoryImpl implements ProfileRepository {
@@ -32,6 +34,17 @@ class ProfileRepositoryImpl implements ProfileRepository {
   Future<ApiResponse<ProfileData>> getProfile() async {
     return await remoteDataSource.getProfile();
   }
+
+  @override
+  Future<ApiResponse<Map<String, dynamic>>> getStripeConnectOnboardingLink() async {
+    return await remoteDataSource.getStripeConnectOnboardingLink();
+  }
+
+  @override
+  Future<ApiResponse<Map<String, dynamic>>> getStripeConnectStatus() async {
+    return await remoteDataSource.getStripeConnectStatus();
+  }
+
 
   @override
   Future<ApiResponse<void>> updateProfile({

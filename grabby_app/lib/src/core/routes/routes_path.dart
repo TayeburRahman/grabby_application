@@ -60,4 +60,6 @@ class RoutesPath {
   static const String locationSelectionPath = "/LocationSelectionPage";
   static const String locationSelectionName = "LocationSelectionPage";
   static const String termsAndConditionsPath = "/TermsAndConditionsPage";
+  static const String stripeConnectWebviewPath = "/StripeConnectWebviewPage";
 }
+

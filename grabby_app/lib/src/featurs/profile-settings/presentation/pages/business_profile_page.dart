@@ -26,7 +26,21 @@ class BusinessProfilePage extends StatelessWidget {
             fontWeight: FontWeight.w600,
           ),
         ),
-        body: BlocBuilder<ProfileBloc, ProfileState>(
+        body: BlocConsumer<ProfileBloc, ProfileState>(
+          listener: (context, state) async {
+            if (state is StripeConnectOnboardingLinkLoaded) {
+              await context.pushNamed(
+                RoutesPath.stripeConnectWebviewPath,
+                extra: state.url,
+              );
+              if (context.mounted) {
+                context.read<ProfileBloc>().add(GetProfileEvent());
+              }
+            } else if (state is ProfileError) {
+
+              CustomSnackbar.show(context, state.message, isError: true);
+            }
+          },
           builder: (context, state) {
             if (state is ProfileLoading) {
               return const Center(child: CircularProgressIndicator());
@@ -48,12 +62,15 @@ class BusinessProfilePage extends StatelessWidget {
                       space2H,
                       _buildStatsRow(context),
                       space2H,
+                      _buildBankAccountItem(context, profile),
+                      Divider(color: Colors.white, height: 1),
                       ProfileMenuItem(
                         title: AppStaticStrings.branchManagement,
                         icon: Icons.store_outlined,
                         onTap: () =>
                             context.pushNamed(RoutesPath.branchManagementName),
                       ),
+
                       Divider(color: Colors.white, height: 1),
                       ProfileMenuItem(
                         title: AppStaticStrings.branchTimings,
@@ -259,4 +276,39 @@ class BusinessProfilePage extends StatelessWidget {
       },
     );
   }
+
+  Widget _buildBankAccountItem(BuildContext context, ProfileData profile) {
+    final bool isConnected = profile.stripeAccountConnected == true;
+    final String bankName = profile.bankDetails?.bankName ?? '';
+    final String last4 = profile.bankDetails?.accountNumberLast4 ?? '';
+    final String statusText = isConnected
+        ? (bankName.isNotEmpty ? '$bankName •••• $last4' : AppStaticStrings.bankAccountConnected)
+        : AppStaticStrings.connectBankAccount;
+
+    return ProfileMenuItem(
+      title: AppStaticStrings.bankAccountAndPayouts,
+      icon: isConnected ? Icons.account_balance : Icons.account_balance_outlined,
+      onTap: () {
+        context.read<ProfileBloc>().add(GetStripeConnectOnboardingLinkEvent());
+      },
+      trailing: Container(
+        padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+        decoration: BoxDecoration(
+          color: isConnected
+              ? AppColors.kGreenColor.withValues(alpha: 0.15)
+              : Colors.orange.withValues(alpha: 0.15),
+          borderRadius: BorderRadius.circular(8),
+        ),
+        child: Text(
+          statusText,
+          style: TextStyle(
+            fontSize: 11,
+            fontWeight: FontWeight.bold,
+            color: isConnected ? AppColors.kGreenColor : Colors.orange,
+          ),
+        ),
+      ),
+    );
+  }
 }
+

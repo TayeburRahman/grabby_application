@@ -27,7 +27,9 @@ class ProfileBloc extends Bloc<ProfileEvent, ProfileState> {
        super(ProfileInitial()) {
     on<GetProfileEvent>(_onGetProfile);
     on<UpdateProfileEvent>(_onUpdateProfile);
+    on<GetStripeConnectOnboardingLinkEvent>(_onGetStripeConnectOnboardingLink);
   }
+
 
   Future<void> _onGetProfile(
     GetProfileEvent event,
@@ -191,4 +193,30 @@ class ProfileBloc extends Bloc<ProfileEvent, ProfileState> {
       emit(ProfileError('Something went wrong. Please try again.'));
     }
   }
+
+  Future<void> _onGetStripeConnectOnboardingLink(
+    GetStripeConnectOnboardingLinkEvent event,
+    Emitter<ProfileState> emit,
+  ) async {
+    emit(ProfileLoading());
+    try {
+      final response =
+          await _profileRepository.getStripeConnectOnboardingLink();
+      if (response.success && response.data != null) {
+        final url = response.data!['url'] as String? ?? '';
+        if (url.isNotEmpty) {
+          emit(StripeConnectOnboardingLinkLoaded(url));
+        } else {
+          emit(ProfileError('Failed to generate onboarding link'));
+        }
+      } else {
+        emit(ProfileError(response.message));
+      }
+    } on ApiException catch (e) {
+      emit(ProfileError(e.message));
+    } catch (e) {
+      emit(ProfileError('Something went wrong. Please try again.'));
+    }
+  }
 }
+
