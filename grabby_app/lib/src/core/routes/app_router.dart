@@ -176,6 +176,17 @@ class AppRouter {
         },
       ),
       GoRoute(
+        path: RoutesPath.stripeConnectWebviewPath,
+        name: RoutesPath.stripeConnectWebviewPath,
+        builder: (BuildContext context, GoRouterState state) {
+          final onboardingUrl = state.extra as String;
+          return StripeConnectWebviewPage(
+            onboardingUrl: onboardingUrl,
+          );
+        },
+      ),
+
+      GoRoute(
         path: RoutesPath.orderTrackingPath,
         name: RoutesPath.orderTrackingPath,
         builder: (BuildContext context, GoRouterState state) {

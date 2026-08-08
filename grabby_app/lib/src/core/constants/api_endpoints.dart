@@ -27,10 +27,15 @@ class ApiEndpoints {
   static const String updateShopOwnerLocation = "/shop-owner/location";
   static const String pricingPlan = "/pricing-plan";
 
-  // ─── Shop Owner Business ────────────────────────────────────────────────────
+  // ─── Shop Owner Business & Stripe Connect ─────────────────────────────────
   static const String saveBusinessInfo = "/shop-owner/business/info";
   static const String saveBranches = "/shop-owner/business/branches";
   static const String saveBusinessDocuments = "/shop-owner/business/documents";
+  static const String stripeConnectOnboardingLink =
+      "/shop-owner/stripe-connect/onboarding-link";
+  static const String stripeConnectStatus =
+      "/shop-owner/stripe-connect/status";
+
 
   // ─── Menu ───────────────────────────────────────────────────────────────────
   static const String createMenuCategory = "/menu-category/create";

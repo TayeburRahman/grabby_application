@@ -5,6 +5,7 @@ class ProfileMenuItem extends StatelessWidget {
   final IconData icon;
   final VoidCallback onTap;
   final Color? iconColor;
+  final Widget? trailing;
 
   const ProfileMenuItem({
     super.key,
@@ -12,10 +13,12 @@ class ProfileMenuItem extends StatelessWidget {
     required this.icon,
     required this.onTap,
     this.iconColor,
+    this.trailing,
   });
 
   @override
   Widget build(BuildContext context) {
+    final trailingWidget = trailing;
     return ButtonTapWidget(
       onTap: onTap,
       child: Row(
@@ -40,6 +43,7 @@ class ProfileMenuItem extends StatelessWidget {
               fontWeight: FontWeight.w600,
             ),
           ),
+          if (trailingWidget != null) trailingWidget,
           const Icon(
             Icons.chevron_right,
             color: AppColors.kSecondaryTextColor,
@@ -49,4 +53,6 @@ class ProfileMenuItem extends StatelessWidget {
       ),
     );
   }
+
 }
+

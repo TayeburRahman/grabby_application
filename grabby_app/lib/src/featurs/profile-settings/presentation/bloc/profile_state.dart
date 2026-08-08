@@ -20,3 +20,9 @@ class ProfileError extends ProfileState {
   final String message;
   ProfileError(this.message);
 }
+
+class StripeConnectOnboardingLinkLoaded extends ProfileState {
+  final String url;
+  StripeConnectOnboardingLinkLoaded(this.url);
+}
+

@@ -520,7 +520,16 @@ class AppStaticStrings {
   static const String businessInfoLabel = "Business Info";
   static const String branchesLabel = "Branches";
   static const String documentsLabel = "Documents";
-  static const String back = "Back";
   static const String googleMapApiKey =
       "AIzaSyDolxsFt6dUzlb07GSL48TuhctaokETKUk";
+
+  // Bank Account & Stripe Connect
+  static const String bankAccountAndPayouts = "Bank Account & Payouts";
+  static const String connectBankAccount = "Connect Bank Account";
+  static const String bankAccountConnected = "Bank Account Connected";
+  static const String bankAccountPending = "Bank Account Setup Pending";
+  static const String bankAccountUnlinked = "Bank Account Not Connected";
+  static const String connectBankPrompt =
+      "Connect your bank account to receive 90% automatic payouts on completed orders.";
 }
+

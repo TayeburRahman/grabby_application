@@ -22,6 +22,8 @@ abstract class ProfileRemoteDataSource {
     required double lat,
     required double lon,
   });
+  Future<ApiResponse<Map<String, dynamic>>> getStripeConnectOnboardingLink();
+  Future<ApiResponse<Map<String, dynamic>>> getStripeConnectStatus();
 }
 
 class ProfileRemoteDataSourceImpl implements ProfileRemoteDataSource {
@@ -38,6 +40,23 @@ class ProfileRemoteDataSourceImpl implements ProfileRemoteDataSource {
           ProfileData.fromJson(json['data'] as Map<String, dynamic>),
     );
   }
+
+  @override
+  Future<ApiResponse<Map<String, dynamic>>> getStripeConnectOnboardingLink() async {
+    return await apiService.post<Map<String, dynamic>>(
+      ApiEndpoints.stripeConnectOnboardingLink,
+      fromJson: (json) => json['data'] as Map<String, dynamic>,
+    );
+  }
+
+  @override
+  Future<ApiResponse<Map<String, dynamic>>> getStripeConnectStatus() async {
+    return await apiService.get<Map<String, dynamic>>(
+      ApiEndpoints.stripeConnectStatus,
+      fromJson: (json) => json['data'] as Map<String, dynamic>,
+    );
+  }
+
 
   @override
   Future<ApiResponse<void>> updateProfile({
