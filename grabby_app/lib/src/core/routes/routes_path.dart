@@ -1,0 +1,63 @@
+class RoutesPath {
+  static const String onboardingPath = '/OnboardingPage';
+  static const String loginPath = '/LoginPage';
+  static const String homePath = '/HomePage';
+  static const String signUpPath = '/SignUpPage';
+  static const String forgotPasswordPath = '/ForgotPasswordPage';
+  static const String verificationPath = '/VerificationPage';
+  static const String forgotEmailPath = '/ForgotEmailPage';
+  static const String resetPasswordPath = '/ResetPasswordPage';
+  static const String locationPath = '/LocationPage';
+  static const String navigationPath = '/NavigationPage';
+  static const String restruantDetailsPath = '/RestruantDetailsPage';
+  static const String menuPath = '/MenuPage';
+  static const String itemDetailsPath = '/ItemDetailsPage';
+  static const String cartPath = '/CartPage';
+  static const String carPlatesPath = '/CarPlatesPage';
+  static const String addCarPlatePath = '/AddCarPlatePage';
+  static const String checkoutPath = '/CheckoutPage';
+  static const String paymentSuccessPath = '/PaymentSuccessPage';
+  static const String stripePaymentWebviewPath = '/StripePaymentWebviewPage';
+  static const String orderTrackingPath = '/OrderTrackingPage';
+  static const String orderHistoryPath = '/OrderHistoryPage';
+  static const String orderTrackingMapViewPath = '/OrderTrackingMapViewPage';
+  static const String orderCanceledPath = '/OrderCanceledPage';
+  static const String loyaltyRewardPath = "/loyalty_reward";
+  static const String suggestAShopPath = "/suggest_a_shop";
+
+  static const String profilePath = "/profile";
+  static const String personalInfoPath = "/personal_info";
+  static const String notificationPath = "/notification";
+  static const String accountSettingsPath = "/account_settings";
+  static const String changePasswordPath = "/change_password";
+
+  static const String shopNavigationPath = '/ShopNavigationPage';
+  static const String shopOrderManagementPath = '/ShopOrderManagementPage';
+  static const String shopOrderDetailsPath = '/ShopOrderDetailsPage';
+  static const String roleSelectionPath = "/RoleSelectionPage";
+  static const String promotionPath = "/PromotionPage";
+  static const String businessProfilePath = "/BusinessProfilePage";
+  static const String businessProfileName = "BusinessProfilePage";
+  static const String branchManagementPath = "/BranchManagementPage";
+  static const String branchManagementName = "BranchManagementPage";
+  static const String branchTimingsPath = "/BranchTimingsPage";
+  static const String branchTimingsName = "BranchTimingsPage";
+  static const String rewardSettingsPath = "/RewardSettingsPage";
+  static const String rewardSettingsName = "RewardSettingsPage";
+  static const String shopMenuManagementPath = "/ShopMenuManagementPage";
+  static const String shopMenuManagementName = "ShopMenuManagementPage";
+  static const String editItemPath = "/EditItemPage";
+  static const String editItemName = "EditItemPage";
+  static const String shopOwnerOnboardingPath = "/ShopOwnerOnboardingPage";
+  static const String marketingCampaignsPath = "/MarketingCampaignsPage";
+  static const String marketingCampaignsName = "MarketingCampaignsPage";
+  static const String campaignTierDetailPath = "/CampaignTierDetailPage";
+  static const String campaignTierDetailName = "CampaignTierDetailPage";
+
+  static const String businessInfoPath = "/BusinessInfoPage";
+  static const String branchLocationsPath = "/BranchLocationsPage";
+  static const String requiredDocumentsPath = "/RequiredDocumentsPage";
+  static const String locationSelectionPath = "/LocationSelectionPage";
+  static const String locationSelectionName = "LocationSelectionPage";
+  static const String termsAndConditionsPath = "/TermsAndConditionsPage";
+}
