@@ -334,7 +334,8 @@ const createStripeConnectOnboardingLink = async (
   let stripeAccountId = shopOwner.stripeAccountId;
 
   if (!stripeAccountId) {
-    const createAccountRes = await createStripeExpressAccount(shopOwner.email);
+    const ownerEmail = shopOwner.email || shopOwner.contact_email || "";
+    const createAccountRes = await createStripeExpressAccount(ownerEmail);
     if (!createAccountRes.success || !createAccountRes.accountId) {
       throw new ApiError(
         httpStatus.BAD_REQUEST,

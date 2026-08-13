@@ -67,7 +67,6 @@ export const createStripeExpressAccount = async (email: string) => {
       email,
       capabilities: {
         transfers: { requested: true },
-        card_payments: { requested: true },
       },
     });
 
