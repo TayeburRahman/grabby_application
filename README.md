@@ -1,4 +1,4 @@
-# ☕ GRABBY — Smart Café Pre-Ordering, Car Pickup & Multi-Tenant Platform (Client: ayah_almheiri)
+# GRABBY — Smart Café Pre-Ordering, Car Pickup & Multi-Tenant Platform (Client: ayah_almheiri)
 
 [![Node.js](https://img.shields.io/badge/Node.js-v16%2B-339933?style=for-the-badge&logo=nodedotjs&logoColor=white)](https://nodejs.org/)
 [![TypeScript](https://img.shields.io/badge/TypeScript-5.0-3178C6?style=for-the-badge&logo=typescript&logoColor=white)](https://www.typescriptlang.org/)
